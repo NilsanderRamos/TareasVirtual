@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Ciclo de prompting y revision</title>
+  <desc id="desc">Diagrama circular para prompt, borrador, verificacion y entrega.</desc>
+  <rect width="1200" height="900" fill="#1e293b"/>
+  <circle cx="600" cy="450" r="260" fill="#0f766e" opacity="0.18"/>
+  <circle cx="600" cy="450" r="170" fill="#f8fafc"/>
+  <text x="492" y="458" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="32" font-weight="700">IA con criterio</text>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">
+    <text x="548" y="162" fill="#f8fafc">Prompt</text>
+    <text x="858" y="454" fill="#f8fafc">Borrador</text>
+    <text x="506" y="768" fill="#f8fafc">Verificacion</text>
+    <text x="204" y="454" fill="#f8fafc">Entrega</text>
+  </g>
+</svg>

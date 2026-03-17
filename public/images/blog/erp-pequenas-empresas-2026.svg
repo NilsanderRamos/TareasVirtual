@@ -1,0 +1,26 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="40" fill="#EEF6F3"/>
+  <rect x="54" y="54" width="1092" height="692" rx="34" fill="#FFFDF9" stroke="#C9DDD5" stroke-width="4"/>
+  <rect x="94" y="102" width="1012" height="126" rx="28" fill="#14352A"/>
+  <text x="130" y="162" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="40" font-weight="700">ERP para pequenas empresas 2026</text>
+  <text x="130" y="204" fill="#BEE5DB" font-family="Arial, sans-serif" font-size="24" font-weight="600">Ventas, inventario, compras y finanzas con menos caos</text>
+  <rect x="94" y="264" width="304" height="186" rx="28" fill="#EAFBF5" stroke="#9ED8C8" stroke-width="4"/>
+  <rect x="446" y="264" width="304" height="186" rx="28" fill="#FFF4E2" stroke="#E4C488" stroke-width="4"/>
+  <rect x="798" y="264" width="308" height="186" rx="28" fill="#EEF3FB" stroke="#B3C6E4" stroke-width="4"/>
+  <text x="124" y="318" fill="#115E59" font-family="Arial, sans-serif" font-size="28" font-weight="700">Ventas</text>
+  <text x="476" y="318" fill="#A05D00" font-family="Arial, sans-serif" font-size="28" font-weight="700">Inventario</text>
+  <text x="828" y="318" fill="#365B8B" font-family="Arial, sans-serif" font-size="28" font-weight="700">Finanzas</text>
+  <rect x="124" y="348" width="178" height="12" rx="6" fill="#8ABFB1"/>
+  <rect x="476" y="348" width="192" height="12" rx="6" fill="#E9C67E"/>
+  <rect x="828" y="348" width="176" height="12" rx="6" fill="#B9CAE6"/>
+  <rect x="124" y="384" width="220" height="34" rx="17" fill="#0F766E"/>
+  <rect x="476" y="384" width="220" height="34" rx="17" fill="#D97706"/>
+  <rect x="828" y="384" width="220" height="34" rx="17" fill="#4F7FC0"/>
+  <rect x="94" y="492" width="1012" height="206" rx="28" fill="#FFFFFF" stroke="#D4DDD8" stroke-width="4"/>
+  <text x="124" y="548" fill="#14352A" font-family="Arial, sans-serif" font-size="32" font-weight="700">Integracion operativa sin sobrecomprar software</text>
+  <rect x="124" y="584" width="562" height="14" rx="7" fill="#D6E5E0"/>
+  <rect x="124" y="618" width="488" height="14" rx="7" fill="#E3ECE9"/>
+  <path d="M760 590H1044" stroke="#0F766E" stroke-width="12" stroke-linecap="round"/>
+  <path d="M760 624H1008" stroke="#D97706" stroke-width="12" stroke-linecap="round"/>
+  <path d="M760 658H968" stroke="#14352A" stroke-width="12" stroke-linecap="round"/>
+</svg>

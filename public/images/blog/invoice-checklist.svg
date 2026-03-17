@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Checklist de factura profesional</title>
+  <desc id="desc">Lista visual de emisor, cliente, conceptos, vencimiento y metodo de pago.</desc>
+  <rect width="1200" height="900" fill="#b45309"/>
+  <rect x="118" y="108" width="964" height="684" rx="38" fill="#fff7ed"/>
+  <text x="180" y="190" fill="#b45309" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Checklist de factura profesional</text>
+  <g fill="#ffffff" stroke="#fed7aa" stroke-width="4">
+    <rect x="180" y="260" width="840" height="90" rx="20"/>
+    <rect x="180" y="380" width="840" height="90" rx="20"/>
+    <rect x="180" y="500" width="840" height="90" rx="20"/>
+    <rect x="180" y="620" width="840" height="90" rx="20"/>
+  </g>
+  <g fill="#9a3412" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700">
+    <text x="230" y="316">Datos correctos del emisor y del cliente</text>
+    <text x="230" y="436">Concepto claro y desglose entendible</text>
+    <text x="230" y="556">Subtotal, impuestos y total visibles</text>
+    <text x="230" y="676">Vencimiento y metodo de pago definidos</text>
+  </g>
+</svg>

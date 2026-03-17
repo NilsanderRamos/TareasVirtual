@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Calcular salario neto en Estados Unidos</title>
+  <desc id="desc">Portada editorial con paycheck, gross pay y net pay.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <rect x="94" y="80" width="1012" height="740" rx="40" fill="#f8fafc" opacity="0.97"/>
+  <text x="148" y="166" fill="#0f766e" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700">TareasVirtual / Payroll</text>
+  <text x="148" y="242" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700">Como calcular tu</text>
+  <text x="148" y="304" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700">salario neto en USA</text>
+  <text x="148" y="370" fill="#475569" font-family="Segoe UI, Arial, sans-serif" font-size="28">Gross pay, withholding y payroll deductions</text>
+  <rect x="148" y="434" width="904" height="250" rx="28" fill="#e2e8f0"/>
+  <rect x="188" y="474" width="250" height="170" rx="22" fill="#dbeafe"/>
+  <text x="218" y="528" fill="#1d4ed8" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Gross pay</text>
+  <text x="218" y="582" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700">$2,307</text>
+  <rect x="474" y="474" width="250" height="170" rx="22" fill="#fef3c7"/>
+  <text x="504" y="528" fill="#a16207" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Retenciones</text>
+  <text x="504" y="582" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700">-$518</text>
+  <rect x="760" y="474" width="250" height="170" rx="22" fill="#dcfce7"/>
+  <text x="790" y="528" fill="#15803d" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Net pay</text>
+  <text x="790" y="582" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700">$1,789</text>
+  <text x="148" y="758" fill="#334155" font-family="Segoe UI, Arial, sans-serif" font-size="26">Lee el paystub con criterio antes de tomar decisiones de gasto.</text>
+</svg>

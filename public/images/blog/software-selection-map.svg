@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Mapa de seleccion de software</title>
+  <desc id="desc">Diagrama para elegir software segun cumplimiento, automatizacion y escalabilidad.</desc>
+  <rect width="1200" height="900" fill="#0f172a"/>
+  <rect x="116" y="108" width="968" height="684" rx="38" fill="#f8fafc"/>
+  <text x="176" y="190" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Mapa de seleccion</text>
+  <rect x="180" y="260" width="240" height="160" rx="24" fill="#dbeafe"/>
+  <rect x="480" y="260" width="240" height="160" rx="24" fill="#dcfce7"/>
+  <rect x="780" y="260" width="240" height="160" rx="24" fill="#fef3c7"/>
+  <text x="224" y="350" fill="#1d4ed8" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Cumplimiento</text>
+  <text x="526" y="350" fill="#15803d" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Automatizacion</text>
+  <text x="834" y="350" fill="#a16207" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Escalabilidad</text>
+  <rect x="180" y="490" width="840" height="190" rx="28" fill="#e2e8f0"/>
+  <text x="250" y="590" fill="#334155" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">La herramienta correcta se elige por escenario, no por la lista mas larga de funciones.</text>
+</svg>

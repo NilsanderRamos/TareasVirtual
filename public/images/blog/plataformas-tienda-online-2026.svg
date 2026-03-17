@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Plataformas para tienda online 2026</title>
+  <desc id="desc">Portada editorial para comparar plataformas ecommerce.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <rect x="82" y="82" width="1036" height="736" rx="40" fill="#f8fafc" opacity="0.97"/>
+  <text x="142" y="166" fill="#0f766e" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700">TareasVirtual / Ecommerce</text>
+  <text x="142" y="244" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="52" font-weight="700">Mejores plataformas</text>
+  <text x="142" y="304" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="52" font-weight="700">para crear tu tienda online</text>
+  <text x="142" y="368" fill="#475569" font-family="Segoe UI, Arial, sans-serif" font-size="28">Shopify, WooCommerce, BigCommerce y mas</text>
+  <rect x="142" y="432" width="916" height="294" rx="30" fill="#e2e8f0"/>
+  <rect x="182" y="476" width="164" height="206" rx="22" fill="#dcfce7"/>
+  <rect x="370" y="476" width="164" height="206" rx="22" fill="#dbeafe"/>
+  <rect x="558" y="476" width="164" height="206" rx="22" fill="#fef3c7"/>
+  <rect x="746" y="476" width="164" height="206" rx="22" fill="#fee2e2"/>
+  <rect x="934" y="476" width="84" height="206" rx="22" fill="#ede9fe"/>
+  <text x="212" y="534" fill="#166534" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Shopify</text>
+  <text x="398" y="534" fill="#1d4ed8" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Woo</text>
+  <text x="580" y="534" fill="#a16207" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Big</text>
+  <text x="776" y="534" fill="#b91c1c" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Square</text>
+  <text x="950" y="534" fill="#6d28d9" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Ec</text>
+  <text x="142" y="786" fill="#334155" font-family="Segoe UI, Arial, sans-serif" font-size="26">Escala, control tecnico, canales y costos reales.</text>
+</svg>

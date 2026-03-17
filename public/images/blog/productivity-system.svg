@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Sistema de productividad academica</title>
+  <desc id="desc">Diagrama de objetivo, bloques y repaso para estudio.</desc>
+  <rect width="1200" height="900" fill="#f59e0b"/>
+  <rect x="98" y="98" width="1004" height="704" rx="38" fill="#fffbeb"/>
+  <text x="160" y="186" fill="#b45309" font-family="Segoe UI, Arial, sans-serif" font-size="32" font-weight="700">Sistema simple para estudiar mejor</text>
+  <rect x="160" y="270" width="250" height="150" rx="24" fill="#ffffff"/>
+  <rect x="476" y="270" width="250" height="150" rx="24" fill="#ffffff"/>
+  <rect x="792" y="270" width="150" height="150" rx="24" fill="#ffffff"/>
+  <text x="216" y="350" fill="#111827" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Objetivo</text>
+  <text x="542" y="350" fill="#111827" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Bloque 30 min</text>
+  <text x="832" y="350" fill="#111827" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Repaso</text>
+  <rect x="160" y="500" width="782" height="178" rx="28" fill="#fde68a"/>
+  <text x="216" y="578" fill="#92400e" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Cuando repites la estructura, baja la friccion.</text>
+</svg>

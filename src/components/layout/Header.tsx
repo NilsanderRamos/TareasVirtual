@@ -1,54 +1,281 @@
 "use client";
 
+import { useState, useSyncExternalStore } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { siteConfig } from "@/config/site";
+import { mainNav } from "@/config/navigation";
 
-  import { useState } from "react";
-  import Link from "next/link";
-  import { siteConfig } from "@/config/site";
-  import { mainNav } from "@/config/navigation";
+type ThemeMode = "light" | "dark" | "system";
+type ResolvedTheme = "light" | "dark";
 
+const THEME_STORAGE_KEY = "tareasvirtual-theme";
 
-  export function Header() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-
-    return (
-      <header className="sticky top-0 z-50 w-full border-b
-        border-gray-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center
-          justify-between px-4">
-          <Link href="/" className="text-xl font-bold
-            text-gray-900 hover:text-blue-600 transition-colors">
-            {siteConfig.name}
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            {mainNav.map((item) => (
-              <Link key={item.href} href={item.href}
-                className="text-sm font-medium text-gray-600
-                hover:text-gray-900 transition-colors">
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2" aria-label="Menu">
-            <span className="block w-5 h-0.5 bg-gray-600 mb-1" />
-            <span className="block w-5 h-0.5 bg-gray-600 mb-1" />
-            <span className="block w-5 h-0.5 bg-gray-600" />
-          </button>
-        </div>
-        {isMenuOpen && (
-          <nav className="md:hidden border-t border-gray-200 p-4">
-            {mainNav.map((item) => (
-              <Link key={item.href} href={item.href}
-                className="block py-2 text-gray-600
-                hover:text-gray-900"
-                onClick={() => setIsMenuOpen(false)}>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        )}
-      </header>
-    );
+function resolveTheme(mode: ThemeMode): ResolvedTheme {
+  if (mode === "system") {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
+
+  return mode;
+}
+
+function applyThemeToDocument(mode: ThemeMode, resolvedTheme: ResolvedTheme) {
+  document.documentElement.dataset.themeMode = mode;
+  document.documentElement.dataset.theme = resolvedTheme;
+  document.documentElement.style.colorScheme = resolvedTheme;
+}
+
+function getThemeSnapshot() {
+  if (typeof document === "undefined") {
+    return "system:light";
+  }
+
+  const themeMode = document.documentElement.dataset.themeMode === "dark"
+    ? "dark"
+    : document.documentElement.dataset.themeMode === "light"
+      ? "light"
+      : "system";
+  const resolvedTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+
+  return `${themeMode}:${resolvedTheme}`;
+}
+
+function subscribeToTheme(onStoreChange: () => void) {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const handleMediaChange = () => {
+    if (document.documentElement.dataset.themeMode !== "system") {
+      return;
+    }
+
+    const nextResolvedTheme = mediaQuery.matches ? "dark" : "light";
+    applyThemeToDocument("system", nextResolvedTheme);
+    window.dispatchEvent(new Event("themechange"));
+  };
+
+  window.addEventListener("themechange", onStoreChange);
+  mediaQuery.addEventListener("change", handleMediaChange);
+  return () => {
+    window.removeEventListener("themechange", onStoreChange);
+    mediaQuery.removeEventListener("change", handleMediaChange);
+  };
+}
+
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") {
+    return pathname === href;
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function ThemeIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4 fill-current" aria-hidden="true">
+      <path d="M10 2.75a.75.75 0 0 1 .75.75v.85a.75.75 0 0 1-1.5 0V3.5a.75.75 0 0 1 .75-.75Zm0 12.9a.75.75 0 0 1 .75.75v.1a.75.75 0 0 1-1.5 0v-.1a.75.75 0 0 1 .75-.75Zm6.25-6.4a.75.75 0 0 1 0 1.5h-.85a.75.75 0 0 1 0-1.5h.85Zm-11.65 0a.75.75 0 0 1 0 1.5h-.85a.75.75 0 0 1 0-1.5h.85Zm8.203-4.017a.75.75 0 0 1 1.06 0l.6.601a.75.75 0 0 1-1.06 1.06l-.6-.6a.75.75 0 0 1 0-1.061ZM5.738 12.262a.75.75 0 0 1 1.06 0l.6.6a.75.75 0 1 1-1.06 1.06l-.6-.6a.75.75 0 0 1 0-1.06Zm8.66 1.06a.75.75 0 0 1-1.06 0l-.6-.6a.75.75 0 1 1 1.06-1.06l.6.6a.75.75 0 0 1 0 1.06ZM5.738 6.294a.75.75 0 0 1 0-1.06l.6-.601a.75.75 0 1 1 1.06 1.06l-.6.601a.75.75 0 0 1-1.06 0ZM10 6.25A3.75 3.75 0 1 1 10 13.75 3.75 3.75 0 0 1 10 6.25Zm0 1.5a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z" />
+    </svg>
+  );
+}
+
+export function Header() {
+  const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const themeSnapshot = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "system:light");
+  const [themeMode, resolvedTheme] = themeSnapshot.split(":") as [ThemeMode, ResolvedTheme];
+
+  function updateTheme(nextThemeMode: ThemeMode) {
+    const nextResolvedTheme = resolveTheme(nextThemeMode);
+
+    applyThemeToDocument(nextThemeMode, nextResolvedTheme);
+    window.localStorage.setItem(THEME_STORAGE_KEY, nextThemeMode);
+    window.dispatchEvent(new Event("themechange"));
+  }
+
+  function toggleTheme() {
+    if (themeMode === "system") {
+      updateTheme(resolvedTheme === "dark" ? "light" : "dark");
+      return;
+    }
+
+    updateTheme(themeMode === "dark" ? "light" : "dark");
+  }
+
+  const themeButtonLabel =
+    themeMode === "system"
+      ? `Tema automatico activo. Cambiar a modo ${resolvedTheme === "dark" ? "claro" : "oscuro"}`
+      : `Cambiar a modo ${themeMode === "dark" ? "claro" : "oscuro"}`;
+
+  return (
+    <>
+      <header className="sticky top-0 z-50 px-4 pt-3 sm:pt-4">
+        <div className="mx-auto max-w-6xl">
+          <div className="surface-card relative rounded-[1.85rem] px-4 py-3 sm:px-5">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex min-w-0 items-center gap-3">
+                <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setIsMenuOpen(false)}>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-(--ink) text-sm font-bold text-white shadow-lg shadow-black/10 sm:h-11 sm:w-11">
+                    TV
+                  </span>
+                  <span className="min-w-0">
+                    <span className="hidden text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-(--accent-strong) sm:block">
+                      Plataforma editorial util
+                    </span>
+                    <span className="block truncate text-base font-semibold text-(--ink) sm:text-lg">
+                      {siteConfig.name}
+                    </span>
+                  </span>
+                </Link>
+
+                <div className="hero-chip hidden rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--accent-strong) xl:block">
+                  Contenido original + herramientas utiles
+                </div>
+              </div>
+
+              <nav className="nav-shell hidden items-center gap-1 rounded-full p-1 md:flex">
+                {mainNav.map((item) => {
+                  const active = isActivePath(pathname, item.href);
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                        active
+                          ? "bg-(--ink) text-white shadow-[0_10px_24px_rgba(20,35,26,0.18)]"
+                          : "text-(--muted) hover:bg-[rgba(20,35,26,0.06)] hover:text-(--ink)"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              <div className="hidden items-center gap-2 md:flex">
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  className="theme-switch inline-flex h-11 w-11 items-center justify-center rounded-full border border-(--line) bg-white/80 text-(--ink) hover:-translate-y-0.5 hover:border-(--accent) hover:text-(--accent-strong)"
+                  aria-label={themeButtonLabel}
+                  title={themeButtonLabel}
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[rgba(15,118,110,0.12)] text-(--accent-strong)">
+                    <ThemeIcon />
+                  </span>
+                </button>
+
+                <Link
+                  href="/contact"
+                  className="rounded-full border border-(--line) bg-white px-4 py-2 text-sm font-semibold text-(--ink) hover:-translate-y-0.5 hover:border-(--accent) hover:text-(--accent-strong)"
+                >
+                  Hablemos
+                </Link>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsMenuOpen((open) => !open)}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-(--line) bg-white md:hidden"
+                aria-label={isMenuOpen ? "Cerrar menu" : "Abrir menu"}
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-nav"
+              >
+                <span className="relative flex h-5 w-5 items-center justify-center">
+                  <span
+                    className={`absolute block h-0.5 w-5 rounded-full bg-(--ink) ${
+                      isMenuOpen ? "rotate-45" : "-translate-y-1.5"
+                    }`}
+                  />
+                  <span
+                    className={`absolute block h-0.5 w-5 rounded-full bg-(--ink) ${
+                      isMenuOpen ? "opacity-0" : "opacity-100"
+                    }`}
+                  />
+                  <span
+                    className={`absolute block h-0.5 w-5 rounded-full bg-(--ink) ${
+                      isMenuOpen ? "-rotate-45" : "translate-y-1.5"
+                    }`}
+                  />
+                </span>
+              </button>
+            </div>
+
+            {isMenuOpen ? (
+              <nav id="mobile-nav" className="mobile-sheet relative z-10 mt-4 rounded-[1.7rem] p-3 md:hidden">
+                <div className="rounded-[1.35rem] border border-(--line) bg-[rgba(15,118,110,0.08)] px-4 py-4">
+                  <p className="section-label text-[0.7rem] font-semibold uppercase">Navegacion rapida</p>
+                  <p className="mt-2 text-sm leading-6 text-(--muted)">
+                    Accede a la seccion correcta sin perder el contexto en movil ni saturar la pantalla.
+                  </p>
+                </div>
+
+                <div className="mt-3 flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleTheme}
+                    className="theme-switch flex items-center justify-between rounded-[1.35rem] border border-(--line) bg-white/90 px-4 py-3.5 text-(--ink) hover:border-(--accent) hover:text-(--accent-strong)"
+                    aria-label={themeButtonLabel}
+                    title={themeButtonLabel}
+                  >
+                    <span>
+                      <span className="block text-sm font-semibold">Tema</span>
+                      <span className="mt-1 block text-xs text-(--muted)">
+                        {themeMode === "system" ? "Automatico" : themeMode === "dark" ? "Oscuro" : "Claro"}
+                      </span>
+                    </span>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgba(15,118,110,0.12)] text-(--accent-strong)">
+                      <ThemeIcon />
+                    </span>
+                  </button>
+
+                  {mainNav.map((item) => {
+                    const active = isActivePath(pathname, item.href);
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`rounded-[1.35rem] px-4 py-3.5 text-sm transition ${
+                          active
+                            ? "bg-(--ink) text-white"
+                            : "bg-white/75 text-(--muted) hover:border-(--accent) hover:text-(--ink)"
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <span className="block font-semibold">{item.label}</span>
+                        <span className={`mt-1 block text-xs ${active ? "text-white/70" : "text-(--muted)"}`}>
+                          {item.href === "/" ? "Portada editorial" : item.href === "/blog" ? "Guias propias y comparativas" : item.href === "/tools" ? "Recursos para ejecutar" : "Canal directo"}
+                        </span>
+                      </Link>
+                    );
+                  })}
+
+                  <Link
+                    href="/contact"
+                    className="rounded-[1.35rem] border border-(--line) bg-white px-4 py-3.5 text-sm font-semibold text-(--ink)"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Hablemos
+                  </Link>
+                </div>
+              </nav>
+            ) : null}
+          </div>
+        </div>
+      </header>
+
+      {isMenuOpen ? (
+        <button
+          type="button"
+          aria-label="Cerrar menu"
+          onClick={() => setIsMenuOpen(false)}
+          className="fixed inset-0 top-[5.35rem] z-40 bg-[rgba(7,17,22,0.16)] backdrop-blur-[1px] md:hidden"
+        />
+      ) : null}
+    </>
+  );
+}
 

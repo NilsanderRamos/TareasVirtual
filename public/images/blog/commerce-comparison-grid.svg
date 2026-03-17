@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Grid de comparacion ecommerce</title>
+  <desc id="desc">Matriz visual para evaluar plataformas de tienda online.</desc>
+  <rect width="1200" height="900" fill="#0f766e"/>
+  <rect x="110" y="110" width="980" height="680" rx="38" fill="#f0fdfa"/>
+  <text x="170" y="190" fill="#0f766e" font-family="Segoe UI, Arial, sans-serif" font-size="32" font-weight="700">Grid de comparacion ecommerce</text>
+  <rect x="170" y="250" width="860" height="460" rx="28" fill="#ffffff"/>
+  <path d="M170 360 H1030 M170 470 H1030 M170 580 H1030 M400 250 V710 M630 250 V710 M860 250 V710" stroke="#cbd5e1" stroke-width="4"/>
+  <text x="228" y="326" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Costo</text>
+  <text x="468" y="326" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Control</text>
+  <text x="694" y="326" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Escala</text>
+  <text x="916" y="326" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Canales</text>
+</svg>

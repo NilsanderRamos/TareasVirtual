@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Desglose visual de paycheck</title>
+  <desc id="desc">Resumen visual de gross pay, taxes y beneficios sobre el net pay.</desc>
+  <rect width="1200" height="900" fill="#1d4ed8"/>
+  <rect x="120" y="110" width="960" height="680" rx="38" fill="#eff6ff"/>
+  <text x="176" y="190" fill="#1d4ed8" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Paycheck breakdown</text>
+  <rect x="176" y="260" width="850" height="120" rx="24" fill="#ffffff"/>
+  <rect x="176" y="420" width="260" height="210" rx="24" fill="#dbeafe"/>
+  <rect x="470" y="420" width="260" height="210" rx="24" fill="#fef3c7"/>
+  <rect x="764" y="420" width="262" height="210" rx="24" fill="#dcfce7"/>
+  <text x="238" y="532" fill="#1d4ed8" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Federal tax</text>
+  <text x="536" y="532" fill="#a16207" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Benefits</text>
+  <text x="842" y="532" fill="#15803d" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Net pay</text>
+</svg>

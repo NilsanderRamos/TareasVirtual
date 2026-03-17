@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Software de facturacion electronica 2026</title>
+  <desc id="desc">Portada editorial con comparativa de herramientas de facturacion.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <rect x="80" y="82" width="1040" height="736" rx="40" fill="#eff6ff" opacity="0.97"/>
+  <text x="140" y="166" fill="#1d4ed8" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700">TareasVirtual / SaaS</text>
+  <text x="140" y="244" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="52" font-weight="700">Mejor software de</text>
+  <text x="140" y="304" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="52" font-weight="700">facturacion electronica</text>
+  <text x="140" y="368" fill="#475569" font-family="Segoe UI, Arial, sans-serif" font-size="28">Comparativa 2026 para autonomos y equipos</text>
+  <rect x="140" y="438" width="920" height="286" rx="30" fill="#ffffff"/>
+  <rect x="182" y="482" width="178" height="192" rx="22" fill="#dbeafe"/>
+  <rect x="386" y="482" width="178" height="192" rx="22" fill="#dcfce7"/>
+  <rect x="590" y="482" width="178" height="192" rx="22" fill="#fef3c7"/>
+  <rect x="794" y="482" width="224" height="192" rx="22" fill="#e9d5ff"/>
+  <text x="216" y="536" fill="#1d4ed8" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Stripe</text>
+  <text x="420" y="536" fill="#15803d" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">QuickBooks</text>
+  <text x="624" y="536" fill="#a16207" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Zoho</text>
+  <text x="828" y="536" fill="#7e22ce" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">FreshBooks + otros</text>
+  <text x="140" y="782" fill="#334155" font-family="Segoe UI, Arial, sans-serif" font-size="26">Precio, automatizacion, cumplimiento y facilidad de cobro.</text>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Impuestos freelancer Estados Unidos 2026</title>
+  <desc id="desc">Ilustracion editorial con paneles sobre taxes, Schedule C y pagos trimestrales.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <circle cx="980" cy="120" r="180" fill="#34d399" opacity="0.16"/>
+  <circle cx="140" cy="770" r="220" fill="#fbbf24" opacity="0.16"/>
+  <rect x="88" y="86" width="1024" height="728" rx="36" fill="#f8fafc" opacity="0.96"/>
+  <text x="140" y="170" fill="#0f766e" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700">TareasVirtual / Finanzas USA</text>
+  <text x="140" y="250" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700">Impuestos para freelancers</text>
+  <text x="140" y="314" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700">en Estados Unidos 2026</text>
+  <text x="140" y="388" fill="#475569" font-family="Segoe UI, Arial, sans-serif" font-size="28">Self-employment tax, Schedule C y pagos trimestrales</text>
+  <rect x="140" y="454" width="282" height="140" rx="24" fill="#dcfce7"/>
+  <text x="170" y="505" fill="#166534" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">15.3%</text>
+  <text x="170" y="545" fill="#166534" font-family="Segoe UI, Arial, sans-serif" font-size="21">Base del self-employment tax</text>
+  <rect x="454" y="454" width="282" height="140" rx="24" fill="#e0f2fe"/>
+  <text x="484" y="505" fill="#0c4a6e" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">Schedule C</text>
+  <text x="484" y="545" fill="#0c4a6e" font-family="Segoe UI, Arial, sans-serif" font-size="21">Ingreso, gastos y net profit</text>
+  <rect x="768" y="454" width="282" height="140" rx="24" fill="#fef3c7"/>
+  <text x="798" y="505" fill="#92400e" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">1040-ES</text>
+  <text x="798" y="545" fill="#92400e" font-family="Segoe UI, Arial, sans-serif" font-size="21">Pagos estimated taxes</text>
+  <rect x="140" y="642" width="910" height="112" rx="28" fill="#0f172a"/>
+  <text x="180" y="706" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="28">Orden financiero para cobrar, reservar impuestos y cerrar el ano sin sobresaltos</text>
+</svg>

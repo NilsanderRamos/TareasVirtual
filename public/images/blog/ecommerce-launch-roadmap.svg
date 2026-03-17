@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Roadmap de lanzamiento ecommerce</title>
+  <desc id="desc">Ruta visual para catalogo, pagos, envios y marketing en una tienda online.</desc>
+  <rect width="1200" height="900" fill="#0f766e"/>
+  <rect x="118" y="110" width="964" height="680" rx="38" fill="#f0fdfa"/>
+  <text x="176" y="190" fill="#0f766e" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Roadmap de lanzamiento</text>
+  <g fill="#ffffff">
+    <rect x="180" y="280" width="180" height="150" rx="24"/>
+    <rect x="400" y="280" width="180" height="150" rx="24"/>
+    <rect x="620" y="280" width="180" height="150" rx="24"/>
+    <rect x="840" y="280" width="180" height="150" rx="24"/>
+  </g>
+  <g fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">
+    <text x="216" y="360">Catalogo</text>
+    <text x="454" y="360">Pagos</text>
+    <text x="668" y="360">Envios</text>
+    <text x="878" y="360">Marketing</text>
+  </g>
+  <rect x="180" y="500" width="840" height="180" rx="28" fill="#ccfbf1"/>
+  <text x="246" y="598" fill="#115e59" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">La plataforma importa, pero el plan de lanzamiento es lo que evita el caos operativo.</text>
+</svg>

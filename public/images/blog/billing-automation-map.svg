@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Mapa de automatizacion de cobros</title>
+  <desc id="desc">Diagrama para herramientas de facturacion y cobro digital.</desc>
+  <rect width="1200" height="900" fill="#1d4ed8"/>
+  <rect x="116" y="108" width="968" height="684" rx="38" fill="#eff6ff"/>
+  <text x="176" y="186" fill="#1d4ed8" font-family="Segoe UI, Arial, sans-serif" font-size="32" font-weight="700">Automatizacion del ciclo de cobro</text>
+  <rect x="176" y="266" width="200" height="140" rx="24" fill="#ffffff"/>
+  <rect x="500" y="266" width="200" height="140" rx="24" fill="#ffffff"/>
+  <rect x="824" y="266" width="200" height="140" rx="24" fill="#ffffff"/>
+  <text x="220" y="342" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Factura</text>
+  <text x="552" y="342" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Envio</text>
+  <text x="872" y="342" fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Cobro</text>
+  <rect x="176" y="482" width="848" height="188" rx="28" fill="#dbeafe"/>
+  <text x="244" y="578" fill="#1e3a8a" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Menos tareas manuales, mejor seguimiento y menos retrasos.</text>
+</svg>
