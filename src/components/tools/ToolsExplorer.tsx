@@ -104,13 +104,18 @@ export function ToolsExplorer({ tools }: ToolsExplorerProps) {
                 <p className="mt-3 text-sm leading-7 text-(--muted)">{tool.description}</p>
                 <p className="mt-3 text-sm leading-6 text-(--ink)">{getOpenReason(tool)}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {tool.bestFor.slice(0, 2).map((item) => (
-                    <span key={item} className="rounded-full border border-(--line) bg-white/55 px-3 py-1.5 text-xs font-medium text-(--accent-strong)">
+                  {tool.bestFor.slice(0, 2).map((item, index) => (
+                    <span
+                      key={item}
+                      className={`rounded-full border border-(--line) bg-white/55 px-3 py-1.5 text-xs font-medium text-(--accent-strong) ${
+                        index > 0 ? "hidden sm:inline-flex" : ""
+                      }`}
+                    >
                       {item}
                     </span>
                   ))}
                 </div>
-                <div className="mt-auto flex items-center justify-between gap-3 pt-5 sm:pt-6">
+                <div className="mt-auto flex flex-col items-start gap-2 pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:pt-6">
                   <Link href={tool.detailHref} onClick={() => trackSiteEvent("tool_detail_clicked", { tool: tool.slug, source: "tools_explorer" })} className="inline-flex items-center text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
                     Ver ficha
                   </Link>

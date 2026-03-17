@@ -34,16 +34,16 @@ export function Footer() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            {footerShortcuts.map((shortcut) => (
+            {footerShortcuts.map((shortcut, index) => (
               <Link key={shortcut.href} href={shortcut.href} className="footer-cta-card rounded-[1.6rem] px-4 py-4 transition hover:-translate-y-0.5 hover:border-white/20">
                 <p className="text-sm font-semibold text-white">{shortcut.title}</p>
-                <p className="mt-2 text-sm leading-6 text-white/68">{shortcut.description}</p>
+                <p className={`mt-2 text-sm leading-6 text-white/68 ${index > 1 ? "hidden sm:block" : ""}`}>{shortcut.description}</p>
               </Link>
             ))}
           </div>
         </div>
 
-        <div className="rounded-[1.6rem] border border-white/10 bg-white/5 px-4 py-5 sm:hidden">
+        <div className="mt-4 rounded-[1.6rem] border border-white/10 bg-white/5 px-4 py-5 sm:hidden">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-white/60">Cierre rapido</p>
           <h3 className="mt-2 text-2xl font-semibold text-white">Todo queda ordenado para seguir desde movil.</h3>
           <p className="mt-3 text-sm leading-7 text-white/72">
@@ -96,7 +96,7 @@ export function Footer() {
             </nav>
           </div>
 
-          <div>
+          <div className="hidden sm:block">
             <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-[rgba(255,255,255,0.72)]">
               Enfoque
             </h4>

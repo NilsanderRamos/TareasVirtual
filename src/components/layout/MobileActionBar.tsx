@@ -20,7 +20,7 @@ function getActionConfig(pathname: string): ActionConfig {
   if (pathname.startsWith("/blog/")) {
     return {
       title: "Siguiente paso",
-      primary: { href: "#cta-articulo-contextual", label: "Accion" },
+      primary: { href: "#cta-articulo-contextual", label: "Ver accion" },
       secondary: { href: "#indice-articulo", label: "Indice" },
     };
   }
@@ -29,15 +29,15 @@ function getActionConfig(pathname: string): ActionConfig {
     return {
       title: "Leer o ejecutar",
       primary: { href: "#articulo-destacado", label: "Destacado" },
-      secondary: { href: "/tools#herramientas-destacadas", label: "Usar tool" },
+      secondary: { href: "/tools#herramientas-destacadas", label: "Herramientas" },
     };
   }
 
   if (pathname === "/tools") {
     return {
       title: "Resolver rapido",
-      primary: { href: "#herramientas-destacadas", label: "Abrir" },
-      secondary: { href: "/blog#articulo-destacado", label: "Guia" },
+      primary: { href: "#herramientas-destacadas", label: "Abrir herramienta" },
+      secondary: { href: "/blog#articulo-destacado", label: "Leer guia" },
     };
   }
 
@@ -51,8 +51,8 @@ function getActionConfig(pathname: string): ActionConfig {
 
   return {
     title: "Acceso rapido",
-    primary: { href: "/blog#articulo-destacado", label: "Guias" },
-    secondary: { href: "/tools#herramientas-destacadas", label: "Tools" },
+    primary: { href: "/blog#articulo-destacado", label: "Ver guias" },
+    secondary: { href: "/tools#herramientas-destacadas", label: "Herramientas" },
   };
 }
 

@@ -24,7 +24,7 @@ function getStaleProcessIds() {
         "  $_.CommandLine -match 'next dev|next\\\\dist\\\\server\\\\lib\\\\start-server'",
         "} | Select-Object -ExpandProperty ProcessId",
         "$processes -join ','",
-      ].join("; ");
+      ].join("\n");
 
       const raw = execFileSync("powershell.exe", ["-NoProfile", "-Command", script], {
         cwd: workspaceRoot,

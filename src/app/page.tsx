@@ -109,15 +109,17 @@ export default function HomePage() {
           <div className="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-white/40 to-transparent" />
           <div className="relative z-10 max-w-3xl">
             <div className="flex flex-wrap gap-2">
-              {audienceSignals.map((signal) => (
+              {audienceSignals.map((signal, index) => (
                 <span
                   key={signal}
-                  className="hero-chip rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)"
+                  className={`hero-chip rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong) ${
+                    index > 1 ? "hidden sm:inline-flex" : ""
+                  }`}
                 >
                   {signal}
                 </span>
               ))}
-              <span className="hero-chip rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">
+              <span className="hero-chip hidden rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong) sm:inline-flex">
                 Original y actualizado
               </span>
             </div>
@@ -149,20 +151,25 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-7 flex flex-wrap gap-3 sm:mt-8">
+            <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3">
               {trustSignals.map((item) => (
                 <span
                   key={item}
-                  className="rounded-full border border-(--line) bg-white/60 px-4 py-2 text-sm font-medium text-(--ink)"
+                  className="rounded-2xl border border-(--line) bg-white/60 px-4 py-3 text-center text-sm font-medium text-(--ink)"
                 >
                   {item}
                 </span>
               ))}
             </div>
 
-            <div className="mt-7 grid gap-3 sm:mt-8 sm:grid-cols-3">
+            <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3">
               {qualitySignals.map((item, index) => (
-                <div key={item} className={index === 0 ? "quality-card rounded-3xl px-4 py-4" : "rounded-3xl border border-(--line) bg-white/58 px-4 py-4"}>
+                <div
+                  key={item}
+                  className={`${
+                    index === 2 ? "hidden sm:block " : ""
+                  }${index === 0 ? "quality-card rounded-3xl px-4 py-4" : "rounded-3xl border border-(--line) bg-white/58 px-4 py-4"}`}
+                >
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">Criterio {index + 1}</p>
                   <p className="mt-2 text-sm leading-6 text-(--ink)">{item}</p>
                 </div>
@@ -211,10 +218,12 @@ export default function HomePage() {
               </h2>
               <p className="mt-4 text-sm leading-7 text-(--muted)">{latestPost.description}</p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {latestPost.tags.slice(0, 3).map((tag) => (
+                {latestPost.tags.slice(0, 3).map((tag, index) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-(--line) bg-white/55 px-3 py-1.5 text-xs font-medium text-(--accent-strong)"
+                    className={`rounded-full border border-(--line) bg-white/55 px-3 py-1.5 text-xs font-medium text-(--accent-strong) ${
+                      index > 1 ? "hidden sm:inline-flex" : ""
+                    }`}
                   >
                     {tag}
                   </span>

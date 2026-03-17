@@ -72,10 +72,12 @@ export default function BlogPage() {
         <div className="relative grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_22rem] xl:items-start">
           <div className="max-w-4xl">
             <div className="flex flex-wrap gap-2">
-              {editorialSignals.map((signal) => (
+              {editorialSignals.map((signal, index) => (
                 <span
                   key={signal}
-                  className="hero-chip rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)"
+                  className={`hero-chip rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong) ${
+                    index > 1 ? "hidden sm:inline-flex" : ""
+                  }`}
                 >
                   {signal}
                 </span>
@@ -89,17 +91,22 @@ export default function BlogPage() {
               Aqui conviven comparativas originales, guias practicas y contenido comercial util para software, finanzas y operaciones digitales. La informacion no desaparece: se organiza mejor para que la lectura respire.
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-3 text-sm text-(--muted) sm:mt-8">
+            <div className="mt-6 grid gap-3 text-sm text-(--muted) sm:mt-8 sm:grid-cols-2">
               {compactSignals.map((signal) => (
-                <span key={signal} className="hero-chip rounded-full px-3 py-2 text-(--ink) sm:px-4">
+                <span key={signal} className="hero-chip rounded-2xl px-4 py-3 text-center text-(--ink) sm:px-4 sm:py-2">
                   {signal}
                 </span>
               ))}
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              {categories.slice(0, 4).map((category) => (
-                <span key={category} className="hero-chip rounded-full px-3 py-1.5 text-xs font-medium text-(--accent-strong)">
+              {categories.slice(0, 4).map((category, index) => (
+                <span
+                  key={category}
+                  className={`hero-chip rounded-full px-3 py-1.5 text-xs font-medium text-(--accent-strong) ${
+                    index > 1 ? "hidden sm:inline-flex" : ""
+                  }`}
+                >
                   {category}
                 </span>
               ))}
@@ -194,10 +201,12 @@ export default function BlogPage() {
               {featuredPost.description}
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {featuredPost.tags.slice(0, 3).map((tag) => (
+              {featuredPost.tags.slice(0, 3).map((tag, index) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-(--line) bg-white/55 px-3 py-1.5 text-xs font-medium text-(--accent-strong)"
+                  className={`rounded-full border border-(--line) bg-white/55 px-3 py-1.5 text-xs font-medium text-(--accent-strong) ${
+                    index > 1 ? "hidden sm:inline-flex" : ""
+                  }`}
                 >
                   {tag}
                 </span>
@@ -211,7 +220,10 @@ export default function BlogPage() {
             </div>
             <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3">
               {archiveNotes.map((item, index) => (
-                <div key={item.title} className={index === 0 ? "quality-card rounded-3xl px-4 py-4" : "rounded-3xl border border-(--line) bg-white/60 px-4 py-4"}>
+                <div
+                  key={item.title}
+                  className={`${index === 2 ? "hidden sm:block " : ""}${index === 0 ? "quality-card rounded-3xl px-4 py-4" : "rounded-3xl border border-(--line) bg-white/60 px-4 py-4"}`}
+                >
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{item.title}</p>
                   <p className="mt-2 text-sm leading-6 text-(--ink)">{item.description}</p>
                 </div>

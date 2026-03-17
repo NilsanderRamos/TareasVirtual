@@ -127,10 +127,12 @@ export default function ToolsPage() {
         <div className="relative grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_22rem] xl:items-start">
           <div className="max-w-4xl">
             <div className="flex flex-wrap gap-2">
-              {taskSignals.map((signal) => (
+              {taskSignals.map((signal, index) => (
                 <span
                   key={signal}
-                  className="hero-chip rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)"
+                  className={`hero-chip rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong) ${
+                    index > 1 ? "hidden sm:inline-flex" : ""
+                  }`}
                 >
                   {signal}
                 </span>
@@ -144,17 +146,22 @@ export default function ToolsPage() {
               Esta coleccion ahora se presenta con menos ruido visual, mejor jerarquia y una ruta mas corta entre descubrir, validar y usar.
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-3 text-sm text-(--muted) sm:mt-8">
+            <div className="mt-6 grid gap-3 text-sm text-(--muted) sm:mt-8 sm:grid-cols-2">
               {compactSignals.map((signal) => (
-                <span key={signal} className="hero-chip rounded-full px-3 py-2 text-(--ink) sm:px-4">
+                <span key={signal} className="hero-chip rounded-2xl px-4 py-3 text-center text-(--ink) sm:px-4 sm:py-2">
                   {signal}
                 </span>
               ))}
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              {categories.slice(0, 4).map((category) => (
-                <span key={category.name} className="hero-chip rounded-full px-3 py-1.5 text-xs font-medium text-(--accent-strong)">
+              {categories.slice(0, 4).map((category, index) => (
+                <span
+                  key={category.name}
+                  className={`hero-chip rounded-full px-3 py-1.5 text-xs font-medium text-(--accent-strong) ${
+                    index > 1 ? "hidden sm:inline-flex" : ""
+                  }`}
+                >
                   {category.name}
                 </span>
               ))}
@@ -189,8 +196,8 @@ export default function ToolsPage() {
                 <h2 className="mt-3 text-2xl font-semibold leading-tight text-(--ink) group-hover:text-(--accent-strong)">{flagshipTool.name}</h2>
                 <p className="mt-4 text-sm leading-7 text-(--muted)">{flagshipTool.description}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {flagshipTool.bestFor.slice(0, 2).map((item) => (
-                    <span key={item} className="rounded-full border border-(--line) bg-white/62 px-3 py-1.5 text-xs font-medium text-(--accent-strong)">{item}</span>
+                  {flagshipTool.bestFor.slice(0, 2).map((item, index) => (
+                    <span key={item} className={`rounded-full border border-(--line) bg-white/62 px-3 py-1.5 text-xs font-medium text-(--accent-strong) ${index > 0 ? "hidden sm:inline-flex" : ""}`}>{item}</span>
                   ))}
                 </div>
               </Link>
@@ -199,8 +206,8 @@ export default function ToolsPage() {
             <div className="rounded-4xl border border-(--line) bg-white/58 p-5 shadow-[0_18px_46px_rgba(20,35,26,0.06)] sm:p-6">
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-(--highlight)">Como se usa mejor</p>
               <div className="mt-4 space-y-3">
-                {productSignals.map((item) => (
-                  <div key={item.title} className="rounded-3xl border border-(--line) bg-white/62 px-4 py-4">
+                {productSignals.map((item, index) => (
+                  <div key={item.title} className={`rounded-3xl border border-(--line) bg-white/62 px-4 py-4 ${index === 2 ? "hidden sm:block" : ""}`}>
                     <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">{item.title}</p>
                     <p className="mt-2 text-sm leading-6 text-(--muted)">{item.description}</p>
                   </div>
@@ -322,8 +329,8 @@ export default function ToolsPage() {
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {authoritySignals.map((item) => (
-            <div key={item} className="info-tile rounded-3xl px-4 py-4">
+              {authoritySignals.map((item, index) => (
+            <div key={item} className={`info-tile rounded-3xl px-4 py-4 ${index === 2 ? "hidden md:block" : ""}`}>
               <p className="text-sm leading-6 text-(--ink)">{item}</p>
             </div>
           ))}
