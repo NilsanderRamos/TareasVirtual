@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Roadmap de implementacion CRM</title>
+  <desc id="desc">Diagrama visual con etapas para implementar un CRM en una pequena empresa.</desc>
+  <rect width="1200" height="900" fill="#0f766e"/>
+  <rect x="96" y="90" width="1008" height="720" rx="40" fill="#f0fdfa"/>
+  <text x="152" y="172" fill="#115e59" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Ruta de implementacion CRM</text>
+  <g fill="#ffffff" stroke="#99f6e4" stroke-width="4">
+    <rect x="152" y="248" width="194" height="142" rx="24"/>
+    <rect x="380" y="248" width="194" height="142" rx="24"/>
+    <rect x="608" y="248" width="194" height="142" rx="24"/>
+    <rect x="836" y="248" width="194" height="142" rx="24"/>
+  </g>
+  <path d="M346 319 H380 M574 319 H608 M802 319 H836" stroke="#14b8a6" stroke-width="8" stroke-linecap="round"/>
+  <g fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">
+    <text x="202" y="330">Problema</text>
+    <text x="441" y="330">Pipeline</text>
+    <text x="668" y="330">Equipo</text>
+    <text x="887" y="330">Adopcion</text>
+  </g>
+  <rect x="152" y="468" width="878" height="214" rx="28" fill="#ccfbf1"/>
+  <text x="218" y="566" fill="#115e59" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Implementar bien es simplificar primero y automatizar despues.</text>
+  <text x="218" y="626" fill="#0f766e" font-family="Segoe UI, Arial, sans-serif" font-size="24">Menos campos, mas seguimiento, mejor uso real.</text>
+</svg>

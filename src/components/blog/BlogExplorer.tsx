@@ -142,7 +142,7 @@ export function BlogExplorer({ posts }: BlogExplorerProps) {
                       className="object-cover transition duration-500 group-hover:scale-[1.03]"
                     />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,35,26,0.02),rgba(20,35,26,0.26))]" />
-                    <div className="absolute left-3 top-3 rounded-full border border-white/25 bg-white/85 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">
+                    <div className="absolute left-3 top-3 rounded-full border border-white/25 bg-white/85 px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:text-[0.68rem] sm:tracking-[0.16em]">
                       {post.category}
                     </div>
                   </div>
@@ -155,7 +155,7 @@ export function BlogExplorer({ posts }: BlogExplorerProps) {
                 <p className="mt-4 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">
                   {getIntentLabel(post)}
                 </p>
-                <h3 className="mt-3 text-xl font-semibold leading-tight text-(--ink) sm:mt-4 sm:text-2xl">{post.title}</h3>
+                <h3 className="mt-3 text-lg font-semibold leading-tight text-(--ink) sm:mt-4 sm:text-2xl">{post.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-(--muted) sm:mt-4">{post.description}</p>
                 <p className="mt-4 text-sm leading-6 text-(--ink)">{getOpenReason(post)}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
@@ -165,7 +165,7 @@ export function BlogExplorer({ posts }: BlogExplorerProps) {
                     </span>
                   ))}
                 </div>
-                <div className="mt-auto flex items-center justify-between gap-3 pt-5 sm:pt-6">
+                <div className="mt-auto flex flex-col items-start gap-2 pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:pt-6">
                   <p className="text-xs text-(--muted)">{new Date(post.date).toLocaleDateString("es-DO")}</p>
                   <Link
                     href={`/blog/${post.slug}`}

@@ -1,7 +1,9 @@
 import { cincoTecnicasResumirMejor } from "@/content/blog/5-tecnicas-resumir-mejor";
 import { calcularSalarioNetoEstadosUnidos2026 } from "@/content/blog/calcular-salario-neto-estados-unidos-2026";
+import { checklistLanzarTiendaOnline2026 } from "@/content/blog/checklist-lanzar-tienda-online-2026";
 import { crearFacturaProfesional2026 } from "@/content/blog/crear-factura-profesional-2026";
 import { guiaIaParaTareas } from "@/content/blog/guia-ia-para-tareas";
+import { implementarCrmPequenaEmpresa2026 } from "@/content/blog/implementar-crm-pequena-empresa-2026";
 import { impuestosFreelancerEstadosUnidos2026 } from "@/content/blog/impuestos-freelancer-estados-unidos-2026";
 import { mejorCrmPequenasEmpresas2026 } from "@/content/blog/mejor-crm-pequenas-empresas-2026";
 import { mejorErpPequenasEmpresas2026 } from "@/content/blog/mejor-erp-pequenas-empresas-2026";
@@ -12,6 +14,8 @@ import { organizarSemanaEstudio30Minutos } from "@/content/blog/organizar-semana
 import { BlogPost } from "@/types";
 
 export const blogPosts: BlogPost[] = [
+  checklistLanzarTiendaOnline2026,
+  implementarCrmPequenaEmpresa2026,
   mejorErpPequenasEmpresas2026,
   mejorSoftwareContabilidadPymes2026,
   mejorCrmPequenasEmpresas2026,

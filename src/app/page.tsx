@@ -316,9 +316,9 @@ export default function HomePage() {
           </p>
           <div className="mt-6 grid gap-3">
             {[
-              "Copy mas claro y menos repetitivo en hero, blog y herramientas.",
-              "Jerarquia visual mas limpia para que el usuario sepa por donde seguir.",
-              "Bloques que refuerzan confianza sin caer en frases vacias ni contenido reciclado.",
+              "Textos mas claros en portada, blog y herramientas.",
+              "Mejor orden visual para guiar al usuario.",
+              "Mas confianza con contenido util y directo.",
             ].map((item, index) => (
               <div key={item} className="rounded-3xl border border-white/14 bg-white/10 px-4 py-4 text-sm leading-6 text-white/86">
                 <span className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/65">Mejora {index + 1}</span>
@@ -377,7 +377,7 @@ export default function HomePage() {
                 <span className="bg-(--highlight) h-1 w-1 rounded-full" />
                 <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(latestPost) / 220))} min de lectura</span>
               </div>
-              <h3 className="mt-4 max-w-3xl text-2xl font-semibold leading-tight text-(--ink) group-hover:text-(--accent-strong) sm:text-3xl">
+              <h3 className="mt-4 max-w-3xl text-xl font-semibold leading-tight text-(--ink) group-hover:text-(--accent-strong) sm:text-3xl">
                 {latestPost.title}
               </h3>
               <p className="mt-4 max-w-3xl text-sm leading-7 text-(--muted) sm:text-base sm:leading-8">
@@ -421,7 +421,7 @@ export default function HomePage() {
                   <span className="bg-(--highlight) h-1 w-1 rounded-full" />
                   <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(post) / 220))} min</span>
                 </div>
-                <h3 className="mt-3 text-xl font-semibold leading-tight text-(--ink) group-hover:text-(--accent-strong) sm:text-2xl">
+                <h3 className="mt-3 text-lg font-semibold leading-tight text-(--ink) group-hover:text-(--accent-strong) sm:text-2xl">
                   {post.title}
                 </h3>
                 <p className="mt-3 text-sm leading-7 text-(--muted)">{post.description}</p>

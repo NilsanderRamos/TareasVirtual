@@ -258,6 +258,16 @@
     box-shadow: 0 22px 54px rgba(15, 118, 110, 0.2);
   }
 
+  .editorial-band p,
+  .editorial-band li {
+    color: rgba(255, 255, 255, 0.84);
+  }
+
+  .editorial-band h2,
+  .editorial-band h3 {
+    color: #ffffff;
+  }
+
   .product-panel {
     border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--line));
     background:
