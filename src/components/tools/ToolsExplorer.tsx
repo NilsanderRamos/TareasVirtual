@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useDeferredValue, useState } from "react";
 import { trackSiteEvent } from "@/lib/analytics";
+import { SiteLocale, pickByLocale } from "@/lib/i18n";
 import { ToolItem } from "@/types";
 
 interface ToolsExplorerProps {
   tools: ToolItem[];
+  locale: SiteLocale;
 }
 
 function getOpenReason(tool: ToolItem) {
@@ -19,14 +21,14 @@ function getOpenReason(tool: ToolItem) {
   return "Te deja validar rapido si encaja en tu flujo antes de comprometerte.";
 }
 
-export function ToolsExplorer({ tools }: ToolsExplorerProps) {
+export function ToolsExplorer({ tools, locale }: ToolsExplorerProps) {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const deferredQuery = useDeferredValue(query);
-  const categories = ["Todas", ...Array.from(new Set(tools.map((tool) => tool.category))).sort()];
+  const categories = [pickByLocale(locale, "All", "Todas"), ...Array.from(new Set(tools.map((tool) => tool.category))).sort()];
   const normalizedQuery = deferredQuery.trim().toLowerCase();
   const filteredTools = tools.filter((tool) => {
-    const matchesCategory = selectedCategory === "Todas" || tool.category === selectedCategory;
+    const matchesCategory = selectedCategory === pickByLocale(locale, "All", "Todas") || tool.category === selectedCategory;
     const matchesQuery =
       normalizedQuery.length === 0 ||
       tool.name.toLowerCase().includes(normalizedQuery) ||
@@ -42,16 +44,16 @@ export function ToolsExplorer({ tools }: ToolsExplorerProps) {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="section-label text-xs font-semibold uppercase">Filtrar herramientas</p>
-            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">Encuentra rapido la utilidad que necesitas.</h2>
+            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "Find the tool you need quickly.", "Encuentra rapido la utilidad que necesitas.")}</h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-(--muted)">
-            El explorador reduce ruido por ficha para que puedas decidir con una sola mirada.
+            {pickByLocale(locale, "The explorer reduces noise per card so you can decide at a glance.", "El explorador reduce ruido por ficha para que puedas decidir con una sola mirada.")}
           </p>
         </div>
 
         <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
           <label className="block">
-            <span className="sr-only">Buscar herramientas</span>
+            <span className="sr-only">{pickByLocale(locale, "Search tools", "Buscar herramientas")}</span>
             <input
               type="search"
               value={query}
@@ -59,7 +61,7 @@ export function ToolsExplorer({ tools }: ToolsExplorerProps) {
                 setQuery(event.target.value);
                 trackSiteEvent("tools_search_changed", { query: event.target.value });
               }}
-              placeholder="Buscar por nombre, descripcion o mejor uso"
+              placeholder={pickByLocale(locale, "Search by name, description, or best use", "Buscar por nombre, descripcion o mejor uso")}
               className="w-full rounded-3xl border border-(--line) bg-white/75 px-4 py-3 text-sm text-(--ink) outline-none placeholder:text-(--muted) focus:border-(--accent)"
             />
           </label>
@@ -88,7 +90,7 @@ export function ToolsExplorer({ tools }: ToolsExplorerProps) {
           </div>
         </div>
 
-        <p className="mt-4 text-sm text-(--muted)">{filteredTools.length} herramienta{filteredTools.length === 1 ? "" : "s"}</p>
+        <p className="mt-4 text-sm text-(--muted)">{filteredTools.length} {pickByLocale(locale, filteredTools.length === 1 ? "tool" : "tools", filteredTools.length === 1 ? "herramienta" : "herramientas")}</p>
 
         {filteredTools.length > 0 ? (
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -117,10 +119,10 @@ export function ToolsExplorer({ tools }: ToolsExplorerProps) {
                 </div>
                 <div className="mt-auto flex flex-col items-start gap-2 pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:pt-6">
                   <Link href={tool.detailHref} onClick={() => trackSiteEvent("tool_detail_clicked", { tool: tool.slug, source: "tools_explorer" })} className="inline-flex items-center text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
-                    Ver ficha
+                    {pickByLocale(locale, "View detail", "Ver ficha")}
                   </Link>
                   <Link href={tool.launchHref} onClick={() => trackSiteEvent("tool_launch_clicked", { tool: tool.slug, source: "tools_explorer" })} className="inline-flex items-center text-sm font-semibold text-(--ink) hover:text-(--accent-strong)">
-                    Abrir
+                    {pickByLocale(locale, "Open", "Abrir")}
                   </Link>
                 </div>
               </article>
@@ -128,8 +130,8 @@ export function ToolsExplorer({ tools }: ToolsExplorerProps) {
           </div>
         ) : (
           <div className="mt-6 rounded-4xl border border-dashed border-(--line) bg-white/50 px-5 py-6 text-center">
-            <h3 className="text-xl font-semibold text-(--ink)">No hay herramientas con esos filtros.</h3>
-            <p className="mt-3 text-sm leading-7 text-(--muted)">Prueba otra categoria o describe la necesidad con menos palabras.</p>
+            <h3 className="text-xl font-semibold text-(--ink)">{pickByLocale(locale, "No tools match those filters.", "No hay herramientas con esos filtros.")}</h3>
+            <p className="mt-3 text-sm leading-7 text-(--muted)">{pickByLocale(locale, "Try another category or describe the need with fewer words.", "Prueba otra categoria o describe la necesidad con menos palabras.")}</p>
           </div>
         )}
       </div>

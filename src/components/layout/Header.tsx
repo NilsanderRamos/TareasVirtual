@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { mainNav } from "@/config/navigation";
+import { SiteLocale, pickByLocale } from "@/lib/i18n";
 
 type ThemeMode = "light" | "dark" | "system";
 type ResolvedTheme = "light" | "dark";
@@ -80,7 +81,7 @@ function ThemeIcon() {
   );
 }
 
-export function Header() {
+export function Header({ locale }: { locale: SiteLocale }) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const themeSnapshot = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "system:light");
@@ -105,8 +106,20 @@ export function Header() {
 
   const themeButtonLabel =
     themeMode === "system"
-      ? `Tema automatico activo. Cambiar a modo ${resolvedTheme === "dark" ? "claro" : "oscuro"}`
-      : `Cambiar a modo ${themeMode === "dark" ? "claro" : "oscuro"}`;
+      ? pickByLocale(locale, `Automatic theme active. Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`, `Tema automatico activo. Cambiar a modo ${resolvedTheme === "dark" ? "claro" : "oscuro"}`)
+      : pickByLocale(locale, `Switch to ${themeMode === "dark" ? "light" : "dark"} mode`, `Cambiar a modo ${themeMode === "dark" ? "claro" : "oscuro"}`);
+
+  const navItems = mainNav.map((item) => ({
+    ...item,
+    label:
+      item.href === "/"
+        ? pickByLocale(locale, "Home", "Inicio")
+        : item.href === "/blog"
+          ? "Blog"
+          : item.href === "/tools"
+            ? pickByLocale(locale, "Tools", "Herramientas")
+            : pickByLocale(locale, "Contact", "Contacto"),
+  }));
 
   return (
     <>
@@ -121,7 +134,7 @@ export function Header() {
                   </span>
                   <span className="min-w-0">
                     <span className="hidden text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-(--accent-strong) sm:block">
-                      Plataforma editorial util
+                      {pickByLocale(locale, "Useful editorial platform", "Plataforma editorial util")}
                     </span>
                     <span className="block truncate text-base font-semibold text-(--ink) sm:text-lg">
                       {siteConfig.name}
@@ -130,12 +143,12 @@ export function Header() {
                 </Link>
 
                 <div className="hero-chip hidden rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--accent-strong) xl:block">
-                  Contenido original + herramientas utiles
+                  {pickByLocale(locale, "Original content + useful tools", "Contenido original + herramientas utiles")}
                 </div>
               </div>
 
               <nav className="nav-shell hidden items-center gap-1 rounded-full p-1 md:flex">
-                {mainNav.map((item) => {
+                {navItems.map((item) => {
                   const active = isActivePath(pathname, item.href);
 
                   return (
@@ -171,7 +184,7 @@ export function Header() {
                   href="/contact"
                   className="rounded-full border border-(--line) bg-white px-4 py-2 text-sm font-semibold text-(--ink) hover:-translate-y-0.5 hover:border-(--accent) hover:text-(--accent-strong)"
                 >
-                  Hablemos
+                  {pickByLocale(locale, "Contact us", "Hablemos")}
                 </Link>
               </div>
 
@@ -179,7 +192,7 @@ export function Header() {
                 type="button"
                 onClick={() => setIsMenuOpen((open) => !open)}
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-(--line) bg-white md:hidden"
-                aria-label={isMenuOpen ? "Cerrar menu" : "Abrir menu"}
+                aria-label={isMenuOpen ? pickByLocale(locale, "Close menu", "Cerrar menu") : pickByLocale(locale, "Open menu", "Abrir menu")}
                 aria-expanded={isMenuOpen}
                 aria-controls="mobile-nav"
               >
@@ -206,9 +219,9 @@ export function Header() {
             {isMenuOpen ? (
               <nav id="mobile-nav" className="mobile-sheet relative z-10 mt-4 rounded-[1.7rem] p-3 md:hidden">
                 <div className="rounded-[1.35rem] border border-(--line) bg-[rgba(15,118,110,0.08)] px-4 py-4">
-                  <p className="section-label text-[0.7rem] font-semibold uppercase">Navegacion rapida</p>
+                  <p className="section-label text-[0.7rem] font-semibold uppercase">{pickByLocale(locale, "Quick navigation", "Navegacion rapida")}</p>
                   <p className="mt-2 text-sm leading-6 text-(--muted)">
-                    Accede a la seccion correcta sin perder el contexto en movil ni saturar la pantalla.
+                    {pickByLocale(locale, "Jump to the right section without losing context or crowding the mobile screen.", "Accede a la seccion correcta sin perder el contexto en movil ni saturar la pantalla.")}
                   </p>
                 </div>
 
@@ -221,9 +234,13 @@ export function Header() {
                     title={themeButtonLabel}
                   >
                     <span>
-                      <span className="block text-sm font-semibold">Tema</span>
+                      <span className="block text-sm font-semibold">{pickByLocale(locale, "Theme", "Tema")}</span>
                       <span className="mt-1 block text-xs text-(--muted)">
-                        {themeMode === "system" ? "Automatico" : themeMode === "dark" ? "Oscuro" : "Claro"}
+                        {themeMode === "system"
+                          ? pickByLocale(locale, "Automatic", "Automatico")
+                          : themeMode === "dark"
+                            ? pickByLocale(locale, "Dark", "Oscuro")
+                            : pickByLocale(locale, "Light", "Claro")}
                       </span>
                     </span>
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgba(15,118,110,0.12)] text-(--accent-strong)">
@@ -231,7 +248,7 @@ export function Header() {
                     </span>
                   </button>
 
-                  {mainNav.map((item) => {
+                  {navItems.map((item) => {
                     const active = isActivePath(pathname, item.href);
 
                     return (
@@ -247,7 +264,13 @@ export function Header() {
                       >
                         <span className="block font-semibold">{item.label}</span>
                         <span className={`mt-1 block text-xs ${active ? "text-white/70" : "text-(--muted)"}`}>
-                          {item.href === "/" ? "Portada editorial" : item.href === "/blog" ? "Guias propias y comparativas" : item.href === "/tools" ? "Recursos para ejecutar" : "Canal directo"}
+                          {item.href === "/"
+                            ? pickByLocale(locale, "Editorial front page", "Portada editorial")
+                            : item.href === "/blog"
+                              ? pickByLocale(locale, "Original guides and comparisons", "Guias propias y comparativas")
+                              : item.href === "/tools"
+                                ? pickByLocale(locale, "Resources to take action", "Recursos para ejecutar")
+                                : pickByLocale(locale, "Direct contact channel", "Canal directo")}
                         </span>
                       </Link>
                     );
@@ -258,7 +281,7 @@ export function Header() {
                     className="rounded-[1.35rem] border border-(--line) bg-white px-4 py-3.5 text-sm font-semibold text-(--ink)"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Hablemos
+                    {pickByLocale(locale, "Contact us", "Hablemos")}
                   </Link>
                 </div>
               </nav>

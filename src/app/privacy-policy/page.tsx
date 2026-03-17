@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import { pickByLocale } from "@/lib/i18n";
+import { getCurrentLocale } from "@/lib/i18n-server";
 
 export const metadata: Metadata = {
   title: "Politica de Privacidad",
@@ -31,7 +33,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const locale = await getCurrentLocale();
   const policySections = [
     {
       title: "1. Informacion que recopilamos",
@@ -65,24 +68,22 @@ export default function PrivacyPolicyPage() {
       <section className="mobile-pane rounded-[28px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-cyan-50 p-5 shadow-[0_20px_60px_-28px_rgba(15,23,42,0.35)] sm:p-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">Privacidad</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">{pickByLocale(locale, "Privacy", "Privacidad")}</p>
             <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              Politica de Privacidad
+              {pickByLocale(locale, "Privacy Policy", "Politica de Privacidad")}
             </h1>
           </div>
-          <p className="text-sm font-medium text-slate-500">Ultima actualizacion: 09/03/2026</p>
+          <p className="text-sm font-medium text-slate-500">{pickByLocale(locale, "Last updated: 03/09/2026", "Ultima actualizacion: 09/03/2026")}</p>
         </div>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-700 sm:text-base">
-          Esta pagina resume como tratamos la informacion basica de uso del sitio,
-          como pueden intervenir cookies o terceros y que canal puedes usar si
-          necesitas revisar o solicitar cambios sobre tus datos.
+          {pickByLocale(locale, "This page summarizes how we handle basic site usage information, how cookies or third parties may be involved, and which channel you can use if you need to review or request changes to your data.", "Esta pagina resume como tratamos la informacion basica de uso del sitio, como pueden intervenir cookies o terceros y que canal puedes usar si necesitas revisar o solicitar cambios sobre tus datos.")}
         </p>
         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/contact"
             className="rounded-full border border-cyan-200 bg-cyan-50 px-4 py-2 text-sm font-semibold text-cyan-700 transition hover:border-cyan-300 hover:bg-cyan-100"
           >
-            Ir a contacto
+            {pickByLocale(locale, "Go to contact", "Ir a contacto")}
           </Link>
           <a
             href="mailto:hola@tareasvirtual.com"

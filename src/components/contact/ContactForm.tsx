@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { trackSiteEvent } from "@/lib/analytics";
+import { SiteLocale, pickByLocale } from "@/lib/i18n";
 
 type ContactReason = "soporte" | "editorial" | "colaboracion" | "otro";
 
@@ -52,7 +53,7 @@ function validateForm(values: FormState) {
   return errors;
 }
 
-export function ContactForm() {
+export function ContactForm({ locale }: { locale: SiteLocale }) {
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -116,40 +117,40 @@ export function ContactForm() {
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-(--line) pb-5">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--accent-strong)">Formulario de contacto</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-(--ink) sm:text-[2rem]">Deja tu mensaje.</h2>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-(--ink) sm:text-[2rem]">{pickByLocale(locale, "Leave your message.", "Deja tu mensaje.")}</h2>
           <p className="mt-2 text-sm leading-7 text-(--muted)">
-            Comparte el contexto justo y te responderemos por correo. Si hay una URL implicada, agregala para revisar el caso mas rapido.
+            {pickByLocale(locale, "Share the right context and we will reply by email. If a URL is involved, add it so we can review the case faster.", "Comparte el contexto justo y te responderemos por correo. Si hay una URL implicada, agregala para revisar el caso mas rapido.")}
           </p>
         </div>
         <div className="rounded-3xl border border-emerald-200/80 bg-linear-to-br from-emerald-50 to-sky-50 px-4 py-3 text-sm text-slate-700 shadow-[0_18px_40px_-34px_rgba(16,185,129,0.8)] dark:border-white/10 dark:from-white/5 dark:to-white/0 dark:text-slate-200">
-          <p className="font-semibold text-(--ink)">Respuesta habitual</p>
-          <p className="mt-1 leading-6">24 a 48 horas habiles</p>
+          <p className="font-semibold text-(--ink)">{pickByLocale(locale, "Typical reply", "Respuesta habitual")}</p>
+          <p className="mt-1 leading-6">{pickByLocale(locale, "24 to 48 business hours", "24 a 48 horas habiles")}</p>
         </div>
       </div>
 
       <form className="mt-5 grid gap-4" onSubmit={handleSubmit} noValidate>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">Nombre</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Name", "Nombre")}</span>
             <input
               type="text"
               value={form.name}
               onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
               className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-emerald-50/40 dark:bg-slate-950/20 dark:text-white dark:focus:bg-white/8"
-              placeholder="Tu nombre o referencia"
+              placeholder={pickByLocale(locale, "Your name or reference", "Tu nombre o referencia")}
               autoComplete="name"
             />
             {errors.name ? <span className="text-xs font-medium text-rose-600">{errors.name}</span> : null}
           </label>
 
           <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">Correo</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Email", "Correo")}</span>
             <input
               type="email"
               value={form.email}
               onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
               className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-emerald-50/40 dark:bg-slate-950/20 dark:text-white dark:focus:bg-white/8"
-              placeholder="tu@correo.com"
+              placeholder={pickByLocale(locale, "you@email.com", "tu@correo.com")}
               autoComplete="email"
             />
             {errors.email ? <span className="text-xs font-medium text-rose-600">{errors.email}</span> : null}
@@ -158,7 +159,7 @@ export function ContactForm() {
 
         <div className="grid gap-4 sm:grid-cols-[0.9fr_1.1fr]">
           <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">Motivo</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Reason", "Motivo")}</span>
             <select
               value={form.reason}
               onChange={(event) => setForm((current) => ({ ...current, reason: event.target.value as ContactReason }))}
@@ -173,7 +174,7 @@ export function ContactForm() {
           </label>
 
           <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">URL relacionada</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Related URL", "URL relacionada")}</span>
             <input
               type="url"
               value={form.url}
@@ -198,12 +199,12 @@ export function ContactForm() {
         </label>
 
         <label className="grid gap-2 rounded-[28px] border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">Mensaje</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Message", "Mensaje")}</span>
           <textarea
             value={form.message}
             onChange={(event) => setForm((current) => ({ ...current, message: event.target.value }))}
             className="min-h-40 rounded-3xl border border-(--line) bg-white px-4 py-3 text-sm leading-7 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-emerald-50/40 dark:bg-slate-950/20 dark:text-white dark:focus:bg-white/8"
-            placeholder="Describe tu caso, objetivo o propuesta. Si hay un error, indica donde ocurre y que esperabas que pasara."
+            placeholder={pickByLocale(locale, "Describe your case, goal, or proposal. If there is an error, explain where it happens and what you expected.", "Describe tu caso, objetivo o propuesta. Si hay un error, indica donde ocurre y que esperabas que pasara.")}
           />
           {errors.message ? <span className="text-xs font-medium text-rose-600">{errors.message}</span> : null}
         </label>
@@ -215,7 +216,7 @@ export function ContactForm() {
                 {status.message}
               </p>
             ) : (
-              <p className="text-sm leading-6 text-(--muted)">Si prefieres correo manual, tambien puedes escribir directo a hola@tareasvirtual.com.</p>
+              <p className="text-sm leading-6 text-(--muted)">{pickByLocale(locale, "If you prefer manual email, you can also write directly to hola@tareasvirtual.com.", "Si prefieres correo manual, tambien puedes escribir directo a hola@tareasvirtual.com.")}</p>
             )}
           </div>
           <button
@@ -223,7 +224,7 @@ export function ContactForm() {
             disabled={isSubmitting}
             className="inline-flex min-w-40 items-center justify-center rounded-full border border-emerald-300 bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:border-slate-900 hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-emerald-500 dark:hover:border-emerald-400 dark:hover:bg-emerald-600"
           >
-            {isSubmitting ? "Enviando..." : "Enviar mensaje"}
+            {isSubmitting ? pickByLocale(locale, "Sending...", "Enviando...") : pickByLocale(locale, "Send message", "Enviar mensaje")}
           </button>
         </div>
       </form>

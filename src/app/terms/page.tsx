@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import { pickByLocale } from "@/lib/i18n";
+import { getCurrentLocale } from "@/lib/i18n-server";
 
 export const metadata: Metadata = {
   title: "Terminos de Uso",
@@ -31,7 +33,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const locale = await getCurrentLocale();
   const termsSections = [
     {
       title: "1. Aceptacion de los terminos",
@@ -64,30 +67,28 @@ export default function TermsPage() {
       <section className="mobile-pane rounded-[28px] border border-slate-200 bg-linear-to-br from-white via-slate-50 to-amber-50 p-5 shadow-[0_20px_60px_-28px_rgba(15,23,42,0.35)] sm:p-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">Legal</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">{pickByLocale(locale, "Legal", "Legal")}</p>
             <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              Terminos de Uso
+              {pickByLocale(locale, "Terms of Use", "Terminos de Uso")}
             </h1>
           </div>
-          <p className="text-sm font-medium text-slate-500">Ultima actualizacion: 09/03/2026</p>
+          <p className="text-sm font-medium text-slate-500">{pickByLocale(locale, "Last updated: 03/09/2026", "Ultima actualizacion: 09/03/2026")}</p>
         </div>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-700 sm:text-base">
-          Aqui resumimos las condiciones basicas de uso del sitio, el alcance del
-          contenido y los limites de responsabilidad para que esta informacion sea
-          facil de revisar tambien desde movil.
+          {pickByLocale(locale, "Here we summarize the basic terms of use of the site, the scope of the content, and the limits of liability so this information is also easy to review on mobile.", "Aqui resumimos las condiciones basicas de uso del sitio, el alcance del contenido y los limites de responsabilidad para que esta informacion sea facil de revisar tambien desde movil.")}
         </p>
         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/privacy-policy"
             className="rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:border-amber-300 hover:bg-amber-100"
           >
-            Ver privacidad
+            {pickByLocale(locale, "See privacy", "Ver privacidad")}
           </Link>
           <Link
             href="/contact"
             className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
           >
-            Ir a contacto
+            {pickByLocale(locale, "Go to contact", "Ir a contacto")}
           </Link>
         </div>
       </section>

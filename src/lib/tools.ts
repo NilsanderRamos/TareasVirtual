@@ -1,5 +1,6 @@
 import { blogPosts } from "@/content/blog/posts";
 import { tools } from "@/content/tools";
+import { SiteLocale } from "@/lib/i18n";
 import { BlogPost, ToolItem } from "@/types";
 
 export function normalizeToolValue(value: string) {
@@ -61,20 +62,22 @@ export function getSimilarTools(tool: ToolItem): ToolItem[] {
     .slice(0, 3);
 }
 
-export function getToolRelationReason(tool: ToolItem, candidate: ToolItem) {
+export function getToolRelationReason(tool: ToolItem, candidate: ToolItem, locale: SiteLocale = "es") {
   if (candidate.category === tool.category) {
-    return `Misma categoria: ${candidate.category}`;
+    return locale === "en" ? `Same category: ${candidate.category}` : `Misma categoria: ${candidate.category}`;
   }
 
   if (candidate.decisionStage === tool.decisionStage) {
-    return `Misma etapa: ${candidate.decisionStage}`;
+    return locale === "en" ? `Same stage: ${candidate.decisionStage}` : `Misma etapa: ${candidate.decisionStage}`;
   }
 
   const sharedBestFor = candidate.bestFor.find((item) => tool.bestFor.includes(item));
 
   if (sharedBestFor) {
-    return `Encaja tambien con ${sharedBestFor.toLowerCase()}`;
+    return locale === "en" ? `Also fits ${sharedBestFor.toLowerCase()}` : `Encaja tambien con ${sharedBestFor.toLowerCase()}`;
   }
 
-  return `Complementa ${tool.name.toLowerCase()} en otro punto del flujo`;
+  return locale === "en"
+    ? `Complements ${tool.name.toLowerCase()} at another point in the flow`
+    : `Complementa ${tool.name.toLowerCase()} en otro punto del flujo`;
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { trackSiteEvent } from "@/lib/analytics";
+import { SiteLocale, pickByLocale } from "@/lib/i18n";
 
 type ActionItem = {
   href: string;
@@ -16,43 +17,43 @@ type ActionConfig = {
   secondary: ActionItem;
 };
 
-function getActionConfig(pathname: string): ActionConfig {
+function getActionConfig(pathname: string, locale: SiteLocale): ActionConfig {
   if (pathname.startsWith("/blog/")) {
     return {
-      title: "Siguiente paso",
-      primary: { href: "#cta-articulo-contextual", label: "Ver accion" },
-      secondary: { href: "#indice-articulo", label: "Indice" },
+      title: pickByLocale(locale, "Next step", "Siguiente paso"),
+      primary: { href: "#cta-articulo-contextual", label: pickByLocale(locale, "See action", "Ver accion") },
+      secondary: { href: "#indice-articulo", label: pickByLocale(locale, "Index", "Indice") },
     };
   }
 
   if (pathname === "/blog") {
     return {
-      title: "Leer o ejecutar",
-      primary: { href: "#articulo-destacado", label: "Destacado" },
-      secondary: { href: "/tools#herramientas-destacadas", label: "Herramientas" },
+      title: pickByLocale(locale, "Read or act", "Leer o ejecutar"),
+      primary: { href: "#articulo-destacado", label: pickByLocale(locale, "Featured", "Destacado") },
+      secondary: { href: "/tools#herramientas-destacadas", label: pickByLocale(locale, "Tools", "Herramientas") },
     };
   }
 
   if (pathname === "/tools") {
     return {
-      title: "Resolver rapido",
-      primary: { href: "#herramientas-destacadas", label: "Abrir herramienta" },
-      secondary: { href: "/blog#articulo-destacado", label: "Leer guia" },
+      title: pickByLocale(locale, "Solve quickly", "Resolver rapido"),
+      primary: { href: "#herramientas-destacadas", label: pickByLocale(locale, "Open tool", "Abrir herramienta") },
+      secondary: { href: "/blog#articulo-destacado", label: pickByLocale(locale, "Read guide", "Leer guia") },
     };
   }
 
   if (pathname === "/contact") {
     return {
-      title: "Ruta corta",
-      primary: { href: "mailto:hola@tareasvirtual.com", label: "Escribir", external: true },
-      secondary: { href: "/blog#articulo-destacado", label: "Ver guia" },
+      title: pickByLocale(locale, "Quick route", "Ruta corta"),
+      primary: { href: "mailto:hola@tareasvirtual.com", label: pickByLocale(locale, "Write", "Escribir"), external: true },
+      secondary: { href: "/blog#articulo-destacado", label: pickByLocale(locale, "See guide", "Ver guia") },
     };
   }
 
   return {
-    title: "Acceso rapido",
-    primary: { href: "/blog#articulo-destacado", label: "Ver guias" },
-    secondary: { href: "/tools#herramientas-destacadas", label: "Herramientas" },
+    title: pickByLocale(locale, "Quick access", "Acceso rapido"),
+    primary: { href: "/blog#articulo-destacado", label: pickByLocale(locale, "See guides", "Ver guias") },
+    secondary: { href: "/tools#herramientas-destacadas", label: pickByLocale(locale, "Tools", "Herramientas") },
   };
 }
 
@@ -80,16 +81,16 @@ function ActionLink({ item, className }: { item: ActionItem; className: string }
   );
 }
 
-export function MobileActionBar() {
+export function MobileActionBar({ locale }: { locale: SiteLocale }) {
   const pathname = usePathname();
-  const config = getActionConfig(pathname);
+  const config = getActionConfig(pathname, locale);
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 px-4 pb-4 md:hidden">
       <div className="mobile-cta-bar pointer-events-auto mx-auto max-w-6xl rounded-[1.6rem] px-3 py-3">
         <div className="mb-3 flex items-center justify-between gap-3 px-1">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--accent-strong)">{config.title}</p>
-          <span className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-(--muted)">Movil</span>
+          <span className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Mobile", "Movil")}</span>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <ActionLink

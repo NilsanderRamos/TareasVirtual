@@ -5,6 +5,9 @@ import { BlogExplorer } from "@/components/blog/BlogExplorer";
 import { blogPosts } from "@/content/blog/posts";
 import { siteConfig } from "@/config/site";
 import { estimateBlogPostWordCount } from "@/lib/blog";
+import { formatLocaleDate, pickByLocale } from "@/lib/i18n";
+import { getCurrentLocale } from "@/lib/i18n-server";
+import { localizeBlogPosts } from "@/lib/localize-content";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -35,12 +38,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
-  const [featuredPost, ...remainingPosts] = blogPosts;
+export default async function BlogPage() {
+  const locale = await getCurrentLocale();
+  const localizedPosts = await localizeBlogPosts(blogPosts, locale);
+  const [featuredPost, ...remainingPosts] = localizedPosts;
   const editorialSpotlight = remainingPosts.slice(0, 3);
-  const categories = Array.from(new Set(blogPosts.map((post) => post.category))).sort();
-  const editorialSignals = ["Comparativas originales", "Lectura clara", "Decision util"];
-  const compactSignals = [`${blogPosts.length} articulos publicados`, `${categories.length} categorias activas`];
+  const categories = Array.from(new Set(localizedPosts.map((post) => post.category))).sort();
+  const editorialSignals = [pickByLocale(locale, "Original comparisons", "Comparativas originales"), pickByLocale(locale, "Clear reading", "Lectura clara"), pickByLocale(locale, "Useful decisions", "Decision util")];
+  const compactSignals = [`${localizedPosts.length} ${pickByLocale(locale, "published articles", "articulos publicados")}`, `${categories.length} ${pickByLocale(locale, "active categories", "categorias activas")}`];
   const readingPrinciples = [
     "Primero una pieza destacada para orientar la decision.",
     "Luego filtros simples para encontrar el resto sin ruido.",
@@ -83,12 +88,12 @@ export default function BlogPage() {
                 </span>
               ))}
             </div>
-            <p className="section-label mt-4 text-xs font-semibold uppercase">Archivo editorial</p>
+            <p className="section-label mt-4 text-xs font-semibold uppercase">{pickByLocale(locale, "Editorial archive", "Archivo editorial")}</p>
             <h1 className="mt-4 text-3xl font-semibold leading-tight text-(--ink) sm:text-5xl lg:text-6xl">
-              Un blog limpio, claro y curado para leer mejor sin sentirlo cargado.
+              {pickByLocale(locale, "A clean, curated blog that reads better without feeling crowded.", "Un blog limpio, claro y curado para leer mejor sin sentirlo cargado.")}
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-(--muted) sm:mt-5 sm:text-xl sm:leading-8">
-              Aqui conviven comparativas originales, guias practicas y contenido comercial util para software, finanzas y operaciones digitales. La informacion no desaparece: se organiza mejor para que la lectura respire.
+              {pickByLocale(locale, "Here you will find original comparisons, practical guides, and useful commercial content for software, finance, and digital operations. The information is organized better so reading can breathe.", "Aqui conviven comparativas originales, guias practicas y contenido comercial util para software, finanzas y operaciones digitales. La informacion no desaparece: se organiza mejor para que la lectura respire.")}
             </p>
 
             <div className="mt-6 grid gap-3 text-sm text-(--muted) sm:mt-8 sm:grid-cols-2">
@@ -117,26 +122,26 @@ export default function BlogPage() {
                 href="#archivo-reciente"
                 className="inline-flex w-full items-center justify-center rounded-full bg-(--ink) px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-(--accent-strong) sm:w-auto"
               >
-                Explorar archivo
+                {pickByLocale(locale, "Explore archive", "Explorar archivo")}
               </Link>
               {featuredPost ? (
                 <Link
                   href={`/blog/${featuredPost.slug}`}
                   className="inline-flex w-full items-center justify-center rounded-full border border-(--line) bg-white/85 px-6 py-3 text-sm font-semibold text-(--ink) transition hover:-translate-y-0.5 hover:border-(--accent) hover:text-(--accent-strong) sm:w-auto"
                 >
-                  Leer articulo principal
+                  {pickByLocale(locale, "Read main article", "Leer articulo principal")}
                 </Link>
               ) : null}
               <Link href="/tools" className="inline-flex items-center justify-center px-2 py-3 text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
-                Ver herramientas
+                {pickByLocale(locale, "See tools", "Ver herramientas")}
               </Link>
             </div>
           </div>
 
           <aside className="grid gap-4">
             <div className="rounded-4xl border border-(--line) bg-white/60 p-5 shadow-[0_18px_48px_rgba(20,35,26,0.08)] sm:p-6">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-(--highlight)">Como se lee mejor</p>
-              <h2 className="mt-3 text-2xl font-semibold text-(--ink)">Una estructura mas limpia para encontrar antes lo importante.</h2>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-(--highlight)">{pickByLocale(locale, "How it reads better", "Como se lee mejor")}</p>
+              <h2 className="mt-3 text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "A cleaner structure to find what matters sooner.", "Una estructura mas limpia para encontrar antes lo importante.")}</h2>
               <div className="mt-5 space-y-3">
                 {readingPrinciples.map((item, index) => (
                   <div key={item} className="rounded-3xl border border-(--line) bg-white/62 px-4 py-4">
@@ -182,16 +187,16 @@ export default function BlogPage() {
           <article className="surface-card relative overflow-hidden rounded-4xl px-5 py-6 sm:px-8 sm:py-7 lg:px-10 lg:py-10">
             <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[rgba(217,119,6,0.12)] blur-3xl" />
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="section-label text-xs font-semibold uppercase">Articulo destacado</p>
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Featured article", "Articulo destacado")}</p>
               <span className="rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-amber-700">
-                Seleccion editorial
+                {pickByLocale(locale, "Editorial pick", "Seleccion editorial")}
               </span>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:mt-5 sm:text-xs sm:tracking-[0.18em]">
               <span>{featuredPost.category}</span>
               <span className="bg-(--highlight) h-1 w-1 rounded-full" />
               <span>
-                {Math.max(1, Math.ceil(estimateBlogPostWordCount(featuredPost) / 220))} min de lectura
+                {Math.max(1, Math.ceil(estimateBlogPostWordCount(featuredPost) / 220))} {pickByLocale(locale, "min read", "min de lectura")}
               </span>
             </div>
             <h2 className="mt-4 max-w-3xl text-2xl font-semibold leading-tight text-(--ink) sm:mt-5 sm:text-4xl">
@@ -216,7 +221,7 @@ export default function BlogPage() {
               <span className="rounded-full border border-(--line) bg-white/60 px-3 py-2 font-medium text-(--ink) sm:px-4">
                 {featuredPost.author}
               </span>
-              <span>{new Date(featuredPost.date).toLocaleDateString("es-DO")}</span>
+              <span>{formatLocaleDate(featuredPost.date, locale)}</span>
             </div>
             <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3">
               {archiveNotes.map((item, index) => (
@@ -233,7 +238,7 @@ export default function BlogPage() {
               href={`/blog/${featuredPost.slug}`}
               className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,rgba(15,118,110,0.98),rgba(17,94,89,0.94))] px-5 py-3 text-sm font-semibold text-white transition hover:opacity-95 sm:mt-8 sm:w-auto"
             >
-              Leer articulo destacado
+              {pickByLocale(locale, "Read featured article", "Leer articulo destacado")}
             </Link>
           </article>
 
@@ -264,7 +269,7 @@ export default function BlogPage() {
         </section>
       ) : null}
 
-      {remainingPosts.length > 0 ? <BlogExplorer posts={remainingPosts} /> : null}
+      {remainingPosts.length > 0 ? <BlogExplorer posts={remainingPosts} locale={locale} /> : null}
 
       <section className="mt-8 surface-card rounded-4xl px-5 py-6 sm:mt-10 sm:px-8 sm:py-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

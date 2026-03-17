@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import { pickByLocale } from "@/lib/i18n";
+import { getCurrentLocale } from "@/lib/i18n-server";
 
 export const metadata: Metadata = {
   title: "Sobre Nosotros",
@@ -32,7 +34,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const locale = await getCurrentLocale();
   const pillars = [
     {
       title: "Claridad practica",
@@ -59,59 +62,49 @@ export default function AboutPage() {
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:py-12">
-      <section className="mobile-pane overflow-hidden rounded-[28px] border border-slate-200/80 bg-gradient-to-br from-white via-slate-50 to-sky-50 p-5 shadow-[0_20px_60px_-28px_rgba(15,23,42,0.35)] sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">
-          Sobre {siteConfig.name}
-        </p>
+      <section className="mobile-pane overflow-hidden rounded-[28px] border border-slate-200/80 bg-linear-to-br from-white via-slate-50 to-sky-50 p-5 shadow-[0_20px_60px_-28px_rgba(15,23,42,0.35)] sm:p-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">{pickByLocale(locale, `About ${siteConfig.name}`, `Sobre ${siteConfig.name}`)}</p>
         <h1 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-          Una base clara para estudiar y trabajar con menos friccion.
+          {pickByLocale(locale, "A clearer base for studying and working with less friction.", "Una base clara para estudiar y trabajar con menos friccion.")}
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-700 sm:text-base">
-          {siteConfig.name} nace para ayudar a estudiantes y profesionales a
-          trabajar con mas claridad, mejores procesos y menos estres. La idea
-          central es simple: contenido util, estructura limpia y una experiencia
-          que se entienda bien desde el movil.
+          {pickByLocale(locale, `${siteConfig.name} was built to help students and professionals work with more clarity, better processes, and less stress. The core idea is simple: useful content, clean structure, and an experience that works well on mobile.`, `${siteConfig.name} nace para ayudar a estudiantes y profesionales a trabajar con mas claridad, mejores procesos y menos estres. La idea central es simple: contenido util, estructura limpia y una experiencia que se entienda bien desde el movil.`)}
         </p>
 
         <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          {quickRoutes.map((route) => (
+          {quickRoutes.map((route, index) => (
             <Link
               key={route.href}
               href={route.href}
-              className="rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-left transition hover:border-sky-300 hover:bg-sky-50/70 sm:min-w-[220px]"
+              className="rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-left transition hover:border-sky-300 hover:bg-sky-50/70 sm:min-w-55"
             >
               <p className="text-sm font-semibold text-slate-900">{route.label}</p>
-              <p className="mt-1 text-xs leading-6 text-slate-600">{route.detail}</p>
+              <p className={`mt-1 text-xs leading-6 text-slate-600 ${index > 1 ? "hidden sm:block" : ""}`}>{route.detail}</p>
             </Link>
           ))}
         </div>
       </section>
 
       <section className="mt-6 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="mobile-pane rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="mobile-pane rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Como trabajamos
+            {pickByLocale(locale, "How we work", "Como trabajamos")}
           </p>
           <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-            Contenido directo, accionable y pensado para usarse rapido.
+            {pickByLocale(locale, "Direct, actionable content designed to be used fast.", "Contenido directo, accionable y pensado para usarse rapido.")}
           </h2>
           <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
-            No buscamos llenar el sitio con texto largo sin direccion. Cada guia
-            debe ayudarte a entender que hacer, que evitar y cual es el siguiente
-            paso. Eso aplica tanto a los articulos como a las herramientas y a las
-            paginas informativas.
+            {pickByLocale(locale, "We are not trying to fill the site with long text that goes nowhere. Every guide should help you understand what to do, what to avoid, and what the next step is. That applies to articles, tools, and informational pages alike.", "No buscamos llenar el sitio con texto largo sin direccion. Cada guia debe ayudarte a entender que hacer, que evitar y cual es el siguiente paso. Eso aplica tanto a los articulos como a las herramientas y a las paginas informativas.")}
           </p>
         </div>
 
-        <div className="mobile-pane rounded-[24px] border border-slate-200 bg-slate-900 p-5 text-slate-50 shadow-sm sm:p-6">
+        <div className="mobile-pane rounded-3xl border border-slate-200 bg-slate-900 p-5 text-slate-50 shadow-sm sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-200">
-            Objetivo
+            {pickByLocale(locale, "Goal", "Objetivo")}
           </p>
-          <h2 className="mt-2 text-2xl font-semibold">Que la informacion se entienda de inmediato.</h2>
+          <h2 className="mt-2 text-2xl font-semibold">{pickByLocale(locale, "Make information understandable immediately.", "Que la informacion se entienda de inmediato.")}</h2>
           <p className="mt-3 text-sm leading-7 text-slate-200">
-            Reducimos ruido, mejoramos la jerarquia visual y mantenemos una lectura
-            comoda para que cada pagina sea util incluso en sesiones cortas desde
-            el telefono.
+            {pickByLocale(locale, "We reduce noise, improve visual hierarchy, and keep reading comfortable so every page stays useful even in short phone sessions.", "Reducimos ruido, mejoramos la jerarquia visual y mantenemos una lectura comoda para que cada pagina sea util incluso en sesiones cortas desde el telefono.")}
           </p>
         </div>
       </section>
@@ -120,9 +113,9 @@ export default function AboutPage() {
         <div className="mb-3 flex items-end justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Pilares
+              {pickByLocale(locale, "Pillars", "Pilares")}
             </p>
-            <h2 className="mt-2 text-2xl font-semibold text-slate-900">Lo que priorizamos en cada publicacion</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-900">{pickByLocale(locale, "What we prioritize in every publication", "Lo que priorizamos en cada publicacion")}</h2>
           </div>
         </div>
 
@@ -130,7 +123,7 @@ export default function AboutPage() {
           {pillars.map((pillar, index) => (
             <section
               key={pillar.title}
-              className="mobile-pane rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm"
+              className={`mobile-pane rounded-3xl border border-slate-200 bg-white p-5 shadow-sm ${index === 2 ? "hidden md:block" : ""}`}
             >
               <p className="text-sm font-semibold text-sky-700">0{index + 1}</p>
               <h3 className="mt-2 text-lg font-semibold text-slate-900">{pillar.title}</h3>

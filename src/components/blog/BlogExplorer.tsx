@@ -5,10 +5,12 @@ import Link from "next/link";
 import { useDeferredValue, useState } from "react";
 import { trackSiteEvent } from "@/lib/analytics";
 import { estimateBlogPostWordCount } from "@/lib/blog";
+import { SiteLocale, pickByLocale } from "@/lib/i18n";
 import { BlogPost } from "@/types";
 
 interface BlogExplorerProps {
   posts: BlogPost[];
+  locale: SiteLocale;
 }
 
 function getIntentLabel(post: BlogPost) {
@@ -57,14 +59,14 @@ function getCategoryPreviewClass(post: BlogPost) {
   return "from-slate-500/12 via-white/10 to-emerald-500/10";
 }
 
-export function BlogExplorer({ posts }: BlogExplorerProps) {
+export function BlogExplorer({ posts, locale }: BlogExplorerProps) {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const deferredQuery = useDeferredValue(query);
-  const categories = ["Todas", ...Array.from(new Set(posts.map((post) => post.category))).sort()];
+  const categories = [pickByLocale(locale, "All", "Todas"), ...Array.from(new Set(posts.map((post) => post.category))).sort()];
   const normalizedQuery = deferredQuery.trim().toLowerCase();
   const filteredPosts = posts.filter((post) => {
-    const matchesCategory = selectedCategory === "Todas" || post.category === selectedCategory;
+    const matchesCategory = selectedCategory === pickByLocale(locale, "All", "Todas") || post.category === selectedCategory;
     const matchesQuery =
       normalizedQuery.length === 0 ||
       post.title.toLowerCase().includes(normalizedQuery) ||
@@ -80,16 +82,16 @@ export function BlogExplorer({ posts }: BlogExplorerProps) {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="section-label text-xs font-semibold uppercase">Explorar archivo</p>
-            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">Encuentra rapido lo que quieres leer.</h2>
+            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "Find what you want to read quickly.", "Encuentra rapido lo que quieres leer.")}</h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-(--muted)">
-            El explorador ahora muestra menos ruido por tarjeta y te deja decidir con una sola mirada.
+            {pickByLocale(locale, "The explorer now shows less noise per card and lets you decide at a glance.", "El explorador ahora muestra menos ruido por tarjeta y te deja decidir con una sola mirada.")}
           </p>
         </div>
 
         <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
           <label className="block">
-            <span className="sr-only">Buscar articulos</span>
+            <span className="sr-only">{pickByLocale(locale, "Search articles", "Buscar articulos")}</span>
             <input
               type="search"
               value={query}
@@ -97,7 +99,7 @@ export function BlogExplorer({ posts }: BlogExplorerProps) {
                 setQuery(event.target.value);
                 trackSiteEvent("blog_search_changed", { query: event.target.value });
               }}
-              placeholder="Buscar por titulo, descripcion o etiqueta"
+              placeholder={pickByLocale(locale, "Search by title, description, or tag", "Buscar por titulo, descripcion o etiqueta")}
               className="w-full rounded-3xl border border-(--line) bg-white/75 px-4 py-3 text-sm text-(--ink) outline-none placeholder:text-(--muted) focus:border-(--accent)"
             />
           </label>
@@ -126,7 +128,7 @@ export function BlogExplorer({ posts }: BlogExplorerProps) {
           </div>
         </div>
 
-        <p className="mt-4 text-sm text-(--muted)">{filteredPosts.length} resultado{filteredPosts.length === 1 ? "" : "s"}</p>
+        <p className="mt-4 text-sm text-(--muted)">{filteredPosts.length} {pickByLocale(locale, filteredPosts.length === 1 ? "result" : "results", filteredPosts.length === 1 ? "resultado" : "resultados")}</p>
 
         {filteredPosts.length > 0 ? (
           <div className="mt-6 grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -172,7 +174,7 @@ export function BlogExplorer({ posts }: BlogExplorerProps) {
                     onClick={() => trackSiteEvent("blog_result_clicked", { slug: post.slug, category: post.category })}
                     className="inline-flex items-center justify-center text-sm font-semibold text-(--accent-strong) transition hover:text-(--ink)"
                   >
-                    Leer articulo
+                    {pickByLocale(locale, "Read article", "Leer articulo")}
                   </Link>
                 </div>
               </article>
@@ -180,8 +182,8 @@ export function BlogExplorer({ posts }: BlogExplorerProps) {
           </div>
         ) : (
           <div className="mt-6 rounded-4xl border border-dashed border-(--line) bg-white/50 px-5 py-6 text-center">
-            <h3 className="text-xl font-semibold text-(--ink)">No hay coincidencias con esos filtros.</h3>
-            <p className="mt-3 text-sm leading-7 text-(--muted)">Prueba otra categoria o una busqueda mas corta.</p>
+            <h3 className="text-xl font-semibold text-(--ink)">{pickByLocale(locale, "No matches for those filters.", "No hay coincidencias con esos filtros.")}</h3>
+            <p className="mt-3 text-sm leading-7 text-(--muted)">{pickByLocale(locale, "Try another category or a shorter search.", "Prueba otra categoria o una busqueda mas corta.")}</p>
           </div>
         )}
       </div>

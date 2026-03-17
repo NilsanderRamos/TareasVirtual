@@ -3,7 +3,10 @@ import Link from "next/link";
 import { blogPosts } from "@/content/blog/posts";
 import { siteConfig } from "@/config/site";
 import { tools } from "@/content/tools";
+import { pickByLocale } from "@/lib/i18n";
+import { getCurrentLocale } from "@/lib/i18n-server";
 import { estimateBlogPostWordCount } from "@/lib/blog";
+import { localizeBlogPosts, localizeToolItems } from "@/lib/localize-content";
 
 export const metadata: Metadata = {
   title: "Inicio",
@@ -34,25 +37,28 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
-  const featuredTools = tools.filter((tool) => tool.isFeatured).slice(0, 4);
-  const salaryTool = tools.find((tool) => tool.slug === "calculadora-salario-neto-usa") ?? featuredTools[0] ?? null;
-  const latestPost = blogPosts[0] ?? null;
-  const recentPosts = latestPost ? blogPosts.slice(1, 4) : [];
+export default async function HomePage() {
+  const locale = await getCurrentLocale();
+  const localizedBlogPosts = await localizeBlogPosts(blogPosts, locale);
+  const localizedTools = await localizeToolItems(tools, locale);
+  const featuredTools = localizedTools.filter((tool) => tool.isFeatured).slice(0, 4);
+  const salaryTool = localizedTools.find((tool) => tool.slug === "calculadora-salario-neto-usa") ?? featuredTools[0] ?? null;
+  const latestPost = localizedBlogPosts[0] ?? null;
+  const recentPosts = latestPost ? localizedBlogPosts.slice(1, 4) : [];
   const routeSteps = [
     {
-      title: "Aclara la decision",
-      description: "Empieza por una guia o comparativa para entender mejor el problema antes de actuar.",
+      title: pickByLocale(locale, "Clarify the decision", "Aclara la decision"),
+      description: pickByLocale(locale, "Start with a guide or comparison to understand the problem better before acting.", "Empieza por una guia o comparativa para entender mejor el problema antes de actuar."),
       href: latestPost ? `/blog/${latestPost.slug}` : "/blog",
     },
     {
-      title: "Pasa a la accion",
-      description: "Cuando la necesidad ya esta clara, entra en una herramienta y ejecuta sin perder tiempo.",
+      title: pickByLocale(locale, "Move into action", "Pasa a la accion"),
+      description: pickByLocale(locale, "Once the need is clear, open a tool and act without wasting time.", "Cuando la necesidad ya esta clara, entra en una herramienta y ejecuta sin perder tiempo."),
       href: "/tools",
     },
     {
-      title: "Desbloquea una duda",
-      description: "Si tu caso no encaja del todo en una guia o herramienta, abre contacto y sigue por una via directa.",
+      title: pickByLocale(locale, "Unblock a question", "Desbloquea una duda"),
+      description: pickByLocale(locale, "If your case does not fit a guide or tool completely, open contact and continue through a direct route.", "Si tu caso no encaja del todo en una guia o herramienta, abre contacto y sigue por una via directa."),
       href: "/contact",
     },
   ];
@@ -65,40 +71,45 @@ export default function HomePage() {
     .sort((leftCategory, rightCategory) => rightCategory.count - leftCategory.count || leftCategory.name.localeCompare(rightCategory.name));
 
   const highIntentTopics = [
-    "Software empresarial",
-    "Productividad de estudio",
-    "Herramientas con alta intencion de compra",
+    pickByLocale(locale, "Business software", "Software empresarial"),
+    pickByLocale(locale, "Study productivity", "Productividad de estudio"),
+    pickByLocale(locale, "High-intent tools", "Herramientas con alta intencion de compra"),
   ];
 
-  const audienceSignals = ["Estudio", "Trabajo remoto", "Freelance", "Negocio digital"];
+  const audienceSignals = [
+    pickByLocale(locale, "Study", "Estudio"),
+    pickByLocale(locale, "Remote work", "Trabajo remoto"),
+    "Freelance",
+    pickByLocale(locale, "Digital business", "Negocio digital"),
+  ];
   const trustSignals = [
-    `${blogPosts.length} guias publicadas`,
-    `${tools.length} herramientas listas`,
+    `${localizedBlogPosts.length} ${pickByLocale(locale, "published guides", "guias publicadas")}`,
+    `${localizedTools.length} ${pickByLocale(locale, "tools ready", "herramientas listas")}`,
     `${categories.length} temas activos`,
   ];
   const editorialPrinciples = [
     {
       title: "Contenido propio",
-      description: "Cada texto se redacta desde cero con una intencion clara: ayudar a decidir mejor, no repetir lo que ya circula en otras webs.",
+      description: pickByLocale(locale, "Every text is written from scratch with a clear intention: help people decide better, not repeat what is already circulating on other sites.", "Cada texto se redacta desde cero con una intencion clara: ayudar a decidir mejor, no repetir lo que ya circula en otras webs."),
     },
     {
-      title: "Utilidad antes que relleno",
-      description: "Las guias y herramientas se construyen para resolver una accion real: comparar, calcular, entender o ejecutar sin ruido.",
+      title: pickByLocale(locale, "Utility before filler", "Utilidad antes que relleno"),
+      description: pickByLocale(locale, "Guides and tools are built to solve a real action: compare, calculate, understand, or execute without noise.", "Las guias y herramientas se construyen para resolver una accion real: comparar, calcular, entender o ejecutar sin ruido."),
     },
     {
-      title: "Mejor lectura en movil",
-      description: "La estructura prioriza bloques cortos, jerarquia limpia y rutas claras para que la experiencia funcione bien en pantalla pequena.",
+      title: pickByLocale(locale, "Better mobile reading", "Mejor lectura en movil"),
+      description: pickByLocale(locale, "The structure prioritizes short blocks, clear hierarchy, and clear routes so the experience works well on small screens.", "La estructura prioriza bloques cortos, jerarquia limpia y rutas claras para que la experiencia funcione bien en pantalla pequena."),
     },
   ];
   const qualitySignals = [
-    "Redaccion original y tono editorial propio",
-    "Actualizacion pensada para 2026 y casos reales",
-    "Herramientas gratuitas conectadas con las guias",
+    pickByLocale(locale, "Original writing with a distinct editorial tone", "Redaccion original y tono editorial propio"),
+    pickByLocale(locale, "Updated for 2026 and real-world cases", "Actualizacion pensada para 2026 y casos reales"),
+    pickByLocale(locale, "Free tools connected to the guides", "Herramientas gratuitas conectadas con las guias"),
   ];
   const solutionRoutes = [
-    "Leer una comparativa antes de comprar o contratar.",
-    "Usar una herramienta gratuita para bajar una decision a numeros o acciones.",
-    "Entrar por contacto cuando el caso necesita orientacion mas directa.",
+    pickByLocale(locale, "Read a comparison before buying or hiring.", "Leer una comparativa antes de comprar o contratar."),
+    pickByLocale(locale, "Use a free tool to turn a decision into numbers or actions.", "Usar una herramienta gratuita para bajar una decision a numeros o acciones."),
+    pickByLocale(locale, "Use contact when the case needs more direct guidance.", "Entrar por contacto cuando el caso necesita orientacion mas directa."),
   ];
 
   return (
@@ -120,17 +131,17 @@ export default function HomePage() {
                 </span>
               ))}
               <span className="hero-chip hidden rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong) sm:inline-flex">
-                Original y actualizado
+                {pickByLocale(locale, "Original and updated", "Original y actualizado")}
               </span>
             </div>
             <p className="section-label text-[0.72rem] font-semibold uppercase tracking-[0.18em] sm:text-xs">
-              Plataforma editorial y herramientas en espanol
+              {pickByLocale(locale, "Editorial platform and tools in your language", "Plataforma editorial y herramientas en espanol")}
             </p>
             <h1 className="mt-4 max-w-3xl text-3xl font-semibold leading-none text-(--ink) sm:text-5xl lg:text-6xl">
-              Una web mas clara, mas util y con contenido autentico que si ayuda a decidir.
+              {pickByLocale(locale, "A clearer, more useful website with authentic content that actually helps you decide.", "Una web mas clara, mas util y con contenido autentico que si ayuda a decidir.")}
             </h1>
             <p className="mt-5 max-w-2xl text-sm leading-7 text-(--muted) sm:text-lg sm:leading-8">
-              TareasVirtual une comparativas propias, herramientas gratuitas y una experiencia visual pensada para que leer, elegir y actuar se sienta mas limpio desde el primer bloque.
+              {pickByLocale(locale, "TareasVirtual brings together original comparisons, free tools, and a visual experience designed to make reading, choosing, and acting feel cleaner from the first block.", "TareasVirtual une comparativas propias, herramientas gratuitas y una experiencia visual pensada para que leer, elegir y actuar se sienta mas limpio desde el primer bloque.")}
             </p>
 
             <div className="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
@@ -138,16 +149,16 @@ export default function HomePage() {
                 href="/tools"
                 className="inline-flex w-full items-center justify-center rounded-full bg-(--ink) px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-(--accent-strong) sm:w-auto"
               >
-                Probar herramientas
+                {pickByLocale(locale, "Try tools", "Probar herramientas")}
               </Link>
               <Link
                 href="/blog"
                 className="inline-flex w-full items-center justify-center rounded-full border border-(--line) bg-white/85 px-6 py-3 text-sm font-semibold text-(--ink) transition hover:-translate-y-0.5 hover:border-(--accent) hover:text-(--accent-strong) sm:w-auto"
               >
-                Leer guias
+                {pickByLocale(locale, "Read guides", "Leer guias")}
               </Link>
               <Link href="/contact" className="inline-flex items-center justify-center px-2 py-3 text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
-                Necesitas orientacion
+                {pickByLocale(locale, "Need guidance", "Necesitas orientacion")}
               </Link>
             </div>
 
@@ -185,7 +196,7 @@ export default function HomePage() {
               className="surface-card group relative overflow-hidden rounded-4xl p-5 transition hover:-translate-y-1 sm:p-6"
             >
               <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-[rgba(16,185,129,0.16)] blur-2xl" />
-              <p className="section-label text-xs font-semibold uppercase">Herramienta que vale la pena abrir primero</p>
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Tool worth opening first", "Herramienta que vale la pena abrir primero")}</p>
               <p className="mt-4 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{salaryTool.intentLabel}</p>
               <h2 className="mt-3 text-2xl font-semibold leading-tight text-(--ink) group-hover:text-(--accent-strong) sm:text-3xl">
                 {salaryTool.name}
@@ -198,7 +209,7 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-              <p className="mt-6 text-sm font-semibold text-(--accent-strong)">Abrir ficha interactiva</p>
+              <p className="mt-6 text-sm font-semibold text-(--accent-strong)">{pickByLocale(locale, "Open interactive detail", "Abrir ficha interactiva")}</p>
             </Link>
           ) : null}
 
@@ -207,11 +218,11 @@ export default function HomePage() {
               href={`/blog/${latestPost.slug}`}
               className="surface-card group rounded-4xl p-5 transition hover:-translate-y-1 sm:p-6"
             >
-              <p className="section-label text-xs font-semibold uppercase">Articulo destacado</p>
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Featured article", "Articulo destacado")}</p>
               <div className="mt-4 flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:text-xs sm:tracking-[0.18em]">
                 <span>{latestPost.category}</span>
                 <span className="bg-(--highlight) h-1 w-1 rounded-full" />
-                <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(latestPost) / 220))} min</span>
+                <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(latestPost) / 220))} {pickByLocale(locale, "min", "min")}</span>
               </div>
               <h2 className="mt-4 text-2xl font-semibold leading-tight text-(--ink) group-hover:text-(--accent-strong) sm:text-3xl">
                 {latestPost.title}
@@ -229,14 +240,14 @@ export default function HomePage() {
                   </span>
                 ))}
               </div>
-              <p className="mt-6 text-sm font-semibold text-(--accent-strong)">Leer comparativa completa</p>
+              <p className="mt-6 text-sm font-semibold text-(--accent-strong)">{pickByLocale(locale, "Read full comparison", "Leer comparativa completa")}</p>
             </Link>
           ) : (
             <div className="surface-card rounded-4xl p-5 sm:p-6">
-              <p className="section-label text-xs font-semibold uppercase">Articulo destacado</p>
-              <h2 className="mt-4 text-2xl font-semibold text-(--ink)">La portada editorial estara disponible aqui.</h2>
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Featured article", "Articulo destacado")}</p>
+              <h2 className="mt-4 text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "The editorial highlight will appear here.", "La portada editorial estara disponible aqui.")}</h2>
               <p className="mt-3 text-sm leading-7 text-(--muted)">
-                Cuando publiques el primer articulo, esta seccion mostrara el contenido mas relevante sin romper la experiencia en movil.
+                {pickByLocale(locale, "When you publish the first article, this section will show the most relevant content without breaking the mobile experience.", "Cuando publiques el primer articulo, esta seccion mostrara el contenido mas relevante sin romper la experiencia en movil.")}
               </p>
             </div>
           )}

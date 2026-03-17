@@ -3,7 +3,10 @@ import { notFound } from "next/navigation";
 import { BlogPostContent } from "@/components/blog/BlogPostContent";
 import { siteConfig } from "@/config/site";
 import { blogPosts } from "@/content/blog/posts";
+import { getCurrentLocale } from "@/lib/i18n-server";
+import { toOpenGraphLocale } from "@/lib/i18n";
 import { getBlogPostMeta } from "@/lib/blog";
+import { localizeBlogPost } from "@/lib/localize-content";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -16,6 +19,7 @@ export async function generateStaticParams() {
 export async function generateMetadata(
   { params }: BlogPostPageProps,
 ): Promise<Metadata> {
+  const locale = await getCurrentLocale();
   const resolvedParams = await params;
   const post = blogPosts.find((entry) => entry.slug === resolvedParams.slug);
 
@@ -23,33 +27,34 @@ export async function generateMetadata(
     return { title: "Articulo no encontrado" };
   }
 
-  const meta = getBlogPostMeta(post);
+  const localizedPost = await localizeBlogPost(post, locale);
+  const meta = getBlogPostMeta(localizedPost);
 
   return {
     title: meta.title,
     description: meta.description,
     keywords: meta.keywords,
-    authors: [{ name: post.author }],
+    authors: [{ name: localizedPost.author }],
     alternates: {
-      canonical: `/blog/${post.slug}`,
+      canonical: `/blog/${localizedPost.slug}`,
     },
     openGraph: {
       type: "article",
-      url: `${siteConfig.url}/blog/${post.slug}`,
+      url: `${siteConfig.url}/blog/${localizedPost.slug}`,
       title: meta.title,
       description: meta.description,
       siteName: siteConfig.name,
-      locale: "es_ES",
-      publishedTime: post.date,
-      authors: [post.author],
-      section: post.category,
-      tags: post.tags,
+      locale: toOpenGraphLocale(locale),
+      publishedTime: localizedPost.date,
+      authors: [localizedPost.author],
+      section: localizedPost.category,
+      tags: localizedPost.tags,
       images: [
         {
-          url: post.image,
+          url: localizedPost.image,
           width: 1200,
           height: 900,
-          alt: post.imageAlt,
+          alt: localizedPost.imageAlt,
         },
       ],
     },
@@ -57,12 +62,13 @@ export async function generateMetadata(
       card: "summary_large_image",
       title: meta.title,
       description: meta.description,
-      images: [post.image],
+      images: [localizedPost.image],
     },
   };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const locale = await getCurrentLocale();
   const resolvedParams = await params;
   const post = blogPosts.find((entry) => entry.slug === resolvedParams.slug);
 
@@ -70,17 +76,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
+  const localizedPost = await localizeBlogPost(post, locale);
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: post.title,
-    description: post.description,
-    image: [`${siteConfig.url}${post.image}`],
-    datePublished: post.date,
-    dateModified: post.date,
+    headline: localizedPost.title,
+    description: localizedPost.description,
+    image: [`${siteConfig.url}${localizedPost.image}`],
+    datePublished: localizedPost.date,
+    dateModified: localizedPost.date,
     author: {
       "@type": "Organization",
-      name: post.author,
+      name: localizedPost.author,
     },
     publisher: {
       "@type": "Organization",
@@ -90,10 +98,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         url: `${siteConfig.url}${siteConfig.defaultOgImage}`,
       },
     },
-    mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
-    articleSection: post.category,
-    keywords: post.tags.join(", "),
-    inLanguage: siteConfig.language,
+    mainEntityOfPage: `${siteConfig.url}/blog/${localizedPost.slug}`,
+    articleSection: localizedPost.category,
+    keywords: localizedPost.tags.join(", "),
+    inLanguage: locale,
   };
 
   return (
@@ -102,7 +110,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <BlogPostContent post={post} />
+      <BlogPostContent post={localizedPost} sourcePost={post} locale={locale} />
     </>
   );
 }

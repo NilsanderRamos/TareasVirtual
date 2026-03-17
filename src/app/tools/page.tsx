@@ -4,6 +4,9 @@ import { ToolsExplorer } from "@/components/tools/ToolsExplorer";
 import { siteConfig } from "@/config/site";
 import { blogPosts } from "@/content/blog/posts";
 import { tools } from "@/content/tools";
+import { pickByLocale } from "@/lib/i18n";
+import { getCurrentLocale } from "@/lib/i18n-server";
+import { localizeBlogPosts, localizeToolItems } from "@/lib/localize-content";
 
 const toolSupportConfig: Record<string, { postSlug: string; eyebrow: string; helper: string }> = {
   "generador-de-resumenes": {
@@ -33,14 +36,14 @@ const toolSupportConfig: Record<string, { postSlug: string; eyebrow: string; hel
   },
 };
 
-function getToolSupport(toolSlug: string) {
+function getToolSupport(toolSlug: string, localizedPosts = blogPosts) {
   const config = toolSupportConfig[toolSlug];
 
   if (!config) {
     return null;
   }
 
-  const relatedPost = blogPosts.find((post) => post.slug === config.postSlug);
+  const relatedPost = localizedPosts.find((post) => post.slug === config.postSlug);
 
   if (!relatedPost) {
     return null;
@@ -84,23 +87,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ToolsPage() {
-  const featuredTools = tools.filter((tool) => tool.isFeatured);
-  const additionalTools = tools.filter((tool) => !tool.isFeatured);
+export default async function ToolsPage() {
+  const locale = await getCurrentLocale();
+  const localizedTools = await localizeToolItems(tools, locale);
+  const localizedPosts = await localizeBlogPosts(blogPosts, locale);
+  const featuredTools = localizedTools.filter((tool) => tool.isFeatured);
+  const additionalTools = localizedTools.filter((tool) => !tool.isFeatured);
   const flagshipTool = featuredTools[0] ?? null;
-  const categories = Array.from(new Set(tools.map((tool) => tool.category)))
+  const categories = Array.from(new Set(localizedTools.map((tool) => tool.category)))
     .map((category) => ({
       name: category,
-      count: tools.filter((tool) => tool.category === category).length,
+      count: localizedTools.filter((tool) => tool.category === category).length,
     }))
     .sort((leftCategory, rightCategory) => rightCategory.count - leftCategory.count || leftCategory.name.localeCompare(rightCategory.name));
-  const taskSignals = ["Decision", "Planificacion", "Ejecucion"];
+  const taskSignals = [pickByLocale(locale, "Decision", "Decision"), pickByLocale(locale, "Planning", "Planificacion"), pickByLocale(locale, "Execution", "Ejecucion")];
   const authoritySignals = [
     "Cada ficha deja claro para que sirve y cuando conviene abrirla.",
     "Las herramientas siguen conectadas con guias relacionadas.",
     "La coleccion prioriza lectura limpia tambien en movil.",
   ];
-  const compactSignals = [`${tools.length} herramientas listas`, `${categories.length} categorias activas`];
+  const compactSignals = [`${localizedTools.length} ${pickByLocale(locale, "tools ready", "herramientas listas")}`, `${categories.length} ${pickByLocale(locale, "active categories", "categorias activas")}`];
   const productSignals = [
     {
       title: "Primero orienta",
@@ -218,7 +224,7 @@ export default function ToolsPage() {
         </div>
       </section>
 
-      <ToolsExplorer tools={tools} />
+      <ToolsExplorer tools={localizedTools} locale={locale} />
 
       <section id="herramientas-destacadas" className="mt-8 grid scroll-mt-28 gap-5 sm:mt-10 sm:gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <div className="surface-card rounded-4xl px-5 py-6 sm:px-8 sm:py-7 lg:px-10 lg:py-10">
@@ -233,7 +239,7 @@ export default function ToolsPage() {
           <div className="mt-6 grid gap-4">
             {featuredTools.map((tool) => (
               (() => {
-                const support = getToolSupport(tool.slug);
+                const support = getToolSupport(tool.slug, localizedPosts);
 
                 return (
                   <article
@@ -352,7 +358,7 @@ export default function ToolsPage() {
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {additionalTools.map((tool) => (
               (() => {
-                const support = getToolSupport(tool.slug);
+                const support = getToolSupport(tool.slug, localizedPosts);
 
                 return (
                   <article

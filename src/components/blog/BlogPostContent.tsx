@@ -3,10 +3,14 @@ import Link from "next/link";
 import { blogPosts } from "@/content/blog/posts";
 import { tools } from "@/content/tools";
 import { estimateBlogPostWordCount } from "@/lib/blog";
+import { formatLocaleDate, pickByLocale, SiteLocale } from "@/lib/i18n";
+import { localizeBlogPosts, localizeToolItems } from "@/lib/localize-content";
 import { BlogPost, BlogReferenceImage } from "@/types";
 
 interface BlogPostContentProps {
   post: BlogPost;
+  sourcePost: BlogPost;
+  locale: SiteLocale;
 }
 
 function slugifyHeading(value: string) {
@@ -96,65 +100,65 @@ function getSuggestedToolsForCategory(category: string) {
     .filter((tool): tool is (typeof tools)[number] => Boolean(tool));
 }
 
-function getArticleConversionPlan(post: BlogPost, relatedPosts: BlogPost[], suggestedTools: ReturnType<typeof getSuggestedToolsForCategory>) {
+function getArticleConversionPlan(post: BlogPost, relatedPosts: BlogPost[], suggestedTools: ReturnType<typeof getSuggestedToolsForCategory>, locale: SiteLocale) {
   const categoryKey = normalizeTaxonomyValue(post.category);
   const primaryRelatedPost = relatedPosts[0] ?? null;
   const primaryTool = suggestedTools[0] ?? null;
 
   if (categoryKey === "finanzas") {
     return {
-      eyebrow: "Decision financiera",
-      title: "Convierte el analisis en una accion concreta y ordenada.",
-      description: "Despues de revisar numeros o criterios fiscales, suele convenir seguir con una comparativa relacionada o dejar claro el siguiente paso operativo.",
+      eyebrow: pickByLocale(locale, "Financial decision", "Decision financiera"),
+      title: pickByLocale(locale, "Turn the analysis into a clear next action.", "Convierte el analisis en una accion concreta y ordenada."),
+      description: pickByLocale(locale, "After reviewing numbers or tax criteria, it often makes sense to continue with a related comparison or define the next operational step.", "Despues de revisar numeros o criterios fiscales, suele convenir seguir con una comparativa relacionada o dejar claro el siguiente paso operativo."),
       primaryAction: primaryRelatedPost
-        ? { href: `/blog/${primaryRelatedPost.slug}`, label: "Seguir con otra guia financiera", detail: primaryRelatedPost.title }
-        : { href: "/blog#archivo-reciente", label: "Ver mas guias", detail: "Encuentra otras comparativas del blog." },
+        ? { href: `/blog/${primaryRelatedPost.slug}`, label: pickByLocale(locale, "Continue with another finance guide", "Seguir con otra guia financiera"), detail: primaryRelatedPost.title }
+        : { href: "/blog#archivo-reciente", label: pickByLocale(locale, "See more guides", "Ver mas guias"), detail: pickByLocale(locale, "Find other comparisons in the blog.", "Encuentra otras comparativas del blog.") },
       secondaryAction: primaryTool
-        ? { href: primaryTool.href, label: "Organizar el siguiente paso", detail: primaryTool.name }
-        : { href: "/contact", label: "Pedir orientacion", detail: "Abre contacto si necesitas una recomendacion directa." },
+        ? { href: primaryTool.href, label: pickByLocale(locale, "Organize the next step", "Organizar el siguiente paso"), detail: primaryTool.name }
+        : { href: "/contact", label: pickByLocale(locale, "Ask for guidance", "Pedir orientacion"), detail: pickByLocale(locale, "Open contact if you need a direct recommendation.", "Abre contacto si necesitas una recomendacion directa.") },
     };
   }
 
   if (categoryKey === "aprendizaje" || categoryKey === "productividad") {
     return {
-      eyebrow: "Aplicacion inmediata",
-      title: "Lleva esta idea a ejecucion mientras la tienes fresca.",
-      description: "En contenido de estudio o productividad, el mejor siguiente paso suele ser aplicar una herramienta concreta o reforzar la lectura con una guia complementaria.",
+      eyebrow: pickByLocale(locale, "Immediate application", "Aplicacion inmediata"),
+      title: pickByLocale(locale, "Put this idea into action while it is still fresh.", "Lleva esta idea a ejecucion mientras la tienes fresca."),
+      description: pickByLocale(locale, "In study or productivity content, the best next step is usually to apply a concrete tool or reinforce the reading with a complementary guide.", "En contenido de estudio o productividad, el mejor siguiente paso suele ser aplicar una herramienta concreta o reforzar la lectura con una guia complementaria."),
       primaryAction: primaryTool
-        ? { href: primaryTool.href, label: "Usar herramienta recomendada", detail: primaryTool.name }
-        : { href: "/tools#herramientas-destacadas", label: "Abrir herramientas", detail: "Ve al bloque principal de utilidades." },
+        ? { href: primaryTool.href, label: pickByLocale(locale, "Use recommended tool", "Usar herramienta recomendada"), detail: primaryTool.name }
+        : { href: "/tools#herramientas-destacadas", label: pickByLocale(locale, "Open tools", "Abrir herramientas"), detail: pickByLocale(locale, "Go to the main utilities block.", "Ve al bloque principal de utilidades.") },
       secondaryAction: primaryRelatedPost
-        ? { href: `/blog/${primaryRelatedPost.slug}`, label: "Leer guia relacionada", detail: primaryRelatedPost.title }
-        : { href: "/blog#archivo-reciente", label: "Ver mas articulos", detail: "Sigue explorando el archivo reciente." },
+        ? { href: `/blog/${primaryRelatedPost.slug}`, label: pickByLocale(locale, "Read related guide", "Leer guia relacionada"), detail: primaryRelatedPost.title }
+        : { href: "/blog#archivo-reciente", label: pickByLocale(locale, "See more articles", "Ver mas articulos"), detail: pickByLocale(locale, "Keep exploring the recent archive.", "Sigue explorando el archivo reciente.") },
     };
   }
 
   if (categoryKey === "tecnologia" || categoryKey === "ecommerce" || categoryKey === "software empresarial") {
     return {
-      eyebrow: "Comparar y decidir",
-      title: "Sigue con una ruta de evaluacion mas corta y util.",
-      description: "En temas de tecnologia o software conviene contrastar una guia cercana y, si ya tienes criterio suficiente, pasar a una accion mas practica o resolver dudas puntuales.",
+      eyebrow: pickByLocale(locale, "Compare and decide", "Comparar y decidir"),
+      title: pickByLocale(locale, "Continue with a shorter, more useful evaluation path.", "Sigue con una ruta de evaluacion mas corta y util."),
+      description: pickByLocale(locale, "In technology or software topics, it helps to contrast with a nearby guide and, if you already have enough criteria, move to a more practical action or resolve specific questions.", "En temas de tecnologia o software conviene contrastar una guia cercana y, si ya tienes criterio suficiente, pasar a una accion mas practica o resolver dudas puntuales."),
       primaryAction: primaryRelatedPost
-        ? { href: `/blog/${primaryRelatedPost.slug}`, label: "Comparar otra guia", detail: primaryRelatedPost.title }
-        : { href: "/blog#archivo-reciente", label: "Ver mas comparativas", detail: "Sigue navegando el archivo del blog." },
-      secondaryAction: { href: "/contact", label: "Resolver una duda", detail: "Usa contacto si necesitas una recomendacion mas directa." },
+        ? { href: `/blog/${primaryRelatedPost.slug}`, label: pickByLocale(locale, "Compare another guide", "Comparar otra guia"), detail: primaryRelatedPost.title }
+        : { href: "/blog#archivo-reciente", label: pickByLocale(locale, "See more comparisons", "Ver mas comparativas"), detail: pickByLocale(locale, "Keep browsing the blog archive.", "Sigue navegando el archivo del blog.") },
+      secondaryAction: { href: "/contact", label: pickByLocale(locale, "Resolve a question", "Resolver una duda"), detail: pickByLocale(locale, "Use contact if you need a more direct recommendation.", "Usa contacto si necesitas una recomendacion mas directa.") },
     };
   }
 
   return {
-    eyebrow: "Siguiente paso",
-    title: "Mantén el impulso con una accion corta y clara.",
-    description: "El objetivo es no cerrar la lectura sin una salida concreta: otra guia, una herramienta o una conversacion directa.",
+    eyebrow: pickByLocale(locale, "Next step", "Siguiente paso"),
+    title: pickByLocale(locale, "Keep the momentum with a short, clear action.", "Mantén el impulso con una accion corta y clara."),
+    description: pickByLocale(locale, "The goal is not to end the reading without a concrete next move: another guide, a tool, or a direct conversation.", "El objetivo es no cerrar la lectura sin una salida concreta: otra guia, una herramienta o una conversacion directa."),
     primaryAction: primaryRelatedPost
-      ? { href: `/blog/${primaryRelatedPost.slug}`, label: "Leer contenido relacionado", detail: primaryRelatedPost.title }
-      : { href: "/blog#archivo-reciente", label: "Seguir leyendo", detail: "Explora mas articulos del archivo." },
+      ? { href: `/blog/${primaryRelatedPost.slug}`, label: pickByLocale(locale, "Read related content", "Leer contenido relacionado"), detail: primaryRelatedPost.title }
+      : { href: "/blog#archivo-reciente", label: pickByLocale(locale, "Keep reading", "Seguir leyendo"), detail: pickByLocale(locale, "Explore more articles from the archive.", "Explora mas articulos del archivo.") },
     secondaryAction: primaryTool
-      ? { href: primaryTool.href, label: "Ir a una herramienta", detail: primaryTool.name }
-      : { href: "/contact", label: "Ir a contacto", detail: "Abre una via directa para seguir." },
+      ? { href: primaryTool.href, label: pickByLocale(locale, "Go to a tool", "Ir a una herramienta"), detail: primaryTool.name }
+      : { href: "/contact", label: pickByLocale(locale, "Go to contact", "Ir a contacto"), detail: pickByLocale(locale, "Open a direct path to continue.", "Abre una via directa para seguir.") },
   };
 }
 
-export function BlogPostContent({ post }: BlogPostContentProps) {
+export async function BlogPostContent({ post, sourcePost, locale }: BlogPostContentProps) {
   const articleContent = post.content ?? [post.description];
   const introduction = post.introduction ?? [];
   const sections = post.sections ?? [];
@@ -166,21 +170,22 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
   const conclusion = post.conclusion ?? [];
   const keyTakeaways =
     post.keyTakeaways ?? [
-      "Define un objetivo claro antes de comenzar.",
-      "Evita multitarea y trabaja por bloques cortos.",
-      "Convierte ideas clave en acciones concretas.",
+      pickByLocale(locale, "Define a clear objective before starting.", "Define un objetivo claro antes de comenzar."),
+      pickByLocale(locale, "Avoid multitasking and work in short blocks.", "Evita multitarea y trabaja por bloques cortos."),
+      pickByLocale(locale, "Turn key ideas into concrete actions.", "Convierte ideas clave en acciones concretas."),
     ];
   const heroTakeaways = keyTakeaways.slice(0, 3);
   const readingMinutes = Math.max(1, Math.ceil(estimateBlogPostWordCount(post) / 220));
   const inlineReferenceImageMap = buildInlineReferenceImageMap(sections, referenceImages);
   const mobileSectionLinks = sectionLinks.slice(0, 6);
-  const relatedPosts = blogPosts
-    .filter((entry) => entry.slug !== post.slug && entry.category === post.category)
-    .slice(0, 2);
-  const suggestedTools = getSuggestedToolsForCategory(post.category).slice(0, 2);
-  const conversionPlan = getArticleConversionPlan(post, relatedPosts, suggestedTools);
+  const relatedPosts = await localizeBlogPosts(
+    blogPosts.filter((entry) => entry.slug !== sourcePost.slug && entry.category === sourcePost.category).slice(0, 2),
+    locale,
+  );
+  const suggestedTools = (await localizeToolItems(getSuggestedToolsForCategory(sourcePost.category).slice(0, 2), locale));
+  const conversionPlan = getArticleConversionPlan(sourcePost, relatedPosts, suggestedTools, locale);
   const primaryToolForNextStep = suggestedTools[0] ?? null;
-  const showSalaryCalculatorBoost = post.slug === "calcular-salario-neto-estados-unidos-2026" && primaryToolForNextStep?.slug === "calculadora-salario-neto-usa";
+  const showSalaryCalculatorBoost = sourcePost.slug === "calcular-salario-neto-estados-unidos-2026" && primaryToolForNextStep?.slug === "calculadora-salario-neto-usa";
 
   return (
     <article className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-14">
@@ -194,12 +199,12 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
             href="/blog"
             className="inline-flex items-center text-sm font-semibold text-(--accent-strong) transition hover:text-(--highlight)"
           >
-            Volver al blog
+            {pickByLocale(locale, "Back to blog", "Volver al blog")}
           </Link>
           <div className="mt-6 flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--accent-strong) sm:mt-8 sm:text-xs sm:tracking-[0.22em]">
             <span>{post.category}</span>
             <span className="bg-(--highlight) h-1 w-1 rounded-full" />
-            <span>{readingMinutes} min de lectura</span>
+            <span>{readingMinutes} {pickByLocale(locale, "min read", "min de lectura")}</span>
           </div>
           <h1 className="mt-4 max-w-4xl text-3xl leading-tight font-semibold text-(--ink) sm:mt-5 sm:text-5xl lg:text-6xl">
             {post.title}
@@ -212,7 +217,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
             <span className="rounded-full border border-(--line) bg-white/60 px-3 py-2 font-medium text-(--ink) sm:px-4">
               {post.author}
             </span>
-            <span>{new Date(post.date).toLocaleDateString("es-DO")}</span>
+            <span>{formatLocaleDate(post.date, locale)}</span>
           </div>
 
           <div className="mt-8 grid gap-4 sm:mt-10 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
@@ -220,10 +225,10 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
               {heroTakeaways.map((item, index) => (
                 <div
                   key={item}
-                  className={index === 0 ? "rounded-3xl border border-(--line) bg-[rgba(15,118,110,0.09)] p-4 sm:p-5" : "rounded-3xl border border-(--line) bg-white/65 p-4 sm:p-5"}
+                  className={`${index === 2 ? "hidden sm:block " : ""}${index === 0 ? "rounded-3xl border border-(--line) bg-[rgba(15,118,110,0.09)] p-4 sm:p-5" : "rounded-3xl border border-(--line) bg-white/65 p-4 sm:p-5"}`}
                 >
-                  <p className="section-label text-[0.7rem] font-semibold uppercase">Punto clave {index + 1}</p>
-                  <p className="mt-3 text-base leading-7 text-(--ink)">{item}</p>
+                  <p className="section-label text-[0.7rem] font-semibold uppercase">{pickByLocale(locale, `Key point ${index + 1}`, `Punto clave ${index + 1}`)}</p>
+                  <p className="mt-3 text-sm leading-6 text-(--ink) sm:text-base sm:leading-7">{item}</p>
                 </div>
               ))}
             </div>
@@ -240,12 +245,12 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
                 />
               </div>
               <div className="border-t border-(--line) px-4 py-4 sm:px-5">
-                <p className="section-label text-[0.7rem] font-semibold uppercase">Portada editorial</p>
+                <p className="section-label text-[0.7rem] font-semibold uppercase">{pickByLocale(locale, "Editorial cover", "Portada editorial")}</p>
                 <p className="mt-2 text-sm leading-6 text-(--muted)">{post.imageAlt}</p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   {sectionLinks.length > 0 ? (
                     <Link href="#indice-articulo" className="text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
-                      Ir al indice
+                      {pickByLocale(locale, "Go to index", "Ir al indice")}
                     </Link>
                   ) : null}
                   <Link href={conversionPlan.primaryAction.href} className="text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
@@ -265,14 +270,14 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
             <section className="blog-reveal blog-reveal-delay-1 surface-card rounded-[1.75rem] px-5 py-6 lg:hidden">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="section-label text-xs font-semibold uppercase">Guia rapida</p>
-                  <h2 className="mt-2 text-lg font-semibold text-(--ink)">Indice del articulo</h2>
+                  <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Quick guide", "Guia rapida")}</p>
+                  <h2 className="mt-2 text-lg font-semibold text-(--ink)">{pickByLocale(locale, "Article index", "Indice del articulo")}</h2>
                 </div>
               </div>
 
               {mobileSectionLinks.length > 0 ? (
                 <div className="mt-4">
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  <div className="mt-3 grid gap-2">
                     {mobileSectionLinks.map((section, index) => (
                       <Link
                         key={section.href}
@@ -295,8 +300,8 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
 
           {introduction.length > 0 ? (
             <section className="surface-card rounded-[1.75rem] px-5 py-6 sm:px-8 sm:py-7">
-              <p className="section-label text-xs font-semibold uppercase">Introduccion</p>
-              <div className="mt-4 space-y-4 text-base leading-7 text-(--muted) sm:space-y-5 sm:text-[1.02rem] sm:leading-8">
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Introduction", "Introduccion")}</p>
+              <div className="mt-4 space-y-4 text-[0.98rem] leading-7 text-(--muted) sm:space-y-5 sm:text-[1.02rem] sm:leading-8">
                 {introduction.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
@@ -308,10 +313,10 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
             <section className="overflow-hidden rounded-[1.75rem] border border-emerald-200 bg-[linear-gradient(135deg,rgba(16,185,129,0.96),rgba(13,148,136,0.92))] px-5 py-6 text-white shadow-[0_24px_56px_-32px_rgba(16,185,129,0.55)] sm:px-8 sm:py-7">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div className="max-w-2xl">
-                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/70">Antes de seguir leyendo</p>
-                  <h2 className="mt-3 text-2xl font-semibold sm:text-3xl">Baja dos ofertas a un neto real antes de contestar una entrevista.</h2>
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/70">{pickByLocale(locale, "Before you continue reading", "Antes de seguir leyendo")}</p>
+                  <h2 className="mt-3 text-2xl font-semibold sm:text-3xl">{pickByLocale(locale, "Break down two offers to real net pay before answering an interview.", "Baja dos ofertas a un neto real antes de contestar una entrevista.")}</h2>
                   <p className="mt-4 text-sm leading-7 text-white/85 sm:text-base sm:leading-8">
-                    La calculadora te deja comparar salario, estado, bonus, 401(k), deducciones payroll y retencion extra sin salir del flujo de esta guia.
+                    {pickByLocale(locale, "The calculator lets you compare salary, state, bonus, 401(k), payroll deductions, and extra withholding without leaving this guide flow.", "La calculadora te deja comparar salario, estado, bonus, 401(k), deducciones payroll y retencion extra sin salir del flujo de esta guia.")}
                   </p>
                 </div>
                 <div className="grid gap-3 sm:min-w-72">
@@ -319,13 +324,13 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
                     href={primaryToolForNextStep.href}
                     className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-900"
                   >
-                    Comparar 2 ofertas ahora
+                    {pickByLocale(locale, "Compare 2 offers now", "Comparar 2 ofertas ahora")}
                   </Link>
                   <Link
                     href="#cta-articulo-contextual"
                     className="inline-flex items-center justify-center rounded-full border border-white/28 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/16"
                   >
-                    Ver siguiente paso recomendado
+                    {pickByLocale(locale, "See recommended next step", "Ver siguiente paso recomendado")}
                   </Link>
                 </div>
               </div>
@@ -335,8 +340,8 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
                   "Compara dos estados lado a lado y evita decidir solo con bruto anual.",
                   "Ajusta bonus, deducciones payroll y retencion extra para acercarte mas al paycheck.",
                   "Usa neto anual, mensual y por periodo para negociar con mas criterio.",
-                ].map((item) => (
-                  <div key={item} className="rounded-3xl border border-white/18 bg-white/10 px-4 py-4 text-sm leading-6 text-white/88">
+                ].map((item, index) => (
+                  <div key={item} className={`rounded-3xl border border-white/18 bg-white/10 px-4 py-4 text-sm leading-6 text-white/88 ${index === 2 ? "hidden md:block" : ""}`}>
                     {item}
                   </div>
                 ))}
@@ -360,7 +365,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
                           {String(index + 1).padStart(2, "0")}
                         </span>
                         <div>
-                          <p className="section-label text-[0.7rem] font-semibold uppercase">Seccion clave</p>
+                          <p className="section-label text-[0.7rem] font-semibold uppercase">{pickByLocale(locale, "Key section", "Seccion clave")}</p>
                           <h2 className="mt-1 text-xl font-semibold text-(--ink) sm:text-3xl">
                             {section.heading}
                           </h2>
@@ -371,7 +376,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
                           {section.subheading}
                         </h3>
                       ) : null}
-                      <div className="mt-4 space-y-4 text-base leading-7 text-(--muted) sm:mt-5 sm:space-y-5 sm:text-[1.02rem] sm:leading-8">
+                      <div className="mt-4 space-y-4 text-[0.98rem] leading-7 text-(--muted) sm:mt-5 sm:space-y-5 sm:text-[1.02rem] sm:leading-8">
                         {section.paragraphs.map((paragraph) => (
                           <p key={paragraph}>{paragraph}</p>
                         ))}
@@ -399,7 +404,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
                           </div>
                           <div className="flex flex-col justify-between border-t border-(--line) px-5 py-5 sm:px-6 lg:border-t-0 lg:border-l lg:py-6">
                             <div>
-                              <p className="section-label text-[0.7rem] font-semibold uppercase">Referencia visual integrada</p>
+                              <p className="section-label text-[0.7rem] font-semibold uppercase">{pickByLocale(locale, "Integrated visual reference", "Referencia visual integrada")}</p>
                               <h3 className="mt-3 text-xl font-semibold text-(--ink) sm:text-2xl">
                                 {inlineImage.caption}
                               </h3>
@@ -411,7 +416,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
                               <span className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">
                                 {inlineImage.label}
                               </span>
-                              <span className="text-sm font-semibold text-(--ink)">Abrir referencia</span>
+                              <span className="text-sm font-semibold text-(--ink)">{pickByLocale(locale, "Open reference", "Abrir referencia")}</span>
                             </div>
                           </div>
                         </div>
@@ -423,7 +428,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
             </div>
           ) : (
             <section className="surface-card rounded-[1.75rem] px-5 py-6 sm:px-8 sm:py-7">
-              <div className="space-y-4 text-base leading-7 text-(--muted) sm:space-y-5 sm:text-[1.02rem] sm:leading-8">
+              <div className="space-y-4 text-[0.98rem] leading-7 text-(--muted) sm:space-y-5 sm:text-[1.02rem] sm:leading-8">
                 {articleContent.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
@@ -434,8 +439,8 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
           {post.comparisonTable && post.comparisonTable.length > 0 ? (
             <section className="surface-card overflow-hidden rounded-[1.75rem]">
               <div className="border-b border-(--line) px-5 py-5 sm:px-8">
-                <p className="section-label text-xs font-semibold uppercase">Comparativa</p>
-                <h2 className="mt-2 text-2xl font-semibold text-(--ink)">Tabla comparativa</h2>
+                <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Comparison", "Comparativa")}</p>
+                <h2 className="mt-2 text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "Comparison table", "Tabla comparativa")}</h2>
               </div>
               <div className="space-y-4 p-5 sm:hidden">
                 {post.comparisonTable.map((item) => (
@@ -464,10 +469,10 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
                 <table className="min-w-176 text-left text-sm text-(--muted)">
                   <thead className="bg-[rgba(255,255,255,0.55)] text-[0.7rem] uppercase tracking-[0.18em] text-(--accent-strong)">
                     <tr>
-                      <th className="px-6 py-4 font-semibold sm:px-8">Opcion</th>
-                      <th className="px-6 py-4 font-semibold">Precio</th>
-                      <th className="px-6 py-4 font-semibold">Funciones clave</th>
-                      <th className="px-6 py-4 font-semibold sm:px-8">Veredicto</th>
+                      <th className="px-6 py-4 font-semibold sm:px-8">{pickByLocale(locale, "Option", "Opcion")}</th>
+                      <th className="px-6 py-4 font-semibold">{pickByLocale(locale, "Price", "Precio")}</th>
+                      <th className="px-6 py-4 font-semibold">{pickByLocale(locale, "Key features", "Funciones clave")}</th>
+                      <th className="px-6 py-4 font-semibold sm:px-8">{pickByLocale(locale, "Verdict", "Veredicto")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -501,9 +506,9 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
 
           {conclusion.length > 0 ? (
             <section className="surface-card rounded-[1.75rem] px-5 py-6 sm:px-8 sm:py-7">
-              <p className="section-label text-xs font-semibold uppercase">Cierre</p>
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Closing", "Cierre")}</p>
               <h2 className="mt-2 text-2xl font-semibold text-(--ink) sm:text-3xl">Conclusion</h2>
-              <div className="mt-4 space-y-4 text-base leading-7 text-(--muted) sm:mt-5 sm:space-y-5 sm:text-[1.02rem] sm:leading-8">
+              <div className="mt-4 space-y-4 text-[0.98rem] leading-7 text-(--muted) sm:mt-5 sm:space-y-5 sm:text-[1.02rem] sm:leading-8">
                 {conclusion.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
@@ -542,12 +547,12 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
 
             <div className="mt-5 grid gap-3 md:grid-cols-[1.1fr_0.9fr]">
               <Link href={conversionPlan.primaryAction.href} className="rounded-3xl border border-emerald-200 bg-linear-to-br from-white to-emerald-50 px-5 py-5 shadow-[0_18px_40px_-32px_rgba(16,185,129,0.55)] transition hover:-translate-y-0.5 hover:border-emerald-300">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">Accion principal</p>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{pickByLocale(locale, "Primary action", "Accion principal")}</p>
                 <p className="mt-2 text-lg font-semibold text-(--ink)">{conversionPlan.primaryAction.label}</p>
                 <p className="mt-2 text-sm leading-6 text-(--muted)">{conversionPlan.primaryAction.detail}</p>
               </Link>
               <Link href={conversionPlan.secondaryAction.href} className="article-index-link rounded-3xl px-4 py-4 transition">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">Alternativa</p>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{pickByLocale(locale, "Alternative", "Alternativa")}</p>
                 <p className="mt-2 text-base font-semibold text-(--ink)">{conversionPlan.secondaryAction.label}</p>
                 <p className="mt-2 text-sm leading-6 text-(--muted)">{conversionPlan.secondaryAction.detail}</p>
               </Link>
@@ -555,14 +560,14 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
 
             {suggestedTools.length > 0 ? (
               <div className="mt-5 border-t border-(--line) pt-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">Herramientas que encajan con este tema</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">{pickByLocale(locale, "Tools that fit this topic", "Herramientas que encajan con este tema")}</p>
                 <div className="mt-3 grid gap-3 md:grid-cols-2">
-                  {suggestedTools.map((tool) => (
+                  {suggestedTools.map((tool, index) => (
                     <Link key={tool.slug} href={tool.href} className="blog-card-premium rounded-3xl border border-(--line) bg-white/60 px-4 py-4 hover:border-(--accent)">
                       <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{tool.intentLabel}</p>
                       <p className="text-sm font-semibold text-(--ink)">{tool.name}</p>
-                      <p className="mt-2 text-sm leading-6 text-(--muted)">{tool.primaryOutcome}</p>
-                      <p className="mt-4 text-sm font-semibold text-(--accent-strong)">Abrir herramienta</p>
+                      <p className={`mt-2 text-sm leading-6 text-(--muted) ${index > 0 ? "hidden sm:block" : ""}`}>{tool.primaryOutcome}</p>
+                      <p className="mt-4 text-sm font-semibold text-(--accent-strong)">{pickByLocale(locale, "Open tool", "Abrir herramienta")}</p>
                     </Link>
                   ))}
                 </div>
@@ -572,8 +577,8 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
 
           {post.externalReferences && post.externalReferences.length > 0 ? (
             <section className="surface-card rounded-[1.75rem] px-5 py-6 sm:px-8 sm:py-7">
-              <p className="section-label text-xs font-semibold uppercase">Fuentes</p>
-              <h2 className="mt-2 text-2xl font-semibold text-(--ink)">Hyperlinks de referencia</h2>
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Sources", "Fuentes")}</p>
+              <h2 className="mt-2 text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "Reference links", "Hyperlinks de referencia")}</h2>
               <div className="mt-5 grid gap-3 lg:grid-cols-2">
                 {post.externalReferences.map((reference) => (
                   <a
@@ -596,8 +601,8 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
 
           {post.referenceImages && post.referenceImages.length > 0 ? (
             <section className="surface-card rounded-[1.75rem] px-5 py-6 sm:px-8 sm:py-7">
-              <p className="section-label text-xs font-semibold uppercase">Apoyo visual</p>
-              <h2 className="mt-2 text-2xl font-semibold text-(--ink)">Imagenes de referencia</h2>
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Visual support", "Apoyo visual")}</p>
+              <h2 className="mt-2 text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "Reference images", "Imagenes de referencia")}</h2>
               <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {post.referenceImages.map((image) => (
                   <a
@@ -631,8 +636,8 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
 
           {post.internalLinks && post.internalLinks.length > 0 ? (
             <section className="surface-card rounded-[1.75rem] px-5 py-6 sm:px-8 sm:py-7">
-              <p className="section-label text-xs font-semibold uppercase">Continuar leyendo</p>
-              <h2 className="mt-2 text-2xl font-semibold text-(--ink)">Enlaces recomendados</h2>
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Keep reading", "Continuar leyendo")}</p>
+              <h2 className="mt-2 text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "Recommended links", "Enlaces recomendados")}</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {post.internalLinks.map((link) => (
                   <Link
@@ -643,7 +648,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
                       : "rounded-[1.25rem] border border-(--line) bg-white/60 px-4 py-4 text-sm leading-6 font-medium text-(--ink) transition hover:border-[rgba(15,118,110,0.28)] hover:bg-[rgba(15,118,110,0.08)]"}
                   >
                     <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">
-                      {link.type === "tool" ? "Herramienta" : "Articulo"}
+                      {link.type === "tool" ? pickByLocale(locale, "Tool", "Herramienta") : pickByLocale(locale, "Article", "Articulo")}
                     </span>
                     <span className="mt-2 block">{link.title}</span>
                   </Link>
@@ -655,7 +660,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
           {post.faq && post.faq.length > 0 ? (
             <section className="surface-card rounded-[1.75rem] px-5 py-6 sm:px-8 sm:py-7">
               <p className="section-label text-xs font-semibold uppercase">FAQ</p>
-              <h2 className="mt-2 text-2xl font-semibold text-(--ink)">Preguntas frecuentes</h2>
+              <h2 className="mt-2 text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "Frequently asked questions", "Preguntas frecuentes")}</h2>
               <div className="mt-5 space-y-4">
                 {post.faq.map((item) => (
                   <div key={item.question} className="rounded-[1.25rem] border border-(--line) bg-white/50 p-4 sm:p-5">
@@ -668,7 +673,7 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
           ) : null}
 
           <section className="surface-card rounded-[1.75rem] px-5 py-5 sm:px-8 sm:py-6">
-            <p className="section-label text-xs font-semibold uppercase">Etiquetas</p>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Tags", "Etiquetas")}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {post.tags.map((tag) => (
                 <span
@@ -684,8 +689,8 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
 
         <aside className="hidden space-y-6 lg:sticky lg:top-24 lg:block">
           <section className="surface-card rounded-3xl px-5 py-6">
-            <p className="section-label text-xs font-semibold uppercase">Resumen rapido</p>
-            <h2 className="mt-2 text-xl font-semibold text-(--ink)">Puntos clave</h2>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Quick summary", "Resumen rapido")}</p>
+            <h2 className="mt-2 text-xl font-semibold text-(--ink)">{pickByLocale(locale, "Key points", "Puntos clave")}</h2>
             <ul className="mt-4 space-y-3 text-sm leading-7 text-(--muted)">
               {keyTakeaways.map((item) => (
                 <li key={item} className="flex gap-3">
@@ -700,8 +705,8 @@ export function BlogPostContent({ post }: BlogPostContentProps) {
             <section className="blog-reveal blog-reveal-delay-1 surface-card rounded-3xl px-5 py-6">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="section-label text-xs font-semibold uppercase">Navegacion</p>
-                  <h2 className="mt-2 text-xl font-semibold text-(--ink)">Indice del articulo</h2>
+                  <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Navigation", "Navegacion")}</p>
+                  <h2 className="mt-2 text-xl font-semibold text-(--ink)">{pickByLocale(locale, "Article index", "Indice del articulo")}</h2>
                 </div>
                 <span className="hero-chip rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">
                   Desktop
