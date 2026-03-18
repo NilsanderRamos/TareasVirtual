@@ -1,41 +1,49 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { blogPosts } from "@/content/blog/posts";
 import { siteConfig } from "@/config/site";
 import { tools } from "@/content/tools";
-import { pickByLocale } from "@/lib/i18n";
+import { formatLocaleDate, pickByLocale, toOpenGraphLocale } from "@/lib/i18n";
 import { getCurrentLocale } from "@/lib/i18n-server";
 import { estimateBlogPostWordCount } from "@/lib/blog";
 import { localizeBlogPosts, localizeToolItems } from "@/lib/localize-content";
 
-export const metadata: Metadata = {
-  title: "Inicio",
-  description: "Herramientas online gratuitas y guias editoriales en espanol para productividad, estudio, IA y decisiones digitales con criterio.",
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: siteConfig.name,
-    description: "Herramientas online gratuitas y guias editoriales en espanol para productividad, estudio, IA y decisiones digitales con criterio.",
-    url: siteConfig.url,
-    siteName: siteConfig.name,
-    type: "website",
-    images: [
-      {
-        url: siteConfig.defaultOgImage,
-        width: 1200,
-        height: 900,
-        alt: `${siteConfig.name} portada principal`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: "Herramientas online gratuitas y guias editoriales en espanol para productividad, estudio, IA y decisiones digitales con criterio.",
-    images: [siteConfig.defaultOgImage],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getCurrentLocale();
+  const title = pickByLocale(locale, "Home", "Inicio");
+  const description = pickByLocale(locale, "Free online tools and editorial guides for productivity, study, AI, and digital decisions with better judgment.", "Herramientas online gratuitas y guias editoriales en espanol para productividad, estudio, IA y decisiones digitales con criterio.");
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      title: siteConfig.name,
+      description,
+      url: siteConfig.url,
+      siteName: siteConfig.name,
+      locale: toOpenGraphLocale(locale),
+      type: "website",
+      images: [
+        {
+          url: siteConfig.defaultOgImage,
+          width: 1200,
+          height: 900,
+          alt: pickByLocale(locale, `${siteConfig.name} homepage`, `${siteConfig.name} portada principal`),
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${siteConfig.name}`,
+      description,
+      images: [siteConfig.defaultOgImage],
+    },
+  };
+}
 
 export default async function HomePage() {
   const locale = await getCurrentLocale();
@@ -85,11 +93,11 @@ export default async function HomePage() {
   const trustSignals = [
     `${localizedBlogPosts.length} ${pickByLocale(locale, "published guides", "guias publicadas")}`,
     `${localizedTools.length} ${pickByLocale(locale, "tools ready", "herramientas listas")}`,
-    `${categories.length} temas activos`,
+    `${categories.length} ${pickByLocale(locale, "active topics", "temas activos")}`,
   ];
   const editorialPrinciples = [
     {
-      title: "Contenido propio",
+      title: pickByLocale(locale, "Original content", "Contenido propio"),
       description: pickByLocale(locale, "Every text is written from scratch with a clear intention: help people decide better, not repeat what is already circulating on other sites.", "Cada texto se redacta desde cero con una intencion clara: ayudar a decidir mejor, no repetir lo que ya circula en otras webs."),
     },
     {
@@ -181,7 +189,7 @@ export default async function HomePage() {
                     index === 2 ? "hidden sm:block " : ""
                   }${index === 0 ? "quality-card rounded-3xl px-4 py-4" : "rounded-3xl border border-(--line) bg-white/58 px-4 py-4"}`}
                 >
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">Criterio {index + 1}</p>
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{pickByLocale(locale, "Principle", "Criterio")} {index + 1}</p>
                   <p className="mt-2 text-sm leading-6 text-(--ink)">{item}</p>
                 </div>
               ))}
@@ -253,10 +261,10 @@ export default async function HomePage() {
           )}
 
           <div className="surface-card hidden rounded-4xl p-5 lg:block lg:p-6">
-            <p className="section-label text-xs font-semibold uppercase">Temas prioritarios</p>
-            <h2 className="mt-3 text-2xl font-semibold text-(--ink)">Empieza por lo que mueve decisiones reales.</h2>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Priority topics", "Temas prioritarios")}</p>
+            <h2 className="mt-3 text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "Start with what drives real decisions.", "Empieza por lo que mueve decisiones reales.")}</h2>
             <p className="mt-3 text-sm leading-7 text-(--muted)">
-              La portada esta enfocada en temas donde una buena comparativa o una herramienta bien resuelta ahorra tiempo de verdad.
+              {pickByLocale(locale, "The home page is focused on topics where a good comparison or a well-resolved tool truly saves time.", "La portada esta enfocada en temas donde una buena comparativa o una herramienta bien resuelta ahorra tiempo de verdad.")}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               {highIntentTopics.map((topic) => (
@@ -271,17 +279,17 @@ export default async function HomePage() {
 
       <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:gap-6">
         <div className="rounded-4xl bg-[rgba(255,255,255,0.58)] p-5 ring-1 ring-(--line) sm:p-6">
-          <p className="section-label text-xs font-semibold uppercase">Direccion editorial</p>
+          <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Editorial direction", "Direccion editorial")}</p>
           <h2 className="mt-4 text-3xl font-semibold text-(--ink) sm:text-4xl">
-            Diseño mas bonito, pero con una base editorial seria.
+            {pickByLocale(locale, "A stronger visual design, but built on a serious editorial base.", "Diseño mas bonito, pero con una base editorial seria.")}
           </h2>
           <p className="mt-4 text-sm leading-7 text-(--muted) sm:mt-5 sm:text-base sm:leading-8">
-            La mejora visual no busca decorar por decorar. La idea es hacer que cada bloque respire mejor, se lea con menos friccion y deje mas claro por que vale la pena quedarse en la web.
+            {pickByLocale(locale, "The visual improvement is not decoration for its own sake. The idea is to make each block breathe better, read with less friction, and clarify why the site is worth staying on.", "La mejora visual no busca decorar por decorar. La idea es hacer que cada bloque respire mejor, se lea con menos friccion y deje mas claro por que vale la pena quedarse en la web.")}
           </p>
           <div className="mt-6 grid gap-3">
             {solutionRoutes.map((route, index) => (
               <div key={route} className="rounded-3xl border border-(--line) bg-white/62 px-4 py-4">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">Ruta {index + 1}</p>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{pickByLocale(locale, "Route", "Ruta")} {index + 1}</p>
                 <p className="mt-2 text-sm leading-6 text-(--ink)">{route}</p>
               </div>
             ))}
@@ -294,7 +302,7 @@ export default async function HomePage() {
               key={item.title}
               className="surface-card rounded-[1.75rem] p-5 transition hover:-translate-y-1 sm:p-6"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-(--highlight)">Calidad editorial</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-(--highlight)">{pickByLocale(locale, "Editorial quality", "Calidad editorial")}</p>
               <h3 className="mt-3 text-xl font-semibold text-(--ink) sm:text-2xl">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-(--muted)">{item.description}</p>
             </article>
@@ -302,12 +310,14 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <AdSlot slotName="home-inline" locale={locale} className="mx-auto w-full max-w-4xl" />
+
       <section className="grid gap-5 lg:grid-cols-[1.06fr_0.94fr] lg:gap-6">
         <div className="surface-card rounded-4xl px-5 py-6 sm:px-8 sm:py-8">
-          <p className="section-label text-xs font-semibold uppercase">Temas activos</p>
-          <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">La web se esta volviendo mas solida porque el contenido tiene foco.</h2>
+          <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Active topics", "Temas activos")}</p>
+          <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "The site is becoming stronger because the content has focus.", "La web se esta volviendo mas solida porque el contenido tiene foco.")}</h2>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-(--muted) sm:text-base sm:leading-8">
-            En lugar de dispersarse, la portada deja ver mejor las categorias que ya tienen peso real dentro del proyecto y que pueden crecer con contenido util y autentico.
+            {pickByLocale(locale, "Instead of spreading out, the homepage now shows the categories that already have real weight in the project and can grow with useful, authentic content.", "En lugar de dispersarse, la portada deja ver mejor las categorias que ya tienen peso real dentro del proyecto y que pueden crecer con contenido util y autentico.")}
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {categories.map((category) => (
@@ -317,11 +327,11 @@ export default async function HomePage() {
                 className="rounded-[1.75rem] border border-(--line) bg-white/58 p-5 transition hover:-translate-y-1 hover:border-(--accent) sm:p-6"
               >
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-(--highlight)">
-                  {category.count} articulo{category.count > 1 ? "s" : ""}
+                  {category.count} {pickByLocale(locale, category.count > 1 ? "articles" : "article", category.count > 1 ? "articulos" : "articulo")}
                 </p>
                 <h3 className="mt-3 text-xl font-semibold text-(--ink) sm:text-2xl">{category.name}</h3>
                 <p className="mt-3 text-sm leading-7 text-(--muted)">
-                  Guias y comparativas con enfoque claro sobre {category.name.toLowerCase()}.
+                  {pickByLocale(locale, `Guides and comparisons with a clear focus on ${category.name.toLowerCase()}.`, `Guias y comparativas con enfoque claro sobre ${category.name.toLowerCase()}.`)}
                 </p>
               </Link>
             ))}
@@ -329,19 +339,19 @@ export default async function HomePage() {
         </div>
 
         <div className="editorial-band rounded-4xl px-5 py-6 sm:px-8 sm:py-8">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/72">Promesa de la web</p>
-          <h2 className="mt-3 max-w-xl text-3xl font-semibold text-white sm:text-4xl">Bonita por fuera, pero valiosa por dentro.</h2>
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/72">{pickByLocale(locale, "Site promise", "Promesa de la web")}</p>
+          <h2 className="mt-3 max-w-xl text-3xl font-semibold text-white sm:text-4xl">{pickByLocale(locale, "Beautiful on the outside, but genuinely useful underneath.", "Bonita por fuera, pero valiosa por dentro.")}</h2>
           <p className="mt-4 max-w-xl text-sm leading-7 text-white/82 sm:text-base sm:leading-8">
-            El objetivo no es parecer una portada generica de herramientas. Es construir una experiencia con personalidad propia, mejor lectura y piezas que realmente sirvan.
+            {pickByLocale(locale, "The goal is not to look like a generic tools homepage. It is to build an experience with its own personality, better reading rhythm, and pieces that truly help.", "El objetivo no es parecer una portada generica de herramientas. Es construir una experiencia con personalidad propia, mejor lectura y piezas que realmente sirvan.")}
           </p>
           <div className="mt-6 grid gap-3">
             {[
-              "Textos mas claros en portada, blog y herramientas.",
-              "Mejor orden visual para guiar al usuario.",
-              "Mas confianza con contenido util y directo.",
+              pickByLocale(locale, "Clearer copy across home, blog, and tools.", "Textos mas claros en portada, blog y herramientas."),
+              pickByLocale(locale, "Better visual order to guide the user.", "Mejor orden visual para guiar al usuario."),
+              pickByLocale(locale, "More trust through useful and direct content.", "Mas confianza con contenido util y directo."),
             ].map((item, index) => (
               <div key={item} className="rounded-3xl border border-white/14 bg-white/10 px-4 py-4 text-sm leading-6 text-white/86">
-                <span className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/65">Mejora {index + 1}</span>
+                <span className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/65">{pickByLocale(locale, "Improvement", "Mejora")} {index + 1}</span>
                 <p className="mt-2">{item}</p>
               </div>
             ))}
@@ -352,11 +362,11 @@ export default async function HomePage() {
       <section id="ruta-recomendada" className="surface-card scroll-mt-28 rounded-4xl px-5 py-6 sm:px-8 sm:py-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="section-label text-xs font-semibold uppercase">Como usar la portada</p>
-            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">Despues del primer clic, este es el flujo mas util.</h2>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "How to use the homepage", "Como usar la portada")}</p>
+            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "After the first click, this is the most useful flow.", "Despues del primer clic, este es el flujo mas util.")}</h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-(--muted)">
-            El hero ya te deja elegir entre guias, herramientas u orientacion. Aqui la idea es otra: convertir esa primera eleccion en una secuencia util y sin ruido.
+            {pickByLocale(locale, "The hero already lets you choose between guides, tools, or guidance. The idea here is different: turn that first choice into a useful sequence without noise.", "El hero ya te deja elegir entre guias, herramientas u orientacion. Aqui la idea es otra: convertir esa primera eleccion en una secuencia util y sin ruido.")}
           </p>
         </div>
 
@@ -367,7 +377,7 @@ export default async function HomePage() {
               href={item.href}
               className="rounded-[1.75rem] border border-(--line) bg-white/60 px-5 py-5 transition hover:-translate-y-1 hover:border-(--accent) sm:px-6 sm:py-6"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-(--highlight)">Paso {index + 1}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-(--highlight)">{pickByLocale(locale, "Step", "Paso")} {index + 1}</p>
               <h3 className="mt-3 text-xl font-semibold text-(--ink)">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-(--muted)">{item.description}</p>
             </Link>
@@ -378,11 +388,11 @@ export default async function HomePage() {
       <section id="ultimos-articulos" className="surface-card scroll-mt-28 rounded-4xl px-5 py-6 sm:px-8 sm:py-9">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="section-label text-xs font-semibold uppercase">Ultimos articulos</p>
-            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">El blog esta organizado para escanear rapido y entrar donde importa.</h2>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Latest articles", "Ultimos articulos")}</p>
+            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "The blog is organized to scan quickly and enter where it matters.", "El blog esta organizado para escanear rapido y entrar donde importa.")}</h2>
           </div>
           <Link href="/blog" className="text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
-            Ir al blog completo
+            {pickByLocale(locale, "Go to the full blog", "Ir al blog completo")}
           </Link>
         </div>
 
@@ -395,7 +405,7 @@ export default async function HomePage() {
               <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:text-xs sm:tracking-[0.18em]">
                 <span>{latestPost.category}</span>
                 <span className="bg-(--highlight) h-1 w-1 rounded-full" />
-                <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(latestPost) / 220))} min de lectura</span>
+                <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(latestPost) / 220))} {pickByLocale(locale, "min read", "min de lectura")}</span>
               </div>
               <h3 className="mt-4 max-w-3xl text-xl font-semibold leading-tight text-(--ink) group-hover:text-(--accent-strong) sm:text-3xl">
                 {latestPost.title}
@@ -417,14 +427,14 @@ export default async function HomePage() {
                 <span className="rounded-full border border-(--line) bg-white/60 px-4 py-2 font-medium text-(--ink)">
                   {latestPost.author}
                 </span>
-                <span>{new Date(latestPost.date).toLocaleDateString("es-DO")}</span>
+                <span>{formatLocaleDate(latestPost.date, locale)}</span>
               </div>
             </Link>
           ) : (
             <div className="rounded-[1.75rem] border border-dashed border-(--line) bg-white/40 p-5 sm:p-6">
-              <h3 className="text-2xl font-semibold text-(--ink)">Aun no hay articulos publicados.</h3>
+              <h3 className="text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "There are no published articles yet.", "Aun no hay articulos publicados.")}</h3>
               <p className="mt-3 text-sm leading-7 text-(--muted)">
-                Esta seccion esta preparada para mantenerse ordenada en movil y escritorio en cuanto el blog tenga contenido.
+                {pickByLocale(locale, "This section is ready to stay organized on mobile and desktop as soon as the blog has content.", "Esta seccion esta preparada para mantenerse ordenada en movil y escritorio en cuanto el blog tenga contenido.")}
               </p>
             </div>
           )}
@@ -439,14 +449,14 @@ export default async function HomePage() {
                 <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:text-xs sm:tracking-[0.18em]">
                   <span>{post.category}</span>
                   <span className="bg-(--highlight) h-1 w-1 rounded-full" />
-                  <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(post) / 220))} min</span>
+                  <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(post) / 220))} {pickByLocale(locale, "min", "min")}</span>
                 </div>
                 <h3 className="mt-3 text-lg font-semibold leading-tight text-(--ink) group-hover:text-(--accent-strong) sm:text-2xl">
                   {post.title}
                 </h3>
                 <p className="mt-3 text-sm leading-7 text-(--muted)">{post.description}</p>
                 <p className="mt-4 text-xs text-(--muted)">
-                  {post.author} · {new Date(post.date).toLocaleDateString("es-DO")}
+                  {post.author} · {formatLocaleDate(post.date, locale)}
                 </p>
               </Link>
             ))}
@@ -457,11 +467,11 @@ export default async function HomePage() {
       <section id="herramientas-destacadas-home" className="rounded-4xl border border-(--line) bg-[rgba(255,255,255,0.5)] px-5 py-6 scroll-mt-28 sm:px-8 sm:py-8">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="section-label text-xs font-semibold uppercase">Herramientas destacadas</p>
-            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">Recursos con mejor presencia visual y utilidad real.</h2>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Featured tools", "Herramientas destacadas")}</p>
+            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "Resources with stronger visual presence and real utility.", "Recursos con mejor presencia visual y utilidad real.")}</h2>
           </div>
           <Link href="/tools" className="text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
-            Ver todas
+            {pickByLocale(locale, "View all", "Ver todas")}
           </Link>
         </div>
 
@@ -481,7 +491,7 @@ export default async function HomePage() {
               </h3>
               <p className="mt-3 text-sm leading-7 text-(--muted)">{tool.description}</p>
               <p className="mt-3 text-sm leading-6 text-(--ink)">{tool.primaryOutcome}</p>
-              <p className="mt-5 text-sm font-semibold text-(--ink)">Ver ficha completa</p>
+              <p className="mt-5 text-sm font-semibold text-(--ink)">{pickByLocale(locale, "View full detail", "Ver ficha completa")}</p>
             </Link>
           ))}
         </div>
@@ -489,15 +499,15 @@ export default async function HomePage() {
         <div className="action-strip mt-6 rounded-4xl p-4 sm:mt-8 sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--accent-strong)">Siguiente paso recomendado</p>
-              <h3 className="mt-2 text-xl font-semibold text-(--ink)">Lee una guia y luego ejecuta con la herramienta adecuada.</h3>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--accent-strong)">{pickByLocale(locale, "Recommended next step", "Siguiente paso recomendado")}</p>
+              <h3 className="mt-2 text-xl font-semibold text-(--ink)">{pickByLocale(locale, "Read a guide and then act with the right tool.", "Lee una guia y luego ejecuta con la herramienta adecuada.")}</h3>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link href="/blog#archivo-reciente" className="inline-flex items-center justify-center rounded-full bg-(--ink) px-5 py-3 text-sm font-semibold text-white hover:bg-(--accent-strong)">
-                Ir al blog
+                {pickByLocale(locale, "Go to blog", "Ir al blog")}
               </Link>
               <Link href="/tools#herramientas-destacadas" className="inline-flex items-center justify-center rounded-full border border-(--line) px-5 py-3 text-sm font-semibold text-(--ink) hover:border-(--accent) hover:text-(--accent-strong)">
-                Ver herramientas
+                {pickByLocale(locale, "See tools", "Ver herramientas")}
               </Link>
             </div>
           </div>

@@ -1,63 +1,66 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { pickByLocale } from "@/lib/i18n";
+import { pickByLocale, toOpenGraphLocale } from "@/lib/i18n";
 import { getCurrentLocale } from "@/lib/i18n-server";
 
-export const metadata: Metadata = {
-  title: "Sobre Nosotros",
-  description: "Conoce la mision y enfoque de TareasVirtual.",
-  alternates: {
-    canonical: "/about",
-  },
-  openGraph: {
-    title: "Sobre Nosotros | TareasVirtual",
-    description: "Conoce la mision y enfoque de TareasVirtual.",
-    url: `${siteConfig.url}/about`,
-    siteName: siteConfig.name,
-    locale: "es_ES",
-    type: "website",
-    images: [
-      {
-        url: siteConfig.defaultOgImage,
-        width: 1200,
-        height: 630,
-        alt: "Sobre TareasVirtual",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Sobre Nosotros | TareasVirtual",
-    description: "Conoce la mision y enfoque de TareasVirtual.",
-    images: [siteConfig.defaultOgImage],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getCurrentLocale();
+  const title = pickByLocale(locale, "About Us", "Sobre Nosotros");
+  const description = pickByLocale(locale, `Learn about the mission and approach behind ${siteConfig.name}.`, "Conoce la mision y enfoque de TareasVirtual.");
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: "/about",
+    },
+    openGraph: {
+      title: `${title} | ${siteConfig.name}`,
+      description,
+      url: `${siteConfig.url}/about`,
+      siteName: siteConfig.name,
+      locale: toOpenGraphLocale(locale),
+      type: "website",
+      images: [
+        {
+          url: siteConfig.defaultOgImage,
+          width: 1200,
+          height: 630,
+          alt: pickByLocale(locale, `About ${siteConfig.name}`, `Sobre ${siteConfig.name}`),
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${siteConfig.name}`,
+      description,
+      images: [siteConfig.defaultOgImage],
+    },
+  };
+}
 
 export default async function AboutPage() {
   const locale = await getCurrentLocale();
   const pillars = [
     {
-      title: "Claridad practica",
-      description:
-        "Explicamos cada tema con estructura simple para que puedas actuar rapido sin perder contexto.",
+      title: pickByLocale(locale, "Practical clarity", "Claridad practica"),
+      description: pickByLocale(locale, "We explain each topic with a simple structure so you can act quickly without losing context.", "Explicamos cada tema con estructura simple para que puedas actuar rapido sin perder contexto."),
     },
     {
-      title: "Utilidad diaria",
-      description:
-        "Priorizamos guias y herramientas que resuelven tareas reales de estudio, trabajo y organizacion.",
+      title: pickByLocale(locale, "Daily usefulness", "Utilidad diaria"),
+      description: pickByLocale(locale, "We prioritize guides and tools that solve real study, work, and organization tasks.", "Priorizamos guias y herramientas que resuelven tareas reales de estudio, trabajo y organizacion."),
     },
     {
-      title: "Lectura comoda en movil",
-      description:
-        "La informacion se ordena para que en pantalla pequena se entienda rapido y sin bloques pesados.",
+      title: pickByLocale(locale, "Comfortable mobile reading", "Lectura comoda en movil"),
+      description: pickByLocale(locale, "Information is organized so it is easy to understand on a small screen without heavy blocks.", "La informacion se ordena para que en pantalla pequena se entienda rapido y sin bloques pesados."),
     },
   ];
 
   const quickRoutes = [
-    { href: "/blog", label: "Leer guias", detail: "Articulos accionables para estudiar y trabajar mejor." },
-    { href: "/tools", label: "Usar herramientas", detail: "Recursos rapidos para simplificar tareas frecuentes." },
-    { href: "/contact", label: "Contactar", detail: "Canal directo para dudas, soporte o colaboraciones." },
+    { href: "/blog", label: pickByLocale(locale, "Read guides", "Leer guias"), detail: pickByLocale(locale, "Actionable articles to study and work better.", "Articulos accionables para estudiar y trabajar mejor.") },
+    { href: "/tools", label: pickByLocale(locale, "Use tools", "Usar herramientas"), detail: pickByLocale(locale, "Quick resources to simplify frequent tasks.", "Recursos rapidos para simplificar tareas frecuentes.") },
+    { href: "/contact", label: pickByLocale(locale, "Get in touch", "Contactar"), detail: pickByLocale(locale, "Direct channel for questions, support, or collaborations.", "Canal directo para dudas, soporte o colaboraciones.") },
   ];
 
   return (

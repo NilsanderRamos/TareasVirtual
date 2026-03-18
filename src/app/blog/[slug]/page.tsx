@@ -77,6 +77,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const localizedPost = await localizeBlogPost(post, locale);
+  const postContent = await BlogPostContent({ post: localizedPost, sourcePost: post, locale });
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -110,7 +111,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <BlogPostContent post={localizedPost} sourcePost={post} locale={locale} />
+      {postContent}
     </>
   );
 }

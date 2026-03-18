@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { mainNav } from "@/config/navigation";
-import { SiteLocale, pickByLocale } from "@/lib/i18n";
+import { LOCALE_COOKIE_NAME, SiteLocale, pickByLocale } from "@/lib/i18n";
 
 type ThemeMode = "light" | "dark" | "system";
 type ResolvedTheme = "light" | "dark";
@@ -81,6 +81,33 @@ function ThemeIcon() {
   );
 }
 
+function LanguageSwitcher({ locale, onSelect }: { locale: SiteLocale; onSelect: (nextLocale: SiteLocale) => void }) {
+  const options: SiteLocale[] = ["es", "en"];
+
+  return (
+    <div className="inline-flex items-center gap-1 rounded-full border border-(--line) bg-white/85 p-1">
+      {options.map((option) => {
+        const active = option === locale;
+
+        return (
+          <button
+            key={option}
+            type="button"
+            onClick={() => onSelect(option)}
+            className={`rounded-full px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.14em] transition ${
+              active ? "bg-(--ink) text-white" : "text-(--muted) hover:text-(--ink)"
+            }`}
+            aria-pressed={active}
+            aria-label={option === "en" ? "Switch language to English" : "Cambiar idioma a espanol"}
+          >
+            {option}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function Header({ locale }: { locale: SiteLocale }) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -102,6 +129,15 @@ export function Header({ locale }: { locale: SiteLocale }) {
     }
 
     updateTheme(themeMode === "dark" ? "light" : "dark");
+  }
+
+  function updateLocale(nextLocale: SiteLocale) {
+    if (nextLocale === locale) {
+      return;
+    }
+
+    document.cookie = `${LOCALE_COOKIE_NAME}=${nextLocale}; path=/; max-age=31536000; samesite=lax`;
+    window.location.reload();
   }
 
   const themeButtonLabel =
@@ -168,6 +204,8 @@ export function Header({ locale }: { locale: SiteLocale }) {
               </nav>
 
               <div className="hidden items-center gap-2 md:flex">
+                <LanguageSwitcher locale={locale} onSelect={updateLocale} />
+
                 <button
                   type="button"
                   onClick={toggleTheme}
@@ -226,6 +264,13 @@ export function Header({ locale }: { locale: SiteLocale }) {
                 </div>
 
                 <div className="mt-3 flex flex-col gap-2">
+                  <div className="rounded-[1.35rem] border border-(--line) bg-white/90 px-4 py-3.5">
+                    <span className="block text-sm font-semibold text-(--ink)">{pickByLocale(locale, "Language", "Idioma")}</span>
+                    <div className="mt-3">
+                      <LanguageSwitcher locale={locale} onSelect={updateLocale} />
+                    </div>
+                  </div>
+
                   <button
                     type="button"
                     onClick={toggleTheme}
@@ -293,7 +338,7 @@ export function Header({ locale }: { locale: SiteLocale }) {
       {isMenuOpen ? (
         <button
           type="button"
-          aria-label="Cerrar menu"
+          aria-label={pickByLocale(locale, "Close menu", "Cerrar menu")}
           onClick={() => setIsMenuOpen(false)}
           className="fixed inset-0 top-[5.35rem] z-40 bg-[rgba(7,17,22,0.16)] backdrop-blur-[1px] md:hidden"
         />

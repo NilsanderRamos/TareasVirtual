@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { blogPosts } from "@/content/blog/posts";
 import { tools } from "@/content/tools";
 import { estimateBlogPostWordCount } from "@/lib/blog";
+import { getPrimaryBlogHubForPost, getBlogHubPath, getRelatedBlogPostReason, getRelatedBlogPosts } from "@/lib/blog-topics";
 import { formatLocaleDate, pickByLocale, SiteLocale } from "@/lib/i18n";
 import { localizeBlogPosts, localizeToolItems } from "@/lib/localize-content";
 import { BlogPost, BlogReferenceImage } from "@/types";
@@ -178,14 +180,13 @@ export async function BlogPostContent({ post, sourcePost, locale }: BlogPostCont
   const readingMinutes = Math.max(1, Math.ceil(estimateBlogPostWordCount(post) / 220));
   const inlineReferenceImageMap = buildInlineReferenceImageMap(sections, referenceImages);
   const mobileSectionLinks = sectionLinks.slice(0, 6);
-  const relatedPosts = await localizeBlogPosts(
-    blogPosts.filter((entry) => entry.slug !== sourcePost.slug && entry.category === sourcePost.category).slice(0, 2),
-    locale,
-  );
+  const relatedPostMatches = getRelatedBlogPosts(sourcePost, blogPosts, 3);
+  const relatedPosts = await localizeBlogPosts(relatedPostMatches.map((match) => match.post), locale);
   const suggestedTools = (await localizeToolItems(getSuggestedToolsForCategory(sourcePost.category).slice(0, 2), locale));
   const conversionPlan = getArticleConversionPlan(sourcePost, relatedPosts, suggestedTools, locale);
   const primaryToolForNextStep = suggestedTools[0] ?? null;
   const showSalaryCalculatorBoost = sourcePost.slug === "calcular-salario-neto-estados-unidos-2026" && primaryToolForNextStep?.slug === "calculadora-salario-neto-usa";
+  const primaryHub = getPrimaryBlogHubForPost(sourcePost);
 
   return (
     <article className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-14">
@@ -308,6 +309,8 @@ export async function BlogPostContent({ post, sourcePost, locale }: BlogPostCont
               </div>
             </section>
           ) : null}
+
+          <AdSlot slotName="blog-post-inline" locale={locale} />
 
           {showSalaryCalculatorBoost ? (
             <section className="overflow-hidden rounded-[1.75rem] border border-emerald-200 bg-[linear-gradient(135deg,rgba(16,185,129,0.96),rgba(13,148,136,0.92))] px-5 py-6 text-white shadow-[0_24px_56px_-32px_rgba(16,185,129,0.55)] sm:px-8 sm:py-7">
@@ -540,9 +543,15 @@ export async function BlogPostContent({ post, sourcePost, locale }: BlogPostCont
                 <h2 className="mt-3 text-2xl font-semibold text-(--ink) sm:text-3xl">{conversionPlan.title}</h2>
                 <p className="mt-4 text-sm leading-7 text-(--muted) sm:text-base sm:leading-8">{conversionPlan.description}</p>
               </div>
-              <span className="hero-chip w-fit rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">
-                {post.category}
-              </span>
+              {primaryHub ? (
+                <Link href={getBlogHubPath(primaryHub.slug)} className="hero-chip w-fit rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong) hover:text-(--ink)">
+                  {pickByLocale(locale, `Hub: ${primaryHub.name.en}`, `Hub: ${primaryHub.name.es}`)}
+                </Link>
+              ) : (
+                <span className="hero-chip w-fit rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">
+                  {post.category}
+                </span>
+              )}
             </div>
 
             <div className="mt-5 grid gap-3 md:grid-cols-[1.1fr_0.9fr]">
@@ -574,6 +583,33 @@ export async function BlogPostContent({ post, sourcePost, locale }: BlogPostCont
               </div>
             ) : null}
           </section>
+
+          {relatedPosts.length > 0 ? (
+            <section className="surface-card rounded-[1.75rem] px-5 py-6 sm:px-8 sm:py-7">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Automatic related reading", "Lecturas relacionadas automaticas")}</p>
+                  <h2 className="mt-2 text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "Keep moving inside the same topic cluster.", "Sigue dentro del mismo cluster tematico.")}</h2>
+                </div>
+                {primaryHub ? (
+                  <Link href={getBlogHubPath(primaryHub.slug)} className="text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
+                    {pickByLocale(locale, "Open category hub", "Abrir hub de categoria")}
+                  </Link>
+                ) : null}
+              </div>
+              <div className="mt-5 grid gap-3 md:grid-cols-3">
+                {relatedPosts.map((relatedPost, index) => (
+                  <Link key={relatedPost.slug} href={`/blog/${relatedPost.slug}`} className="rounded-[1.25rem] border border-(--line) bg-white/60 px-4 py-4 transition hover:-translate-y-0.5 hover:border-(--accent)">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{relatedPost.category}</p>
+                    <h3 className="mt-2 text-lg font-semibold text-(--ink)">{relatedPost.title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-(--muted)">{getRelatedBlogPostReason(relatedPostMatches[index], locale)}</p>
+                    <p className={`mt-3 text-sm leading-6 text-(--ink) ${index > 1 ? "hidden lg:block" : ""}`}>{relatedPost.description}</p>
+                    <p className="mt-4 text-sm font-semibold text-(--accent-strong)">{pickByLocale(locale, "Read article", "Leer articulo")}</p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           {post.externalReferences && post.externalReferences.length > 0 ? (
             <section className="surface-card rounded-[1.75rem] px-5 py-6 sm:px-8 sm:py-7">

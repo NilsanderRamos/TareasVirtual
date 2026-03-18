@@ -1,37 +1,44 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { siteConfig } from "@/config/site";
-import { pickByLocale } from "@/lib/i18n";
+import { pickByLocale, toOpenGraphLocale } from "@/lib/i18n";
 import { getCurrentLocale } from "@/lib/i18n-server";
 
-export const metadata: Metadata = {
-  title: "Contacto",
-  description: "Canales de contacto para dudas, soporte o colaboraciones.",
-  alternates: {
-    canonical: "/contact",
-  },
-  openGraph: {
-    title: `Contacto | ${siteConfig.name}`,
-    description: "Canales de contacto para dudas, soporte o colaboraciones.",
-    url: `${siteConfig.url}/contact`,
-    siteName: siteConfig.name,
-    type: "website",
-    images: [
-      {
-        url: siteConfig.defaultOgImage,
-        width: 1200,
-        height: 900,
-        alt: `${siteConfig.name} contacto`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `Contacto | ${siteConfig.name}`,
-    description: "Canales de contacto para dudas, soporte o colaboraciones.",
-    images: [siteConfig.defaultOgImage],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getCurrentLocale();
+  const title = pickByLocale(locale, "Contact", "Contacto");
+  const description = pickByLocale(locale, "Contact channels for questions, support, or collaborations.", "Canales de contacto para dudas, soporte o colaboraciones.");
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: "/contact",
+    },
+    openGraph: {
+      title: `${title} | ${siteConfig.name}`,
+      description,
+      url: `${siteConfig.url}/contact`,
+      siteName: siteConfig.name,
+      locale: toOpenGraphLocale(locale),
+      type: "website",
+      images: [
+        {
+          url: siteConfig.defaultOgImage,
+          width: 1200,
+          height: 900,
+          alt: pickByLocale(locale, `${siteConfig.name} contact`, `${siteConfig.name} contacto`),
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${siteConfig.name}`,
+      description,
+      images: [siteConfig.defaultOgImage],
+    },
+  };
+}
 
 export default async function ContactPage() {
   const locale = await getCurrentLocale();
@@ -51,9 +58,9 @@ export default async function ContactPage() {
 
             <div className="mt-5 flex flex-wrap gap-2.5 sm:mt-6">
               {[
-                "Soporte del sitio",
-                "Consultas editoriales",
-                "Colaboraciones",
+                pickByLocale(locale, "Site support", "Soporte del sitio"),
+                pickByLocale(locale, "Editorial inquiries", "Consultas editoriales"),
+                pickByLocale(locale, "Collaborations", "Colaboraciones"),
               ].map((item, index) => (
                 <span key={item} className={`hero-chip ${index > 1 ? "hidden sm:inline-flex" : ""}`}>
                   {item}

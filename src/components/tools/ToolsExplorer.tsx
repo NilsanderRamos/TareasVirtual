@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useDeferredValue, useState } from "react";
 import { trackSiteEvent } from "@/lib/analytics";
-import { SiteLocale, pickByLocale } from "@/lib/i18n";
+import { formatLocaleDate, SiteLocale, pickByLocale } from "@/lib/i18n";
 import { ToolItem } from "@/types";
 
 interface ToolsExplorerProps {
@@ -11,14 +11,14 @@ interface ToolsExplorerProps {
   locale: SiteLocale;
 }
 
-function getOpenReason(tool: ToolItem) {
+function getOpenReason(tool: ToolItem, locale: SiteLocale) {
   const firstBestFor = tool.bestFor[0];
 
   if (firstBestFor) {
-    return `Buena entrada si vienes con una necesidad de ${firstBestFor.toLowerCase()}.`;
+    return pickByLocale(locale, `A good starting point if you come in with a need around ${firstBestFor.toLowerCase()}.`, `Buena entrada si vienes con una necesidad de ${firstBestFor.toLowerCase()}.`);
   }
 
-  return "Te deja validar rapido si encaja en tu flujo antes de comprometerte.";
+  return pickByLocale(locale, "It lets you validate quickly whether it fits your workflow before committing.", "Te deja validar rapido si encaja en tu flujo antes de comprometerte.");
 }
 
 export function ToolsExplorer({ tools, locale }: ToolsExplorerProps) {
@@ -39,11 +39,11 @@ export function ToolsExplorer({ tools, locale }: ToolsExplorerProps) {
   });
 
   return (
-    <section id="explorar-herramientas" className="blog-reveal blog-reveal-delay-1 mt-8 scroll-mt-28 sm:mt-10">
+    <section id="explorar-herramientas" className="blog-reveal blog-reveal-delay-1 deferred-section mt-8 scroll-mt-28 sm:mt-10">
       <div className="surface-card rounded-4xl px-5 py-6 sm:px-8 sm:py-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="section-label text-xs font-semibold uppercase">Filtrar herramientas</p>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Filter tools", "Filtrar herramientas")}</p>
             <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "Find the tool you need quickly.", "Encuentra rapido la utilidad que necesitas.")}</h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-(--muted)">
@@ -99,12 +99,12 @@ export function ToolsExplorer({ tools, locale }: ToolsExplorerProps) {
                 <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:text-xs sm:tracking-[0.18em]">
                   <span>{tool.category}</span>
                   <span className="bg-(--highlight) h-1 w-1 rounded-full" />
-                  <span>{new Date(tool.updatedAt).toLocaleDateString("es-DO")}</span>
+                  <span>{formatLocaleDate(tool.updatedAt, locale)}</span>
                 </div>
                 <p className="mt-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{tool.intentLabel}</p>
                 <h3 className="mt-3 text-xl font-semibold text-(--ink) sm:text-2xl">{tool.name}</h3>
                 <p className="mt-3 text-sm leading-7 text-(--muted)">{tool.description}</p>
-                <p className="mt-3 text-sm leading-6 text-(--ink)">{getOpenReason(tool)}</p>
+                <p className="mt-3 text-sm leading-6 text-(--ink)">{getOpenReason(tool, locale)}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {tool.bestFor.slice(0, 2).map((item, index) => (
                     <span

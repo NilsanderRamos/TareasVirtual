@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useDeferredValue, useState } from "react";
 import { trackSiteEvent } from "@/lib/analytics";
 import { estimateBlogPostWordCount } from "@/lib/blog";
-import { SiteLocale, pickByLocale } from "@/lib/i18n";
+import { formatLocaleDate, SiteLocale, pickByLocale } from "@/lib/i18n";
 import { BlogPost } from "@/types";
 
 interface BlogExplorerProps {
@@ -13,32 +13,32 @@ interface BlogExplorerProps {
   locale: SiteLocale;
 }
 
-function getIntentLabel(post: BlogPost) {
+function getIntentLabel(post: BlogPost, locale: SiteLocale) {
   const category = post.category.toLowerCase();
 
   if (category.includes("software") || category.includes("ecommerce")) {
-    return "Para comparar opciones";
+    return pickByLocale(locale, "For comparing options", "Para comparar opciones");
   }
 
   if (category.includes("productividad") || category.includes("aprendizaje")) {
-    return "Para aplicar hoy";
+    return pickByLocale(locale, "To apply today", "Para aplicar hoy");
   }
 
   if (category.includes("finanzas")) {
-    return "Para decidir con numeros";
+    return pickByLocale(locale, "To decide with numbers", "Para decidir con numeros");
   }
 
-  return "Para aclarar la decision";
+  return pickByLocale(locale, "To clarify the decision", "Para aclarar la decision");
 }
 
-function getOpenReason(post: BlogPost) {
+function getOpenReason(post: BlogPost, locale: SiteLocale) {
   const firstTag = post.tags[0];
 
   if (firstTag) {
-    return `Ideal si vienes buscando ${firstTag.toLowerCase()}.`;
+    return pickByLocale(locale, `Ideal if you are looking for ${firstTag.toLowerCase()}.`, `Ideal si vienes buscando ${firstTag.toLowerCase()}.`);
   }
 
-  return "Te da contexto suficiente antes de seguir comparando.";
+  return pickByLocale(locale, "It gives you enough context before you keep comparing.", "Te da contexto suficiente antes de seguir comparando.");
 }
 
 function getCategoryPreviewClass(post: BlogPost) {
@@ -77,11 +77,11 @@ export function BlogExplorer({ posts, locale }: BlogExplorerProps) {
   });
 
   return (
-    <section id="archivo-reciente" className="blog-reveal blog-reveal-delay-1 mt-8 scroll-mt-28 sm:mt-10">
+    <section id="archivo-reciente" className="blog-reveal blog-reveal-delay-1 deferred-section mt-8 scroll-mt-28 sm:mt-10">
       <div className="surface-card rounded-4xl px-5 py-6 sm:px-8 sm:py-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="section-label text-xs font-semibold uppercase">Explorar archivo</p>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Explore archive", "Explorar archivo")}</p>
             <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "Find what you want to read quickly.", "Encuentra rapido lo que quieres leer.")}</h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-(--muted)">
@@ -150,16 +150,16 @@ export function BlogExplorer({ posts, locale }: BlogExplorerProps) {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:text-xs sm:tracking-[0.18em]">
-                  <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(post) / 220))} min</span>
+                  <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(post) / 220))} {pickByLocale(locale, "min", "min")}</span>
                   <span className="bg-(--highlight) h-1 w-1 rounded-full" />
                   <span>{post.author}</span>
                 </div>
                 <p className="mt-4 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">
-                  {getIntentLabel(post)}
+                  {getIntentLabel(post, locale)}
                 </p>
                 <h3 className="mt-3 text-lg font-semibold leading-tight text-(--ink) sm:mt-4 sm:text-2xl">{post.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-(--muted) sm:mt-4">{post.description}</p>
-                <p className="mt-4 text-sm leading-6 text-(--ink)">{getOpenReason(post)}</p>
+                <p className="mt-4 text-sm leading-6 text-(--ink)">{getOpenReason(post, locale)}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {post.tags.slice(0, 2).map((tag) => (
                     <span key={tag} className="rounded-full border border-(--line) bg-white/55 px-3 py-1.5 text-xs font-medium text-(--accent-strong)">
@@ -168,7 +168,7 @@ export function BlogExplorer({ posts, locale }: BlogExplorerProps) {
                   ))}
                 </div>
                 <div className="mt-auto flex flex-col items-start gap-2 pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:pt-6">
-                  <p className="text-xs text-(--muted)">{new Date(post.date).toLocaleDateString("es-DO")}</p>
+                  <p className="text-xs text-(--muted)">{formatLocaleDate(post.date, locale)}</p>
                   <Link
                     href={`/blog/${post.slug}`}
                     onClick={() => trackSiteEvent("blog_result_clicked", { slug: post.slug, category: post.category })}

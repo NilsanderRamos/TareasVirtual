@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { LOCALE_COOKIE_NAME, normalizeLocale, resolveLocaleFromAcceptLanguage, SiteLocale } from "@/lib/i18n";
 
 const resendApiKey = process.env.RESEND_API_KEY ?? "";
 const contactToEmail = process.env.CONTACT_FORM_TO_EMAIL ?? "";
@@ -24,7 +25,23 @@ function normalizeLine(value: string) {
   return value.replace(/\r/g, "").trim();
 }
 
+function getLocaleFromRequest(request: Request): SiteLocale {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  const cookieLocale = cookieHeader
+    .split(";")
+    .map((entry) => entry.trim())
+    .find((entry) => entry.startsWith(`${LOCALE_COOKIE_NAME}=`))
+    ?.split("=")[1];
+
+  return normalizeLocale(cookieLocale) ?? resolveLocaleFromAcceptLanguage(request.headers.get("accept-language"));
+}
+
+function t(locale: SiteLocale, en: string, es: string) {
+  return locale === "en" ? en : es;
+}
+
 export async function POST(request: Request) {
+  const locale = getLocaleFromRequest(request);
   const payload = (await request.json()) as ContactPayload;
 
   const name = normalizeLine(payload.name ?? "");
@@ -39,28 +56,28 @@ export async function POST(request: Request) {
   }
 
   if (name.length < 2) {
-    return NextResponse.json({ message: "El nombre no es valido." }, { status: 400 });
+    return NextResponse.json({ message: t(locale, "The name is not valid.", "El nombre no es valido.") }, { status: 400 });
   }
 
   if (!isValidEmail(email)) {
-    return NextResponse.json({ message: "El correo no es valido." }, { status: 400 });
+    return NextResponse.json({ message: t(locale, "The email is not valid.", "El correo no es valido.") }, { status: 400 });
   }
 
   if (!allowedReasons.has(reason)) {
-    return NextResponse.json({ message: "El motivo de contacto no es valido." }, { status: 400 });
+    return NextResponse.json({ message: t(locale, "The contact reason is not valid.", "El motivo de contacto no es valido.") }, { status: 400 });
   }
 
   if (url && !/^https?:\/\//i.test(url)) {
-    return NextResponse.json({ message: "La URL relacionada no es valida." }, { status: 400 });
+    return NextResponse.json({ message: t(locale, "The related URL is not valid.", "La URL relacionada no es valida.") }, { status: 400 });
   }
 
   if (message.length < 20) {
-    return NextResponse.json({ message: "El mensaje necesita mas contexto." }, { status: 400 });
+    return NextResponse.json({ message: t(locale, "The message needs more context.", "El mensaje necesita mas contexto.") }, { status: 400 });
   }
 
   if (!resendApiKey || !contactToEmail) {
     return NextResponse.json(
-      { message: "El formulario no esta configurado todavia. Usa el correo directo mientras activamos el envio." },
+      { message: t(locale, "The form is not configured yet. Use the direct email while we activate sending.", "El formulario no esta configurado todavia. Usa el correo directo mientras activamos el envio.") },
       { status: 503 },
     );
   }
@@ -72,14 +89,14 @@ export async function POST(request: Request) {
       from: contactFromEmail,
       to: contactToEmail,
       replyTo: email,
-      subject: `[Contacto] ${reason} - ${name}`,
+      subject: `${t(locale, "[Contact]", "[Contacto]")} ${reason} - ${name}`,
       text: [
-        `Nombre: ${name}`,
+        `${t(locale, "Name", "Nombre")}: ${name}`,
         `Email: ${email}`,
-        `Motivo: ${reason}`,
-        `URL relacionada: ${url || "No compartida"}`,
+        `${t(locale, "Reason", "Motivo")}: ${reason}`,
+        `${t(locale, "Related URL", "URL relacionada")}: ${url || t(locale, "Not shared", "No compartida")}`,
         "",
-        "Mensaje:",
+        `${t(locale, "Message", "Mensaje")}:`,
         message,
       ].join("\n"),
     });
@@ -87,7 +104,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json(
-      { message: "No pudimos enviar tu mensaje ahora mismo. Intenta otra vez en unos minutos." },
+      { message: t(locale, "We could not send your message right now. Try again in a few minutes.", "No pudimos enviar tu mensaje ahora mismo. Intenta otra vez en unos minutos.") },
       { status: 500 },
     );
   }

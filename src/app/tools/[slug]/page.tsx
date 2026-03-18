@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ToolWidget } from "@/components/tools/ToolWidgets";
 import { tools } from "@/content/tools";
@@ -133,6 +134,8 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
           <ToolWidget tool={tool} locale={locale} />
         </div>
       </section>
+
+      <AdSlot slotName="tool-detail-inline" locale={locale} className="mt-8 mx-auto w-full max-w-4xl" />
 
       <section className="mt-8 grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-6">
         <div className="space-y-5">

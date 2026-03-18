@@ -53,7 +53,6 @@ export async function translateText(text: string, targetLocale: SiteLocale) {
     translationCache.set(cacheKey, translatedText);
     return translatedText;
   } catch {
-    translationCache.set(cacheKey, text);
     return text;
   }
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookieSettingsButton } from "@/components/ads/CookieSettingsButton";
 import { siteConfig } from "@/config/site";
 import { SiteLocale, pickByLocale } from "@/lib/i18n";
 
@@ -94,6 +95,7 @@ export function Footer({ locale }: { locale: SiteLocale }) {
               <Link href="/terms" className="rounded-2xl border border-white/10 px-3 py-3 hover:text-white sm:border-0 sm:px-0 sm:py-0">
                 {pickByLocale(locale, "Terms of Use", "Terminos de Uso")}
               </Link>
+              <CookieSettingsButton locale={locale} />
             </nav>
           </div>
 

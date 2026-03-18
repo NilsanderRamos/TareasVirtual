@@ -1,42 +1,51 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { BlogExplorer } from "@/components/blog/BlogExplorer";
 import { blogPosts } from "@/content/blog/posts";
 import { siteConfig } from "@/config/site";
 import { estimateBlogPostWordCount } from "@/lib/blog";
-import { formatLocaleDate, pickByLocale } from "@/lib/i18n";
+import { getAllBlogHubs, getBlogHubPath, getBlogHubPosts, getBlogHubTools, getLocalizedBlogHubCopy } from "@/lib/blog-topics";
+import { formatLocaleDate, pickByLocale, toOpenGraphLocale } from "@/lib/i18n";
 import { getCurrentLocale } from "@/lib/i18n-server";
 import { localizeBlogPosts } from "@/lib/localize-content";
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description: "Archivo editorial con comparativas originales, guias practicas y contenido comercial en espanol para decidir mejor en 2026.",
-  alternates: {
-    canonical: "/blog",
-  },
-  openGraph: {
-    title: `Blog | ${siteConfig.name}`,
-    description: "Archivo editorial con comparativas originales, guias practicas y contenido comercial en espanol para decidir mejor en 2026.",
-    url: `${siteConfig.url}/blog`,
-    siteName: siteConfig.name,
-    type: "website",
-    images: [
-      {
-        url: siteConfig.defaultOgImage,
-        width: 1200,
-        height: 900,
-        alt: `${siteConfig.name} blog editorial`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `Blog | ${siteConfig.name}`,
-    description: "Archivo editorial con comparativas originales, guias practicas y contenido comercial en espanol para decidir mejor en 2026.",
-    images: [siteConfig.defaultOgImage],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getCurrentLocale();
+  const title = "Blog";
+  const description = pickByLocale(locale, "Editorial archive with original comparisons, practical guides, and commercial content to make better decisions in 2026.", "Archivo editorial con comparativas originales, guias practicas y contenido comercial en espanol para decidir mejor en 2026.");
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: "/blog",
+    },
+    openGraph: {
+      title: `${title} | ${siteConfig.name}`,
+      description,
+      url: `${siteConfig.url}/blog`,
+      siteName: siteConfig.name,
+      locale: toOpenGraphLocale(locale),
+      type: "website",
+      images: [
+        {
+          url: siteConfig.defaultOgImage,
+          width: 1200,
+          height: 900,
+          alt: pickByLocale(locale, `${siteConfig.name} editorial blog`, `${siteConfig.name} blog editorial`),
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${siteConfig.name}`,
+      description,
+      images: [siteConfig.defaultOgImage],
+    },
+  };
+}
 
 export default async function BlogPage() {
   const locale = await getCurrentLocale();
@@ -46,23 +55,29 @@ export default async function BlogPage() {
   const categories = Array.from(new Set(localizedPosts.map((post) => post.category))).sort();
   const editorialSignals = [pickByLocale(locale, "Original comparisons", "Comparativas originales"), pickByLocale(locale, "Clear reading", "Lectura clara"), pickByLocale(locale, "Useful decisions", "Decision util")];
   const compactSignals = [`${localizedPosts.length} ${pickByLocale(locale, "published articles", "articulos publicados")}`, `${categories.length} ${pickByLocale(locale, "active categories", "categorias activas")}`];
+  const strategicHubs = getAllBlogHubs().map((hub) => ({
+    hub,
+    copy: getLocalizedBlogHubCopy(hub, locale),
+    postCount: getBlogHubPosts(hub.slug).length,
+    toolCount: getBlogHubTools(hub.slug).length,
+  }));
   const readingPrinciples = [
-    "Primero una pieza destacada para orientar la decision.",
-    "Luego filtros simples para encontrar el resto sin ruido.",
-    "Cada tarjeta muestra solo lo necesario para decidir si abrirla.",
+    pickByLocale(locale, "Start with one featured piece to orient the decision.", "Primero una pieza destacada para orientar la decision."),
+    pickByLocale(locale, "Then use simple filters to find the rest without noise.", "Luego filtros simples para encontrar el resto sin ruido."),
+    pickByLocale(locale, "Each card shows only what is needed to decide whether to open it.", "Cada tarjeta muestra solo lo necesario para decidir si abrirla."),
   ];
   const archiveNotes = [
     {
-      title: "Menos saturacion",
-      description: "La portada ya no empuja demasiados mensajes a la vez. Primero orienta, luego deja explorar.",
+      title: pickByLocale(locale, "Less saturation", "Menos saturacion"),
+      description: pickByLocale(locale, "The landing page no longer pushes too many messages at once. First it orients, then it lets you explore.", "La portada ya no empuja demasiados mensajes a la vez. Primero orienta, luego deja explorar."),
     },
     {
-      title: "Mejor orden visual",
-      description: "La jerarquia entre destacado, archivo y rutas siguientes ahora es mucho mas clara.",
+      title: pickByLocale(locale, "Better visual order", "Mejor orden visual"),
+      description: pickByLocale(locale, "The hierarchy between the featured piece, archive, and next routes is now much clearer.", "La jerarquia entre destacado, archivo y rutas siguientes ahora es mucho mas clara."),
     },
     {
-      title: "Lectura mas limpia",
-      description: "La informacion sigue completa, pero presentada en bloques mas faciles de recorrer en movil y desktop.",
+      title: pickByLocale(locale, "Cleaner reading", "Lectura mas limpia"),
+      description: pickByLocale(locale, "The information remains complete, but it is presented in blocks that are easier to scan on mobile and desktop.", "La informacion sigue completa, pero presentada en bloques mas faciles de recorrer en movil y desktop."),
     },
   ];
 
@@ -145,7 +160,7 @@ export default async function BlogPage() {
               <div className="mt-5 space-y-3">
                 {readingPrinciples.map((item, index) => (
                   <div key={item} className="rounded-3xl border border-(--line) bg-white/62 px-4 py-4">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">Paso {index + 1}</p>
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">{pickByLocale(locale, "Step", "Paso")} {index + 1}</p>
                     <p className="mt-2 text-sm leading-6 text-(--muted)">{item}</p>
                   </div>
                 ))}
@@ -154,7 +169,7 @@ export default async function BlogPage() {
 
             {editorialSpotlight.length > 0 ? (
               <div className="rounded-4xl border border-(--line) bg-white/58 p-5 shadow-[0_18px_46px_rgba(20,35,26,0.06)] sm:p-6">
-                <p className="section-label text-xs font-semibold uppercase">Lecturas en radar</p>
+                <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "On the radar", "Lecturas en radar")}</p>
                 <div className="mt-4 grid gap-3">
                   {editorialSpotlight.map((post, index) => (
                     <Link key={post.slug} href={`/blog/${post.slug}`} className="overflow-hidden rounded-3xl border border-(--line) bg-white/62 transition hover:-translate-y-0.5 hover:border-(--accent)">
@@ -244,24 +259,24 @@ export default async function BlogPage() {
 
           <aside className="space-y-5">
             <section className="editorial-band rounded-4xl px-5 py-6 sm:px-8 sm:py-7">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/72">Bloque curado</p>
-              <h2 className="mt-3 text-2xl font-semibold text-white">Empieza por una sola pieza fuerte antes de abrir el resto del archivo.</h2>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/72">{pickByLocale(locale, "Curated block", "Bloque curado")}</p>
+              <h2 className="mt-3 text-2xl font-semibold text-white">{pickByLocale(locale, "Start with one strong piece before opening the rest of the archive.", "Empieza por una sola pieza fuerte antes de abrir el resto del archivo.")}</h2>
               <p className="mt-4 text-sm leading-7 text-white/82">
-                Asi la portada no se siente como una pared de tarjetas. Primero orienta. Despues deja profundizar.
+                {pickByLocale(locale, "That way the landing page does not feel like a wall of cards. First it orients. Then it lets you go deeper.", "Asi la portada no se siente como una pared de tarjetas. Primero orienta. Despues deja profundizar.")}
               </p>
             </section>
 
             <section className="surface-card rounded-4xl px-5 py-6 sm:px-8 sm:py-7">
-              <p className="section-label text-xs font-semibold uppercase">Por que empezar aqui</p>
+              <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Why start here", "Por que empezar aqui")}</p>
               <div className="mt-5 space-y-3 text-sm leading-7 text-(--muted)">
                 <div className="info-tile rounded-3xl px-4 py-4">
-                  Resume bien el tema y te deja decidir si conviene profundizar o no.
+                  {pickByLocale(locale, "It summarizes the topic well and lets you decide whether it is worth going deeper.", "Resume bien el tema y te deja decidir si conviene profundizar o no.")}
                 </div>
                 <div className="info-tile rounded-3xl px-4 py-4">
-                  Mantiene contexto suficiente antes de obligarte a abrir mas piezas.
+                  {pickByLocale(locale, "It keeps enough context before forcing you to open more pieces.", "Mantiene contexto suficiente antes de obligarte a abrir mas piezas.")}
                 </div>
                 <div className="rounded-3xl border border-(--line) bg-linear-to-r from-white/75 to-white/55 px-4 py-4 text-(--ink)">
-                  Si ya prefieres ejecutar, desde aqui puedes saltar luego a herramientas sin romper el flujo.
+                  {pickByLocale(locale, "If you already prefer to act, you can jump from here to tools without breaking the flow.", "Si ya prefieres ejecutar, desde aqui puedes saltar luego a herramientas sin romper el flujo.")}
                 </div>
               </div>
             </section>
@@ -271,22 +286,50 @@ export default async function BlogPage() {
 
       {remainingPosts.length > 0 ? <BlogExplorer posts={remainingPosts} locale={locale} /> : null}
 
+      <section className="deferred-section mt-8 surface-card rounded-4xl px-5 py-6 sm:mt-10 sm:px-8 sm:py-8">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Strategic hubs", "Hubs estrategicos")}</p>
+            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "Enter through stronger category routes.", "Entra por rutas de categoria mas fuertes.")}</h2>
+          </div>
+          <p className="max-w-xl text-sm leading-7 text-(--muted)">
+            {pickByLocale(locale, "These routes group articles and tools around the categories with more strategic weight for SEO, utility, and monetization.", "Estas rutas agrupan articulos y herramientas alrededor de categorias con mas peso estrategico para SEO, utilidad y monetizacion.")}
+          </p>
+        </div>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {strategicHubs.map(({ hub, copy, postCount, toolCount }) => (
+            <Link key={hub.slug} href={getBlogHubPath(hub.slug)} className="rounded-3xl border border-(--line) bg-white/60 px-5 py-5 transition hover:-translate-y-1 hover:border-(--accent)">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{copy.eyebrow}</p>
+              <h3 className="mt-3 text-xl font-semibold text-(--ink)">{copy.name}</h3>
+              <p className="mt-3 text-sm leading-7 text-(--muted)">{copy.description}</p>
+              <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-(--accent-strong)">
+                <span className="rounded-full border border-(--line) bg-white/70 px-3 py-1.5">{postCount} {pickByLocale(locale, postCount === 1 ? "article" : "articles", postCount === 1 ? "articulo" : "articulos")}</span>
+                <span className="rounded-full border border-(--line) bg-white/70 px-3 py-1.5">{toolCount} {pickByLocale(locale, toolCount === 1 ? "tool" : "tools", toolCount === 1 ? "herramienta" : "herramientas")}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <AdSlot slotName="blog-inline" locale={locale} className="mx-auto w-full max-w-4xl" />
+
       <section className="mt-8 surface-card rounded-4xl px-5 py-6 sm:mt-10 sm:px-8 sm:py-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="section-label text-xs font-semibold uppercase">Confianza editorial</p>
-            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">Senales simples para entender el criterio del archivo.</h2>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Editorial trust", "Confianza editorial")}</p>
+            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "Simple signals to understand the archive's standards.", "Senales simples para entender el criterio del archivo.")}</h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-(--muted)">
-            Este cierre resume por que el blog busca verse mas ligero sin perder profundidad ni utilidad.
+            {pickByLocale(locale, "This closing section summarizes why the blog aims to feel lighter without losing depth or usefulness.", "Este cierre resume por que el blog busca verse mas ligero sin perder profundidad ni utilidad.")}
           </p>
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {[
-            "Contenido original actualizado para 2026.",
-            "Fuentes y referencias visibles cuando aplican.",
-            "Bloques pensados para leer con menos friccion.",
+            pickByLocale(locale, "Original content updated for 2026.", "Contenido original actualizado para 2026."),
+            pickByLocale(locale, "Visible sources and references when they apply.", "Fuentes y referencias visibles cuando aplican."),
+            pickByLocale(locale, "Blocks designed to read with less friction.", "Bloques pensados para leer con menos friccion."),
           ].map((item) => (
             <div key={item} className="info-tile rounded-3xl px-4 py-4">
               <p className="text-sm leading-6 text-(--ink)">{item}</p>
@@ -299,24 +342,24 @@ export default async function BlogPage() {
         <section className="mt-8 action-strip rounded-4xl p-4 sm:mt-10 sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--accent-strong)">Siguiente paso</p>
-              <h3 className="mt-2 text-xl font-semibold text-(--ink)">Si ya tienes claro el problema, pasa a una herramienta.</h3>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--accent-strong)">{pickByLocale(locale, "Next step", "Siguiente paso")}</p>
+              <h3 className="mt-2 text-xl font-semibold text-(--ink)">{pickByLocale(locale, "If the problem is already clear, move to a tool.", "Si ya tienes claro el problema, pasa a una herramienta.")}</h3>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link href="/tools#herramientas-destacadas" className="inline-flex items-center justify-center rounded-full bg-(--ink) px-5 py-3 text-sm font-semibold text-white hover:bg-(--accent-strong)">
-                Ir a herramientas
+                {pickByLocale(locale, "Go to tools", "Ir a herramientas")}
               </Link>
               <Link href="/contact" className="text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
-                O pedir ayuda directa
+                {pickByLocale(locale, "Or ask for direct help", "O pedir ayuda directa")}
               </Link>
             </div>
           </div>
         </section>
       ) : (
         <section className="mt-8 rounded-4xl border border-dashed border-(--line) bg-white/45 px-5 py-6 text-center sm:mt-10 sm:px-8 sm:py-8">
-          <h2 className="text-2xl font-semibold text-(--ink)">El blog todavia no tiene articulos publicados.</h2>
+          <h2 className="text-2xl font-semibold text-(--ink)">{pickByLocale(locale, "The blog does not have published articles yet.", "El blog todavia no tiene articulos publicados.")}</h2>
           <p className="mt-3 text-sm leading-7 text-(--muted)">
-            La estructura ya esta preparada para mostrar contenidos de forma clara y optimizada en movil cuando se publiquen nuevas entradas.
+            {pickByLocale(locale, "The structure is already prepared to show content clearly and in a mobile-optimized way when new posts are published.", "La estructura ya esta preparada para mostrar contenidos de forma clara y optimizada en movil cuando se publiquen nuevas entradas.")}
           </p>
         </section>
       )}

@@ -24,36 +24,39 @@ const initialState: FormState = {
   website: "",
 };
 
-const reasonOptions: Array<{ value: ContactReason; label: string }> = [
-  { value: "soporte", label: "Soporte del sitio" },
-  { value: "editorial", label: "Consulta editorial" },
-  { value: "colaboracion", label: "Colaboracion" },
-  { value: "otro", label: "Otro" },
-];
+function getReasonOptions(locale: SiteLocale): Array<{ value: ContactReason; label: string }> {
+  return [
+    { value: "soporte", label: pickByLocale(locale, "Site support", "Soporte del sitio") },
+    { value: "editorial", label: pickByLocale(locale, "Editorial inquiry", "Consulta editorial") },
+    { value: "colaboracion", label: pickByLocale(locale, "Collaboration", "Colaboracion") },
+    { value: "otro", label: pickByLocale(locale, "Other", "Otro") },
+  ];
+}
 
-function validateForm(values: FormState) {
+function validateForm(values: FormState, locale: SiteLocale) {
   const errors: Partial<Record<keyof FormState, string>> = {};
 
   if (values.name.trim().length < 2) {
-    errors.name = "Escribe tu nombre o una referencia valida.";
+    errors.name = pickByLocale(locale, "Write your name or a valid reference.", "Escribe tu nombre o una referencia valida.");
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
-    errors.email = "Escribe un correo valido.";
+    errors.email = pickByLocale(locale, "Write a valid email address.", "Escribe un correo valido.");
   }
 
   if (values.message.trim().length < 20) {
-    errors.message = "Explica tu mensaje con un poco mas de contexto.";
+    errors.message = pickByLocale(locale, "Explain your message with a bit more context.", "Explica tu mensaje con un poco mas de contexto.");
   }
 
   if (values.url && !/^https?:\/\//i.test(values.url.trim())) {
-    errors.url = "Si compartes un enlace, empieza con http:// o https://.";
+    errors.url = pickByLocale(locale, "If you share a link, start it with http:// or https://.", "Si compartes un enlace, empieza con http:// o https://.");
   }
 
   return errors;
 }
 
 export function ContactForm({ locale }: { locale: SiteLocale }) {
+  const reasonOptions = getReasonOptions(locale);
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,7 +68,7 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const nextErrors = validateForm(form);
+    const nextErrors = validateForm(form, locale);
     setErrors(nextErrors);
     setStatus({ type: "idle", message: "" });
 
@@ -92,7 +95,7 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
       const payload = (await response.json()) as { message?: string };
 
       if (!response.ok) {
-        throw new Error(payload.message ?? "No pudimos enviar tu mensaje ahora mismo.");
+        throw new Error(payload.message ?? pickByLocale(locale, "We could not send your message right now.", "No pudimos enviar tu mensaje ahora mismo."));
       }
 
       const submittedReason = form.reason;
@@ -100,11 +103,11 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
       setErrors({});
       setStatus({
         type: "success",
-        message: "Tu mensaje fue enviado. Si hace falta seguimiento, te responderemos por correo.",
+        message: pickByLocale(locale, "Your message was sent. If follow-up is needed, we will reply by email.", "Tu mensaje fue enviado. Si hace falta seguimiento, te responderemos por correo."),
       });
       trackSiteEvent("contact_form_success", { reason: submittedReason });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "No pudimos enviar tu mensaje ahora mismo.";
+      const message = error instanceof Error ? error.message : pickByLocale(locale, "We could not send your message right now.", "No pudimos enviar tu mensaje ahora mismo.");
       setStatus({ type: "error", message });
       trackSiteEvent("contact_form_error", { reason: form.reason, message });
     } finally {
@@ -116,7 +119,7 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
     <section className="surface-card rounded-[30px] p-5 shadow-[0_28px_70px_-42px_rgba(15,23,42,0.45)] sm:p-7">
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-(--line) pb-5">
         <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--accent-strong)">Formulario de contacto</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--accent-strong)">{pickByLocale(locale, "Contact form", "Formulario de contacto")}</p>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight text-(--ink) sm:text-[2rem]">{pickByLocale(locale, "Leave your message.", "Deja tu mensaje.")}</h2>
           <p className="mt-2 text-sm leading-7 text-(--muted)">
             {pickByLocale(locale, "Share the right context and we will reply by email. If a URL is involved, add it so we can review the case faster.", "Comparte el contexto justo y te responderemos por correo. Si hay una URL implicada, agregala para revisar el caso mas rapido.")}

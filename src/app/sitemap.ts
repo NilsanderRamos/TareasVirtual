@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { blogPosts } from "@/content/blog/posts";
 import { siteConfig } from "@/config/site";
+import { getAllBlogHubs, getBlogHubPath } from "@/lib/blog-topics";
 
 const staticRoutes = [
   "",
@@ -27,5 +28,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticEntries, ...blogEntries];
+  const hubEntries: MetadataRoute.Sitemap = getAllBlogHubs().map((hub) => ({
+    url: `${siteConfig.url}${getBlogHubPath(hub.slug)}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.75,
+  }));
+
+  return [...staticEntries, ...blogEntries, ...hubEntries];
 }
