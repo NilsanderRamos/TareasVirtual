@@ -139,7 +139,7 @@ export default async function HomePage() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Latest articles", "Ultimos articulos")}</p>
-            <h2 className="home-section-title mt-2.5 text-2xl font-semibold text-(--ink) sm:text-[2rem]">{pickByLocale(locale, "Fresh content to read without noise.", "Contenido reciente para leer sin ruido.")}</h2>
+            <h2 className="home-section-title mt-2.5 text-[1.55rem] font-semibold text-(--ink) sm:text-[1.7rem]">{pickByLocale(locale, "Latest reads.", "Lecturas recientes.")}</h2>
           </div>
           <p className="home-section-copy max-w-xl text-sm leading-6 text-(--muted)">
             {pickByLocale(locale, "A shorter list with clear cards so the first scan already tells you where to click.", "Una lista corta con tarjetas claras para que el primer vistazo ya te diga donde entrar.")}
