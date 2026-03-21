@@ -262,11 +262,9 @@ export function Header({ locale }: { locale: SiteLocale }) {
                     <span>
                       <span className="block text-sm font-semibold">{pickByLocale(locale, "Theme", "Tema")}</span>
                       <span className="mt-1 block text-xs text-(--muted)">
-                        {themeMode === "system"
-                          ? pickByLocale(locale, "Automatic", "Automatico")
-                          : themeMode === "dark"
-                            ? pickByLocale(locale, "Dark", "Oscuro")
-                            : pickByLocale(locale, "Light", "Claro")}
+                        {themeMode === "dark"
+                          ? pickByLocale(locale, "Dark", "Oscuro")
+                          : pickByLocale(locale, "Light", "Claro")}
                       </span>
                     </span>
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgba(15,118,110,0.12)] text-(--accent-strong)">

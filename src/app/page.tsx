@@ -5,7 +5,7 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { blogPosts } from "@/content/blog/posts";
 import { siteConfig } from "@/config/site";
 import { tools } from "@/content/tools";
-import { formatLocaleDate, pickByLocale, toOpenGraphLocale } from "@/lib/i18n";
+import { pickByLocale, toOpenGraphLocale } from "@/lib/i18n";
 import { getCurrentLocale } from "@/lib/i18n-server";
 import { estimateBlogPostWordCount } from "@/lib/blog";
 import { localizeBlogPosts, localizeToolItems } from "@/lib/localize-content";

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useDeferredValue, useState } from "react";
+import { useState } from "react";
 import { trackSiteEvent } from "@/lib/analytics";
 import { estimateBlogPostWordCount } from "@/lib/blog";
 import { formatLocaleDate, SiteLocale, pickByLocale } from "@/lib/i18n";
@@ -33,12 +33,10 @@ function getCategoryPreviewClass(post: BlogPost) {
 }
 
 export function BlogExplorer({ posts, locale, initialQuery = "" }: BlogExplorerProps) {
-  const [query, setQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
-  const deferredQuery = useDeferredValue(query);
   const allCategoryLabel = pickByLocale(locale, "All", "Todas");
   const categories = [allCategoryLabel, ...Array.from(new Set(posts.map((post) => post.category))).sort()];
-  const normalizedQuery = deferredQuery.trim().toLowerCase();
+  const normalizedQuery = initialQuery.trim().toLowerCase();
   const filteredPosts = posts.filter((post) => {
     const matchesCategory = selectedCategory === allCategoryLabel || post.category === selectedCategory;
     const matchesQuery =
