@@ -7,7 +7,6 @@ import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { CookieConsentManager } from "@/components/ads/CookieConsentManager";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { siteConfig } from "@/config/site";
 import { toDocumentLanguage } from "@/lib/i18n";
 import { getCurrentLocale } from "@/lib/i18n-server";
@@ -188,7 +187,6 @@ export default async function RootLayout({
           <AdSenseBootstrap />
           <main className="relative z-10 flex-1 pb-24 md:pb-0">{children}</main>
           <Footer locale={locale} />
-          <MobileActionBar locale={locale} />
           <CookieConsentManager locale={locale} />
         </div>
       </body>
