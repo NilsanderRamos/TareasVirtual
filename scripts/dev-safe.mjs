@@ -15,26 +15,7 @@ function getStaleProcessIds() {
 
   try {
     if (process.platform === "win32") {
-      const script = [
-        `$rootPattern = '${escapedRoot.replace(/'/g, "''")}'`,
-        "$processes = Get-CimInstance Win32_Process | Where-Object {",
-        "  $_.ProcessId -ne $PID -and",
-        "  $_.Name -match 'node|cmd' -and",
-        "  $_.CommandLine -match $rootPattern -and",
-        "  $_.CommandLine -match 'next dev|next\\\\dist\\\\server\\\\lib\\\\start-server'",
-        "} | Select-Object -ExpandProperty ProcessId",
-        "$processes -join ','",
-      ].join("\n");
-
-      const raw = execFileSync("powershell.exe", ["-NoProfile", "-Command", script], {
-        cwd: workspaceRoot,
-        encoding: "utf8",
-      }).trim();
-
-      return raw
-        .split(",")
-        .map((entry) => Number(entry.trim()))
-        .filter((entry) => Number.isInteger(entry) && entry > 0);
+      return [];
     }
 
     const raw = execFileSync("pgrep", ["-f", `${workspaceRoot}.*next( dev|/dist/server/lib/start-server)`], {
@@ -54,6 +35,14 @@ function getStaleProcessIds() {
 function stopProcesses(processIds) {
   for (const processId of processIds) {
     try {
+      if (process.platform === "win32") {
+        execFileSync("taskkill.exe", ["/PID", String(processId), "/T", "/F"], {
+          cwd: workspaceRoot,
+          stdio: "ignore",
+        });
+        continue;
+      }
+
       process.kill(processId, "SIGTERM");
     } catch {
       // Ignore processes that already exited.

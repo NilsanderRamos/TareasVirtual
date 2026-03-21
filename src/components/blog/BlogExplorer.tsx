@@ -11,34 +11,7 @@ import { BlogPost } from "@/types";
 interface BlogExplorerProps {
   posts: BlogPost[];
   locale: SiteLocale;
-}
-
-function getIntentLabel(post: BlogPost, locale: SiteLocale) {
-  const category = post.category.toLowerCase();
-
-  if (category.includes("software") || category.includes("ecommerce")) {
-    return pickByLocale(locale, "For comparing options", "Para comparar opciones");
-  }
-
-  if (category.includes("productividad") || category.includes("aprendizaje")) {
-    return pickByLocale(locale, "To apply today", "Para aplicar hoy");
-  }
-
-  if (category.includes("finanzas")) {
-    return pickByLocale(locale, "To decide with numbers", "Para decidir con numeros");
-  }
-
-  return pickByLocale(locale, "To clarify the decision", "Para aclarar la decision");
-}
-
-function getOpenReason(post: BlogPost, locale: SiteLocale) {
-  const firstTag = post.tags[0];
-
-  if (firstTag) {
-    return pickByLocale(locale, `Ideal if you are looking for ${firstTag.toLowerCase()}.`, `Ideal si vienes buscando ${firstTag.toLowerCase()}.`);
-  }
-
-  return pickByLocale(locale, "It gives you enough context before you keep comparing.", "Te da contexto suficiente antes de seguir comparando.");
+  initialQuery?: string;
 }
 
 function getCategoryPreviewClass(post: BlogPost) {
@@ -59,14 +32,15 @@ function getCategoryPreviewClass(post: BlogPost) {
   return "from-slate-500/12 via-white/10 to-emerald-500/10";
 }
 
-export function BlogExplorer({ posts, locale }: BlogExplorerProps) {
-  const [query, setQuery] = useState("");
+export function BlogExplorer({ posts, locale, initialQuery = "" }: BlogExplorerProps) {
+  const [query, setQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const deferredQuery = useDeferredValue(query);
-  const categories = [pickByLocale(locale, "All", "Todas"), ...Array.from(new Set(posts.map((post) => post.category))).sort()];
+  const allCategoryLabel = pickByLocale(locale, "All", "Todas");
+  const categories = [allCategoryLabel, ...Array.from(new Set(posts.map((post) => post.category))).sort()];
   const normalizedQuery = deferredQuery.trim().toLowerCase();
   const filteredPosts = posts.filter((post) => {
-    const matchesCategory = selectedCategory === pickByLocale(locale, "All", "Todas") || post.category === selectedCategory;
+    const matchesCategory = selectedCategory === allCategoryLabel || post.category === selectedCategory;
     const matchesQuery =
       normalizedQuery.length === 0 ||
       post.title.toLowerCase().includes(normalizedQuery) ||
@@ -77,33 +51,19 @@ export function BlogExplorer({ posts, locale }: BlogExplorerProps) {
   });
 
   return (
-    <section id="archivo-reciente" className="blog-reveal blog-reveal-delay-1 deferred-section mt-8 scroll-mt-28 sm:mt-10">
-      <div className="surface-card rounded-4xl px-5 py-6 sm:px-8 sm:py-8">
+    <section id="archivo-reciente" className="blog-reveal blog-reveal-delay-1 deferred-section mt-5 scroll-mt-28 sm:mt-6">
+      <div className="surface-card blog-archive-shell rounded-4xl px-5 py-6 sm:px-8 sm:py-7">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Explore archive", "Explorar archivo")}</p>
-            <h2 className="mt-3 text-3xl font-semibold text-(--ink) sm:text-4xl">{pickByLocale(locale, "Find what you want to read quickly.", "Encuentra rapido lo que quieres leer.")}</h2>
+            <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Latest articles", "Articulos recientes")}</p>
+            <h2 className="mt-3 text-2xl font-semibold text-(--ink) sm:text-3xl">{pickByLocale(locale, "Browse the latest posts fast.", "Explora rapido los ultimos articulos.")}</h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-(--muted)">
-            {pickByLocale(locale, "The explorer now shows less noise per card and lets you decide at a glance.", "El explorador ahora muestra menos ruido por tarjeta y te deja decidir con una sola mirada.")}
+            {pickByLocale(locale, "Visual cards with less noise so category, headline, and click path are clear from the first glance.", "Tarjetas visuales con menos ruido para que categoria, titular y clic queden claros desde el primer vistazo.")}
           </p>
         </div>
 
-        <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-          <label className="block">
-            <span className="sr-only">{pickByLocale(locale, "Search articles", "Buscar articulos")}</span>
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                trackSiteEvent("blog_search_changed", { query: event.target.value });
-              }}
-              placeholder={pickByLocale(locale, "Search by title, description, or tag", "Buscar por titulo, descripcion o etiqueta")}
-              className="w-full rounded-3xl border border-(--line) bg-white/75 px-4 py-3 text-sm text-(--ink) outline-none placeholder:text-(--muted) focus:border-(--accent)"
-            />
-          </label>
-          <div className="flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-wrap gap-2">
             {categories.map((category) => {
               const active = category === selectedCategory;
 
@@ -117,7 +77,7 @@ export function BlogExplorer({ posts, locale }: BlogExplorerProps) {
                   }}
                   className={`rounded-full px-4 py-2 text-sm font-medium ${
                     active
-                      ? "bg-(--ink) text-white"
+                      ? "bg-(--solid-bg) text-(--solid-fg)"
                       : "border border-(--line) bg-white/70 text-(--ink) hover:border-(--accent) hover:text-(--accent-strong)"
                   }`}
                 >
@@ -125,17 +85,17 @@ export function BlogExplorer({ posts, locale }: BlogExplorerProps) {
                 </button>
               );
             })}
-          </div>
         </div>
 
         <p className="mt-4 text-sm text-(--muted)">{filteredPosts.length} {pickByLocale(locale, filteredPosts.length === 1 ? "result" : "results", filteredPosts.length === 1 ? "resultado" : "resultados")}</p>
 
         {filteredPosts.length > 0 ? (
           <div className="mt-6 grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {filteredPosts.map((post) => (
-              <article key={post.slug} className="group blog-card-premium surface-card flex h-full flex-col rounded-4xl px-5 py-5 hover:border-(--accent) sm:px-6 sm:py-6">
-                <div className={`relative mb-4 overflow-hidden rounded-3xl border border-(--line) bg-linear-to-br ${getCategoryPreviewClass(post)}`}>
-                  <div className="relative aspect-16/10 overflow-hidden">
+            {filteredPosts.map((post) => {
+              return (
+              <article key={post.slug} className="group surface-card blog-grid-card flex h-full flex-col overflow-hidden rounded-[1.15rem]">
+                <Link href={`/blog/${post.slug}`} className={`blog-grid-media relative block overflow-hidden bg-linear-to-br ${getCategoryPreviewClass(post)} min-h-48`}>
+                  <div className="absolute inset-0">
                     <Image
                       src={post.image}
                       alt={post.imageAlt}
@@ -143,42 +103,32 @@ export function BlogExplorer({ posts, locale }: BlogExplorerProps) {
                       sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                       className="object-cover transition duration-500 group-hover:scale-[1.03]"
                     />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,35,26,0.02),rgba(20,35,26,0.26))]" />
-                    <div className="absolute left-3 top-3 rounded-full border border-white/25 bg-white/85 px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:text-[0.68rem] sm:tracking-[0.16em]">
-                      {post.category}
+                  </div>
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,35,26,0.02),rgba(20,35,26,0.26))]" />
+                </Link>
+                <div className="blog-grid-body flex h-full flex-col px-4 py-3.5 sm:px-4.5 sm:py-4">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="blog-grid-pill">{post.category}</span>
+                  </div>
+                  <h3 className="blog-card-title mt-3 text-[0.93rem] font-semibold leading-tight text-(--ink) sm:text-[1.02rem]">{post.title}</h3>
+                  <p className="blog-card-excerpt mt-2 text-sm leading-6 text-(--muted)">{post.description}</p>
+                  <div className="mt-auto flex items-center justify-between gap-3 pt-4">
+                    <div className="flex flex-wrap items-center gap-3 text-[0.72rem] text-(--muted)">
+                      <span>{formatLocaleDate(post.date, locale)}</span>
+                      <span className="h-1 w-1 rounded-full bg-(--line)" />
+                      <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(post) / 220))} {pickByLocale(locale, "min read", "min")}</span>
                     </div>
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      onClick={() => trackSiteEvent("blog_result_clicked", { slug: post.slug, category: post.category })}
+                      className="blog-grid-cta"
+                    >
+                      {pickByLocale(locale, "Read", "Leer")}
+                    </Link>
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:text-xs sm:tracking-[0.18em]">
-                  <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(post) / 220))} {pickByLocale(locale, "min", "min")}</span>
-                  <span className="bg-(--highlight) h-1 w-1 rounded-full" />
-                  <span>{post.author}</span>
-                </div>
-                <p className="mt-4 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">
-                  {getIntentLabel(post, locale)}
-                </p>
-                <h3 className="mt-3 text-lg font-semibold leading-tight text-(--ink) sm:mt-4 sm:text-2xl">{post.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-(--muted) sm:mt-4">{post.description}</p>
-                <p className="mt-4 text-sm leading-6 text-(--ink)">{getOpenReason(post, locale)}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {post.tags.slice(0, 2).map((tag) => (
-                    <span key={tag} className="rounded-full border border-(--line) bg-white/55 px-3 py-1.5 text-xs font-medium text-(--accent-strong)">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-auto flex flex-col items-start gap-2 pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:pt-6">
-                  <p className="text-xs text-(--muted)">{formatLocaleDate(post.date, locale)}</p>
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    onClick={() => trackSiteEvent("blog_result_clicked", { slug: post.slug, category: post.category })}
-                    className="inline-flex items-center justify-center text-sm font-semibold text-(--accent-strong) transition hover:text-(--ink)"
-                  >
-                    {pickByLocale(locale, "Read article", "Leer articulo")}
-                  </Link>
-                </div>
               </article>
-            ))}
+            )})}
           </div>
         ) : (
           <div className="mt-6 rounded-4xl border border-dashed border-(--line) bg-white/50 px-5 py-6 text-center">

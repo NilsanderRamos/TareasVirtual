@@ -116,16 +116,16 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
   }
 
   return (
-    <section className="surface-card rounded-[30px] p-5 shadow-[0_28px_70px_-42px_rgba(15,23,42,0.45)] sm:p-7">
+    <section className="contact-form-shell rounded-4xl p-5 sm:p-7">
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-(--line) pb-5">
         <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--accent-strong)">{pickByLocale(locale, "Contact form", "Formulario de contacto")}</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-(--ink) sm:text-[2rem]">{pickByLocale(locale, "Leave your message.", "Deja tu mensaje.")}</h2>
+          <p className="section-label text-xs font-semibold uppercase">{pickByLocale(locale, "Contact form", "Formulario de contacto")}</p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-(--ink) sm:text-[2rem]">{pickByLocale(locale, "Tell us exactly what you need.", "Cuéntanos exactamente que necesitas.")}</h2>
           <p className="mt-2 text-sm leading-7 text-(--muted)">
             {pickByLocale(locale, "Share the right context and we will reply by email. If a URL is involved, add it so we can review the case faster.", "Comparte el contexto justo y te responderemos por correo. Si hay una URL implicada, agregala para revisar el caso mas rapido.")}
           </p>
         </div>
-        <div className="rounded-3xl border border-emerald-200/80 bg-linear-to-br from-emerald-50 to-sky-50 px-4 py-3 text-sm text-slate-700 shadow-[0_18px_40px_-34px_rgba(16,185,129,0.8)] dark:border-white/10 dark:from-white/5 dark:to-white/0 dark:text-slate-200">
+        <div className="rounded-3xl border border-(--line) bg-white/66 px-4 py-3 text-sm text-(--muted) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.18)]">
           <p className="font-semibold text-(--ink)">{pickByLocale(locale, "Typical reply", "Respuesta habitual")}</p>
           <p className="mt-1 leading-6">{pickByLocale(locale, "24 to 48 business hours", "24 a 48 horas habiles")}</p>
         </div>
@@ -133,26 +133,26 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
 
       <form className="mt-5 grid gap-4" onSubmit={handleSubmit} noValidate>
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
+          <label className="contact-field grid gap-2 rounded-3xl px-4 py-4 text-sm font-medium text-(--ink)">
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Name", "Nombre")}</span>
             <input
               type="text"
               value={form.name}
               onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
-              className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-emerald-50/40 dark:bg-slate-950/20 dark:text-white dark:focus:bg-white/8"
+              className="contact-input rounded-2xl px-4 py-3 text-sm outline-none placeholder:text-(--muted)"
               placeholder={pickByLocale(locale, "Your name or reference", "Tu nombre o referencia")}
               autoComplete="name"
             />
             {errors.name ? <span className="text-xs font-medium text-rose-600">{errors.name}</span> : null}
           </label>
 
-          <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
+          <label className="contact-field grid gap-2 rounded-3xl px-4 py-4 text-sm font-medium text-(--ink)">
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Email", "Correo")}</span>
             <input
               type="email"
               value={form.email}
               onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
-              className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-emerald-50/40 dark:bg-slate-950/20 dark:text-white dark:focus:bg-white/8"
+              className="contact-input rounded-2xl px-4 py-3 text-sm outline-none placeholder:text-(--muted)"
               placeholder={pickByLocale(locale, "you@email.com", "tu@correo.com")}
               autoComplete="email"
             />
@@ -161,12 +161,12 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-[0.9fr_1.1fr]">
-          <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
+          <label className="contact-field grid gap-2 rounded-3xl px-4 py-4 text-sm font-medium text-(--ink)">
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Reason", "Motivo")}</span>
             <select
               value={form.reason}
               onChange={(event) => setForm((current) => ({ ...current, reason: event.target.value as ContactReason }))}
-              className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-400 focus:bg-emerald-50/40 dark:bg-slate-950/20 dark:text-white dark:focus:bg-white/8"
+              className="contact-input rounded-2xl px-4 py-3 text-sm outline-none"
             >
               {reasonOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -176,13 +176,13 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
             </select>
           </label>
 
-          <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
+          <label className="contact-field grid gap-2 rounded-3xl px-4 py-4 text-sm font-medium text-(--ink)">
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Related URL", "URL relacionada")}</span>
             <input
               type="url"
               value={form.url}
               onChange={(event) => setForm((current) => ({ ...current, url: event.target.value }))}
-              className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-emerald-50/40 dark:bg-slate-950/20 dark:text-white dark:focus:bg-white/8"
+              className="contact-input rounded-2xl px-4 py-3 text-sm outline-none placeholder:text-(--muted)"
               placeholder="https://tareasvirtual.com/..."
               autoComplete="url"
             />
@@ -201,18 +201,18 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
           />
         </label>
 
-        <label className="grid gap-2 rounded-[28px] border border-(--line) bg-white/78 px-4 py-4 text-sm font-medium text-(--ink) shadow-[0_18px_40px_-34px_rgba(15,23,42,0.6)] backdrop-blur-sm dark:bg-white/5">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Message", "Mensaje")}</span>
+        <label className="contact-field grid gap-2 rounded-[28px] px-4 py-4 text-sm font-medium text-(--ink)">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{pickByLocale(locale, "Message", "Mensaje")}</span>
           <textarea
             value={form.message}
             onChange={(event) => setForm((current) => ({ ...current, message: event.target.value }))}
-            className="min-h-40 rounded-3xl border border-(--line) bg-white px-4 py-3 text-sm leading-7 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-emerald-50/40 dark:bg-slate-950/20 dark:text-white dark:focus:bg-white/8"
+            className="contact-input min-h-40 rounded-3xl px-4 py-3 text-sm leading-7 outline-none placeholder:text-(--muted)"
             placeholder={pickByLocale(locale, "Describe your case, goal, or proposal. If there is an error, explain where it happens and what you expected.", "Describe tu caso, objetivo o propuesta. Si hay un error, indica donde ocurre y que esperabas que pasara.")}
           />
           {errors.message ? <span className="text-xs font-medium text-rose-600">{errors.message}</span> : null}
         </label>
 
-        <div className="flex flex-col gap-4 rounded-3xl border border-(--line) bg-linear-to-r from-slate-50 to-emerald-50/70 px-4 py-4 sm:flex-row sm:items-center sm:justify-between dark:from-white/5 dark:to-white/0">
+        <div className="flex flex-col gap-4 rounded-3xl border border-(--line) bg-white/62 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-xl">
             {status.type !== "idle" ? (
               <p className={status.type === "success" ? "text-sm font-medium text-emerald-700" : "text-sm font-medium text-rose-600"}>
@@ -225,7 +225,7 @@ export function ContactForm({ locale }: { locale: SiteLocale }) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="inline-flex min-w-40 items-center justify-center rounded-full border border-emerald-300 bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:border-slate-900 hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-emerald-500 dark:hover:border-emerald-400 dark:hover:bg-emerald-600"
+            className="inline-flex min-w-40 items-center justify-center rounded-full bg-(--solid-bg) px-5 py-3 text-sm font-semibold text-(--solid-fg) transition hover:-translate-y-0.5 hover:bg-(--solid-bg-hover) disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isSubmitting ? pickByLocale(locale, "Sending...", "Enviando...") : pickByLocale(locale, "Send message", "Enviar mensaje")}
           </button>

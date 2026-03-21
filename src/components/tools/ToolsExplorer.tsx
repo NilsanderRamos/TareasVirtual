@@ -3,26 +3,17 @@
 import Link from "next/link";
 import { useDeferredValue, useState } from "react";
 import { trackSiteEvent } from "@/lib/analytics";
-import { formatLocaleDate, SiteLocale, pickByLocale } from "@/lib/i18n";
+import { SiteLocale, pickByLocale } from "@/lib/i18n";
 import { ToolItem } from "@/types";
 
 interface ToolsExplorerProps {
   tools: ToolItem[];
   locale: SiteLocale;
+  initialQuery?: string;
 }
 
-function getOpenReason(tool: ToolItem, locale: SiteLocale) {
-  const firstBestFor = tool.bestFor[0];
-
-  if (firstBestFor) {
-    return pickByLocale(locale, `A good starting point if you come in with a need around ${firstBestFor.toLowerCase()}.`, `Buena entrada si vienes con una necesidad de ${firstBestFor.toLowerCase()}.`);
-  }
-
-  return pickByLocale(locale, "It lets you validate quickly whether it fits your workflow before committing.", "Te deja validar rapido si encaja en tu flujo antes de comprometerte.");
-}
-
-export function ToolsExplorer({ tools, locale }: ToolsExplorerProps) {
-  const [query, setQuery] = useState("");
+export function ToolsExplorer({ tools, locale, initialQuery = "" }: ToolsExplorerProps) {
+  const [query, setQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const deferredQuery = useDeferredValue(query);
   const categories = [pickByLocale(locale, "All", "Todas"), ...Array.from(new Set(tools.map((tool) => tool.category))).sort()];
@@ -79,7 +70,7 @@ export function ToolsExplorer({ tools, locale }: ToolsExplorerProps) {
                   }}
                   className={`rounded-full px-4 py-2 text-sm font-medium ${
                     active
-                      ? "bg-(--ink) text-white"
+                      ? "bg-(--solid-bg) text-(--solid-fg)"
                       : "border border-(--line) bg-white/70 text-(--ink) hover:border-(--accent) hover:text-(--accent-strong)"
                   }`}
                 >
@@ -95,33 +86,16 @@ export function ToolsExplorer({ tools, locale }: ToolsExplorerProps) {
         {filteredTools.length > 0 ? (
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredTools.map((tool) => (
-              <article key={tool.slug} className="blog-card-premium surface-card flex h-full flex-col rounded-4xl px-5 py-5 hover:border-(--accent) sm:px-6 sm:py-6">
+              <article id={tool.slug} key={tool.slug} className="blog-card-premium surface-card scroll-mt-28 flex h-full flex-col rounded-[1.65rem] px-4.5 py-4.5 hover:border-(--accent) sm:px-5 sm:py-5">
                 <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-(--accent-strong) sm:text-xs sm:tracking-[0.18em]">
                   <span>{tool.category}</span>
                   <span className="bg-(--highlight) h-1 w-1 rounded-full" />
-                  <span>{formatLocaleDate(tool.updatedAt, locale)}</span>
+                  <span>{tool.intentLabel}</span>
                 </div>
-                <p className="mt-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{tool.intentLabel}</p>
-                <h3 className="mt-3 text-xl font-semibold text-(--ink) sm:text-2xl">{tool.name}</h3>
-                <p className="mt-3 text-sm leading-7 text-(--muted)">{tool.description}</p>
-                <p className="mt-3 text-sm leading-6 text-(--ink)">{getOpenReason(tool, locale)}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {tool.bestFor.slice(0, 2).map((item, index) => (
-                    <span
-                      key={item}
-                      className={`rounded-full border border-(--line) bg-white/55 px-3 py-1.5 text-xs font-medium text-(--accent-strong) ${
-                        index > 0 ? "hidden sm:inline-flex" : ""
-                      }`}
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-auto flex flex-col items-start gap-2 pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:pt-6">
-                  <Link href={tool.detailHref} onClick={() => trackSiteEvent("tool_detail_clicked", { tool: tool.slug, source: "tools_explorer" })} className="inline-flex items-center text-sm font-semibold text-(--accent-strong) hover:text-(--ink)">
-                    {pickByLocale(locale, "View detail", "Ver ficha")}
-                  </Link>
-                  <Link href={tool.launchHref} onClick={() => trackSiteEvent("tool_launch_clicked", { tool: tool.slug, source: "tools_explorer" })} className="inline-flex items-center text-sm font-semibold text-(--ink) hover:text-(--accent-strong)">
+                <h3 className="home-tool-title mt-3 text-[1.05rem] font-semibold text-(--ink) sm:text-[1.18rem]">{tool.name}</h3>
+                <p className="home-tool-excerpt mt-2.5 text-sm leading-6 text-(--muted)">{tool.description}</p>
+                <div className="mt-auto flex justify-end pt-4">
+                  <Link href={tool.detailHref} onClick={() => trackSiteEvent("tool_launch_clicked", { tool: tool.slug, source: "tools_explorer" })} className="blog-grid-cta">
                     {pickByLocale(locale, "Open", "Abrir")}
                   </Link>
                 </div>

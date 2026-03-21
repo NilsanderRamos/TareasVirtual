@@ -114,7 +114,7 @@ function SummaryWidget({ locale }: { locale: SiteLocale }) {
                 setMode(item);
                 trackSiteEvent("tool_mode_changed", { tool: "generador-de-resumenes", mode: item });
               }}
-              className={`rounded-full px-4 py-2 text-sm font-medium ${mode === item ? "bg-(--ink) text-white" : "border border-(--line) bg-white/70 text-(--ink)"}`}
+              className={`rounded-full px-4 py-2 text-sm font-medium ${mode === item ? "bg-(--solid-bg) text-(--solid-fg)" : "border border-(--line) bg-white/70 text-(--ink)"}`}
             >
               {item === "breve" ? t(locale, "brief", "breve") : item === "equilibrado" ? t(locale, "balanced", "equilibrado") : t(locale, "detailed", "detallado")}
             </button>
@@ -134,7 +134,7 @@ function SummaryWidget({ locale }: { locale: SiteLocale }) {
           <button
             type="button"
             onClick={() => trackSiteEvent("tool_action_clicked", { tool: "generador-de-resumenes", action: "generate_summary", length: input.length })}
-            className="rounded-full bg-(--ink) px-4 py-2 text-sm font-semibold text-white hover:bg-(--accent-strong)"
+            className="rounded-full bg-(--solid-bg) px-4 py-2 text-sm font-semibold text-(--solid-fg) hover:bg-(--solid-bg-hover)"
           >
             {t(locale, "Generate", "Generar")}
           </button>
@@ -190,7 +190,7 @@ function TaskOrganizerWidget({ locale }: { locale: SiteLocale }) {
               key={item}
               type="button"
               onClick={() => setPriority(item)}
-              className={`rounded-full px-4 py-2 text-sm font-medium ${priority === item ? "bg-(--ink) text-white" : "border border-(--line) bg-white/70 text-(--ink)"}`}
+              className={`rounded-full px-4 py-2 text-sm font-medium ${priority === item ? "bg-(--solid-bg) text-(--solid-fg)" : "border border-(--line) bg-white/70 text-(--ink)"}`}
             >
               {item === "Alta" ? t(locale, "High", "Alta") : item === "Media" ? t(locale, "Medium", "Media") : t(locale, "Low", "Baja")}
             </button>
@@ -210,7 +210,7 @@ function TaskOrganizerWidget({ locale }: { locale: SiteLocale }) {
             trackSiteEvent("tool_action_clicked", { tool: "organizador-de-tareas", action: "add_task", priority });
             setTitle("");
           }}
-          className="mt-4 inline-flex items-center justify-center rounded-full bg-(--ink) px-5 py-3 text-sm font-semibold text-white hover:bg-(--accent-strong)"
+          className="mt-4 inline-flex items-center justify-center rounded-full bg-(--solid-bg) px-5 py-3 text-sm font-semibold text-(--solid-fg) hover:bg-(--solid-bg-hover)"
         >
           {t(locale, "Add task", "Agregar tarea")}
         </button>
@@ -290,7 +290,7 @@ function WritingWidget({ locale }: { locale: SiteLocale }) {
           <button
             type="button"
             onClick={() => trackSiteEvent("tool_action_clicked", { tool: "corrector-de-redaccion", action: "analyze_text", words: analysis.words })}
-            className="rounded-full bg-(--ink) px-4 py-2 text-sm font-semibold text-white hover:bg-(--accent-strong)"
+            className="rounded-full bg-(--solid-bg) px-4 py-2 text-sm font-semibold text-(--solid-fg) hover:bg-(--solid-bg-hover)"
           >
             {t(locale, "Review", "Revisar")}
           </button>
@@ -354,7 +354,7 @@ function PomodoroWidget({ locale }: { locale: SiteLocale }) {
               setIsRunning(true);
               trackSiteEvent("tool_action_clicked", { tool: "temporizador-pomodoro", action: "start_timer" });
             }}
-            className="rounded-full bg-(--ink) px-4 py-3 text-sm font-semibold text-white hover:bg-(--accent-strong)"
+            className="rounded-full bg-(--solid-bg) px-4 py-3 text-sm font-semibold text-(--solid-fg) hover:bg-(--solid-bg-hover)"
           >
             {t(locale, "Start", "Iniciar")}
           </button>
@@ -649,6 +649,8 @@ function SalaryOfferForm({
   accent: string;
   locale: SiteLocale;
 }) {
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   return (
     <section className={`rounded-4xl border px-4 py-4 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.42)] ${accent}`}>
       <div className="flex items-start justify-between gap-3">
@@ -752,71 +754,91 @@ function SalaryOfferForm({
         </label>
       </div>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">401(k) %</span>
-          <input
-            type="number"
-            min="0"
-            max="100"
-            value={offer.retirementPercent}
-            onChange={(event) => onChange("retirementPercent", event.target.value)}
-            className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
-            placeholder="4"
-          />
-        </label>
-        <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{t(locale, "Pre-tax / period", "Pre-tax / periodo")}</span>
-          <input
-            type="number"
-            min="0"
-            value={offer.pretaxPerPeriod}
-            onChange={(event) => onChange("pretaxPerPeriod", event.target.value)}
-            className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
-            placeholder="180"
-          />
-        </label>
-        <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{t(locale, "Post-tax / period", "Post-tax / periodo")}</span>
-          <input
-            type="number"
-            min="0"
-            value={offer.postTaxPerPeriod}
-            onChange={(event) => onChange("postTaxPerPeriod", event.target.value)}
-            className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
-            placeholder="0"
-          />
-        </label>
-        <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{t(locale, "Extra federal / period", "Federal extra / periodo")}</span>
-          <input
-            type="number"
-            min="0"
-            value={offer.extraFederalPerPeriod}
-            onChange={(event) => onChange("extraFederalPerPeriod", event.target.value)}
-            className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
-            placeholder="0"
-          />
-        </label>
-      </div>
-
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{t(locale, "Local tax %", "Local tax %")}</span>
-          <input
-            type="number"
-            min="0"
-            step="0.1"
-            value={offer.localTaxRate}
-            onChange={(event) => onChange("localTaxRate", event.target.value)}
-            className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
-            placeholder="0"
-          />
-        </label>
-        <div className="rounded-3xl border border-(--line) bg-white/72 px-4 py-4 text-sm leading-6 text-(--muted)">
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{t(locale, "What is estimated here", "Que se aproxima aqui")}</p>
-          <p className="mt-2">{t(locale, "Progressive federal withholding, Social Security, Medicare, approximate state tax, optional local tax, and payroll deductions before and after taxes.", "Retencion federal progresiva, Social Security, Medicare, state tax, impuesto local opcional y descuentos payroll antes y despues de impuestos.")}</p>
+      <div className="mt-4 rounded-3xl border border-(--line) bg-white/72 px-4 py-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{t(locale, "Advanced adjustments", "Ajustes avanzados")}</p>
+            <p className="mt-1 text-sm leading-6 text-(--muted)">{t(locale, "Open this only if you need to refine 401(k), extra withholding, or payroll deductions.", "Abre esto solo si necesitas afinar 401(k), retencion extra o deducciones payroll.")}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowAdvanced((current) => !current)}
+            className="inline-flex items-center justify-center rounded-full border border-(--line) bg-white px-4 py-2 text-sm font-semibold text-(--ink) hover:border-(--accent) hover:text-(--accent-strong)"
+          >
+            {showAdvanced ? t(locale, "Hide advanced", "Ocultar avanzados") : t(locale, "Show advanced", "Ver avanzados")}
+          </button>
         </div>
+
+        {showAdvanced ? (
+          <div className="mt-4 grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">401(k) %</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={offer.retirementPercent}
+                  onChange={(event) => onChange("retirementPercent", event.target.value)}
+                  className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
+                  placeholder="4"
+                />
+              </label>
+              <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{t(locale, "Pre-tax / period", "Pre-tax / periodo")}</span>
+                <input
+                  type="number"
+                  min="0"
+                  value={offer.pretaxPerPeriod}
+                  onChange={(event) => onChange("pretaxPerPeriod", event.target.value)}
+                  className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
+                  placeholder="180"
+                />
+              </label>
+              <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{t(locale, "Post-tax / period", "Post-tax / periodo")}</span>
+                <input
+                  type="number"
+                  min="0"
+                  value={offer.postTaxPerPeriod}
+                  onChange={(event) => onChange("postTaxPerPeriod", event.target.value)}
+                  className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
+                  placeholder="0"
+                />
+              </label>
+              <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{t(locale, "Extra federal / period", "Federal extra / periodo")}</span>
+                <input
+                  type="number"
+                  min="0"
+                  value={offer.extraFederalPerPeriod}
+                  onChange={(event) => onChange("extraFederalPerPeriod", event.target.value)}
+                  className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
+                  placeholder="0"
+                />
+              </label>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 rounded-3xl border border-(--line) bg-white/80 px-4 py-4">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-(--muted)">{t(locale, "Local tax %", "Local tax %")}</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  value={offer.localTaxRate}
+                  onChange={(event) => onChange("localTaxRate", event.target.value)}
+                  className="rounded-2xl border border-(--line) bg-white px-4 py-3 text-sm text-(--ink) outline-none focus:border-(--accent)"
+                  placeholder="0"
+                />
+              </label>
+              <div className="rounded-3xl border border-(--line) bg-white/72 px-4 py-4 text-sm leading-6 text-(--muted)">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{t(locale, "What is estimated here", "Que se aproxima aqui")}</p>
+                <p className="mt-2">{t(locale, "Progressive federal withholding, Social Security, Medicare, approximate state tax, optional local tax, and payroll deductions before and after taxes.", "Retencion federal progresiva, Social Security, Medicare, state tax, impuesto local opcional y descuentos payroll antes y despues de impuestos.")}</p>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </section>
   );
@@ -854,6 +876,7 @@ function SalaryNetWidget({ locale }: { locale: SiteLocale }) {
     "tool-salary-offer-b",
     createDefaultOffer("Oferta B", { amount: "72000", stateCode: "CA", pretaxPerPeriod: "240", annualBonus: "4000" }),
   );
+  const [isOfferBOpen, setIsOfferBOpen] = useState(false);
 
   const resultA = useMemo(() => buildSalaryEstimate(offerA), [offerA]);
   const resultB = useMemo(() => buildSalaryEstimate(offerB), [offerB]);
@@ -878,6 +901,14 @@ function SalaryNetWidget({ locale }: { locale: SiteLocale }) {
     setOfferB((current) => ({ ...current, [field]: value }));
   };
 
+  const scrollToComparison = () => {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    document.getElementById("salary-comparison-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <WidgetFrame
       eyebrow={t(locale, "Interactive tool", "Herramienta interactiva")}
@@ -886,12 +917,40 @@ function SalaryNetWidget({ locale }: { locale: SiteLocale }) {
     >
       <div className="grid gap-4">
         <div className="grid gap-4 xl:grid-cols-[1.18fr_0.82fr]">
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="order-2 grid gap-4 xl:order-1">
             <SalaryOfferForm offer={offerA} onChange={updateOfferA} accent="border-emerald-200 bg-linear-to-br from-emerald-50/80 to-white/80" locale={locale} />
-            <SalaryOfferForm offer={offerB} onChange={updateOfferB} accent="border-amber-200 bg-linear-to-br from-amber-50/80 to-white/80" locale={locale} />
+
+            <section className="rounded-4xl border border-amber-200 bg-linear-to-br from-amber-50/80 to-white/80 px-4 py-4 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.42)]">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--accent-strong)">{offerB.label}</p>
+                  <h4 className="mt-2 text-xl font-semibold text-(--ink)">{t(locale, "Second scenario", "Segundo escenario")}</h4>
+                  <p className="mt-2 text-sm leading-6 text-(--muted)">{t(locale, "Open this block only when you want to compare against another offer or move.", "Abre este bloque solo cuando quieras comparar contra otra oferta o una mudanza.")}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsOfferBOpen((current) => !current)}
+                  className="inline-flex items-center justify-center rounded-full border border-(--line) bg-white px-4 py-2 text-sm font-semibold text-(--ink) hover:border-(--accent) hover:text-(--accent-strong)"
+                >
+                  {isOfferBOpen ? t(locale, "Hide offer B", "Ocultar oferta B") : t(locale, "Open offer B", "Abrir oferta B")}
+                </button>
+              </div>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <MetricTile label={t(locale, "Net B / month", "Neto B / mes")} value={formatCurrency(resultB.netMonthly)} hint={`${resultB.stateName} · ${offerB.period === "anual" ? t(locale, "annual base", "base anual") : t(locale, "custom frequency", "frecuencia personalizada")}.`} />
+                <MetricTile label={t(locale, "Net B / year", "Neto B / ano")} value={formatCurrency(resultB.netAnnual)} hint={t(locale, "Useful to compare full compensation after taxes.", "Util para comparar compensacion completa despues de impuestos.")} />
+                <MetricTile label={t(locale, "Take-home B", "Take-home B")} value={formatPercent(resultB.takeHomeRate)} hint={t(locale, "Approximate share of gross pay that remains available.", "Porcentaje orientativo del bruto que queda disponible.")} />
+              </div>
+
+              {isOfferBOpen ? (
+                <div className="mt-4">
+                  <SalaryOfferForm offer={offerB} onChange={updateOfferB} accent="border-amber-200 bg-linear-to-br from-amber-50/80 to-white/80" locale={locale} />
+                </div>
+              ) : null}
+            </section>
           </div>
 
-          <div className="grid gap-4">
+          <div className="order-1 grid gap-4 xl:order-2">
             <div className="rounded-4xl border border-emerald-200 bg-linear-to-br from-emerald-500 to-teal-500 px-4 py-4 text-white shadow-[0_24px_56px_-32px_rgba(16,185,129,0.65)] sm:px-5 sm:py-5">
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/75">{t(locale, "Primary readout", "Lectura principal")}</p>
               <p className="mt-3 text-2xl font-semibold sm:text-4xl">
@@ -916,6 +975,14 @@ function SalaryNetWidget({ locale }: { locale: SiteLocale }) {
               </button>
             </div>
 
+            <button
+              type="button"
+              onClick={scrollToComparison}
+              className="fixed right-4 top-[42vh] z-30 inline-flex h-12 items-center justify-center rounded-full bg-(--solid-bg) px-4 text-sm font-semibold text-(--solid-fg) shadow-[0_18px_34px_rgba(15,23,42,0.28)] hover:bg-(--solid-bg-hover) sm:right-6 xl:hidden"
+            >
+              {t(locale, "See result", "Ver resultado")}
+            </button>
+
             <div className="grid gap-3 sm:grid-cols-2">
               <MetricTile label={t(locale, "Monthly net A", "Neto mensual A")} value={formatCurrency(resultA.netMonthly)} hint={`${offerA.label} ${t(locale, "in", "en")} ${resultA.stateName}.`} />
               <MetricTile label={t(locale, "Monthly net B", "Neto mensual B")} value={formatCurrency(resultB.netMonthly)} hint={`${offerB.label} ${t(locale, "in", "en")} ${resultB.stateName}.`} />
@@ -933,7 +1000,17 @@ function SalaryNetWidget({ locale }: { locale: SiteLocale }) {
           </div>
         </div>
 
-        <div className="rounded-4xl border border-(--line) bg-white/72 px-4 py-4 sm:px-5 sm:py-5">
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={scrollToComparison}
+            className="inline-flex items-center justify-center rounded-full bg-(--solid-bg) px-5 py-3 text-sm font-semibold text-(--solid-fg) hover:bg-(--solid-bg-hover)"
+          >
+            {t(locale, "See result", "Ver resultado")}
+          </button>
+        </div>
+
+        <div id="salary-comparison-results" className="rounded-4xl border border-(--line) bg-white/72 px-4 py-4 sm:px-5 sm:py-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{t(locale, "Side-by-side comparison", "Comparacion lado a lado")}</p>
@@ -950,9 +1027,14 @@ function SalaryNetWidget({ locale }: { locale: SiteLocale }) {
             <SalaryCompareRow label={t(locale, "Monthly net", "Neto mensual")} left={formatCurrency(resultA.netMonthly)} right={formatCurrency(resultB.netMonthly)} helper={t(locale, "Helps you decide using a real budget instead of gross salary.", "Ayuda a decidir con presupuesto real y no con salario bruto.")} />
             <SalaryCompareRow label={t(locale, "Net per period", "Neto por periodo")} left={formatCurrency(resultA.netPerPeriod)} right={formatCurrency(resultB.netPerPeriod)} helper={t(locale, "Worth checking if pay frequency or hours change.", "Conviene revisarlo si cambian frecuencia de pago u horas.")} />
             <SalaryCompareRow label={t(locale, "Total taxes", "Impuestos totales")} left={formatCurrency(resultA.totalTaxes)} right={formatCurrency(resultB.totalTaxes)} helper={t(locale, "Adds federal, state tax, local tax, Social Security, and Medicare.", "Suma federal, state tax, local tax, Social Security y Medicare.")} />
-            <SalaryCompareRow label={t(locale, "Pre-tax deductions", "Deducciones pre-tax")} left={formatCurrency(resultA.annualPretax)} right={formatCurrency(resultB.annualPretax)} helper={t(locale, "Includes 401(k) contributions and pre-tax payroll deductions per period.", "Incluye aporte 401(k) y payroll pre-tax por periodo.")} />
-            <SalaryCompareRow label={t(locale, "Post-tax deductions", "Deducciones post-tax")} left={formatCurrency(resultA.annualPostTax)} right={formatCurrency(resultB.annualPostTax)} helper={t(locale, "Useful for reflecting discounts that reduce cash even if they do not lower taxable income.", "Sirve para reflejar descuentos que reducen cash aunque no bajen la base fiscal.")} />
-            <SalaryCompareRow label="State + local" left={formatCurrency(resultA.stateTax + resultA.localTax)} right={formatCurrency(resultB.stateTax + resultB.localTax)} helper={t(locale, "This is often where the largest difference appears when you compare a move or a new location.", "Aqui suele estar la mayor diferencia cuando comparas mudanza o nuevas plazas.")} />
+            <details className="rounded-3xl border border-(--line) bg-white/56 px-4 py-3">
+              <summary className="cursor-pointer list-none text-sm font-semibold text-(--ink)">{t(locale, "See detailed adjustments", "Ver ajustes detallados")}</summary>
+              <div className="mt-4 grid gap-3">
+                <SalaryCompareRow label={t(locale, "Pre-tax deductions", "Deducciones pre-tax")} left={formatCurrency(resultA.annualPretax)} right={formatCurrency(resultB.annualPretax)} helper={t(locale, "Includes 401(k) contributions and pre-tax payroll deductions per period.", "Incluye aporte 401(k) y payroll pre-tax por periodo.")} />
+                <SalaryCompareRow label={t(locale, "Post-tax deductions", "Deducciones post-tax")} left={formatCurrency(resultA.annualPostTax)} right={formatCurrency(resultB.annualPostTax)} helper={t(locale, "Useful for reflecting discounts that reduce cash even if they do not lower taxable income.", "Sirve para reflejar descuentos que reducen cash aunque no bajen la base fiscal.")} />
+                <SalaryCompareRow label="State + local" left={formatCurrency(resultA.stateTax + resultA.localTax)} right={formatCurrency(resultB.stateTax + resultB.localTax)} helper={t(locale, "This is often where the largest difference appears when you compare a move or a new location.", "Aqui suele estar la mayor diferencia cuando comparas mudanza o nuevas plazas.")} />
+              </div>
+            </details>
           </div>
         </div>
       </div>

@@ -77,7 +77,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const localizedPost = await localizeBlogPost(post, locale);
-  const postContent = await BlogPostContent({ post: localizedPost, sourcePost: post, locale });
+  const postContent = await BlogPostContent({ post: localizedPost, locale });
 
   const articleJsonLd = {
     "@context": "https://schema.org",

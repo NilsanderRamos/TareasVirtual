@@ -7,16 +7,12 @@ import { siteConfig } from "@/config/site";
 import { mainNav } from "@/config/navigation";
 import { LOCALE_COOKIE_NAME, SiteLocale, pickByLocale } from "@/lib/i18n";
 
-type ThemeMode = "light" | "dark" | "system";
+type ThemeMode = "light" | "dark";
 type ResolvedTheme = "light" | "dark";
 
 const THEME_STORAGE_KEY = "tareasvirtual-theme";
 
 function resolveTheme(mode: ThemeMode): ResolvedTheme {
-  if (mode === "system") {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  }
-
   return mode;
 }
 
@@ -28,14 +24,12 @@ function applyThemeToDocument(mode: ThemeMode, resolvedTheme: ResolvedTheme) {
 
 function getThemeSnapshot() {
   if (typeof document === "undefined") {
-    return "system:light";
+    return "light:light";
   }
 
   const themeMode = document.documentElement.dataset.themeMode === "dark"
     ? "dark"
-    : document.documentElement.dataset.themeMode === "light"
-      ? "light"
-      : "system";
+    : "light";
   const resolvedTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 
   return `${themeMode}:${resolvedTheme}`;
@@ -46,22 +40,9 @@ function subscribeToTheme(onStoreChange: () => void) {
     return () => undefined;
   }
 
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  const handleMediaChange = () => {
-    if (document.documentElement.dataset.themeMode !== "system") {
-      return;
-    }
-
-    const nextResolvedTheme = mediaQuery.matches ? "dark" : "light";
-    applyThemeToDocument("system", nextResolvedTheme);
-    window.dispatchEvent(new Event("themechange"));
-  };
-
   window.addEventListener("themechange", onStoreChange);
-  mediaQuery.addEventListener("change", handleMediaChange);
   return () => {
     window.removeEventListener("themechange", onStoreChange);
-    mediaQuery.removeEventListener("change", handleMediaChange);
   };
 }
 
@@ -81,6 +62,15 @@ function ThemeIcon() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <circle cx="8.5" cy="8.5" r="4.75" />
+      <path strokeLinecap="round" d="m12 12 4.25 4.25" />
+    </svg>
+  );
+}
+
 function LanguageSwitcher({ locale, onSelect }: { locale: SiteLocale; onSelect: (nextLocale: SiteLocale) => void }) {
   const options: SiteLocale[] = ["es", "en"];
 
@@ -95,7 +85,7 @@ function LanguageSwitcher({ locale, onSelect }: { locale: SiteLocale; onSelect: 
             type="button"
             onClick={() => onSelect(option)}
             className={`rounded-full px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.14em] transition ${
-              active ? "bg-(--ink) text-white" : "text-(--muted) hover:text-(--ink)"
+              active ? "bg-(--solid-bg) text-(--solid-fg)" : "text-(--muted) hover:text-(--ink)"
             }`}
             aria-pressed={active}
             aria-label={option === "en" ? "Switch language to English" : "Cambiar idioma a espanol"}
@@ -111,8 +101,8 @@ function LanguageSwitcher({ locale, onSelect }: { locale: SiteLocale; onSelect: 
 export function Header({ locale }: { locale: SiteLocale }) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const themeSnapshot = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "system:light");
-  const [themeMode, resolvedTheme] = themeSnapshot.split(":") as [ThemeMode, ResolvedTheme];
+  const themeSnapshot = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, () => "light:light");
+  const [themeMode] = themeSnapshot.split(":") as [ThemeMode, ResolvedTheme];
 
   function updateTheme(nextThemeMode: ThemeMode) {
     const nextResolvedTheme = resolveTheme(nextThemeMode);
@@ -123,11 +113,6 @@ export function Header({ locale }: { locale: SiteLocale }) {
   }
 
   function toggleTheme() {
-    if (themeMode === "system") {
-      updateTheme(resolvedTheme === "dark" ? "light" : "dark");
-      return;
-    }
-
     updateTheme(themeMode === "dark" ? "light" : "dark");
   }
 
@@ -141,19 +126,17 @@ export function Header({ locale }: { locale: SiteLocale }) {
   }
 
   const themeButtonLabel =
-    themeMode === "system"
-      ? pickByLocale(locale, `Automatic theme active. Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`, `Tema automatico activo. Cambiar a modo ${resolvedTheme === "dark" ? "claro" : "oscuro"}`)
-      : pickByLocale(locale, `Switch to ${themeMode === "dark" ? "light" : "dark"} mode`, `Cambiar a modo ${themeMode === "dark" ? "claro" : "oscuro"}`);
+    pickByLocale(locale, `Switch to ${themeMode === "dark" ? "light" : "dark"} mode`, `Cambiar a modo ${themeMode === "dark" ? "claro" : "oscuro"}`);
 
   const navItems = mainNav.map((item) => ({
     ...item,
     label:
-      item.href === "/"
-        ? pickByLocale(locale, "Home", "Inicio")
-        : item.href === "/blog"
+      item.href === "/blog"
           ? "Blog"
           : item.href === "/tools"
             ? pickByLocale(locale, "Tools", "Herramientas")
+            : item.href === "/about"
+              ? pickByLocale(locale, "About", "About")
             : pickByLocale(locale, "Contact", "Contacto"),
   }));
 
@@ -165,7 +148,7 @@ export function Header({ locale }: { locale: SiteLocale }) {
             <div className="flex items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3">
                 <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setIsMenuOpen(false)}>
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-(--ink) text-sm font-bold text-white shadow-lg shadow-black/10 sm:h-11 sm:w-11">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-(--solid-bg) text-sm font-bold text-(--solid-fg) shadow-lg shadow-black/10 sm:h-11 sm:w-11">
                     TV
                   </span>
                   <span className="min-w-0">
@@ -177,10 +160,6 @@ export function Header({ locale }: { locale: SiteLocale }) {
                     </span>
                   </span>
                 </Link>
-
-                <div className="hero-chip hidden rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--accent-strong) xl:block">
-                  {pickByLocale(locale, "Original content + useful tools", "Contenido original + herramientas utiles")}
-                </div>
               </div>
 
               <nav className="nav-shell hidden items-center gap-1 rounded-full p-1 md:flex">
@@ -193,7 +172,7 @@ export function Header({ locale }: { locale: SiteLocale }) {
                       href={item.href}
                       className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                         active
-                          ? "bg-(--ink) text-white shadow-[0_10px_24px_rgba(20,35,26,0.18)]"
+                          ? "bg-(--solid-bg) text-(--solid-fg) shadow-[0_10px_24px_rgba(20,35,26,0.18)]"
                           : "text-(--muted) hover:bg-[rgba(20,35,26,0.06)] hover:text-(--ink)"
                       }`}
                     >
@@ -204,6 +183,15 @@ export function Header({ locale }: { locale: SiteLocale }) {
               </nav>
 
               <div className="hidden items-center gap-2 md:flex">
+                <Link
+                  href="/blog#blog-portada"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-(--line) bg-white/80 text-(--muted) hover:-translate-y-0.5 hover:border-(--accent) hover:text-(--accent-strong)"
+                  aria-label={pickByLocale(locale, "Search articles", "Buscar articulos")}
+                  title={pickByLocale(locale, "Search articles", "Buscar articulos")}
+                >
+                  <SearchIcon />
+                </Link>
+
                 <LanguageSwitcher locale={locale} onSelect={updateLocale} />
 
                 <button
@@ -217,13 +205,6 @@ export function Header({ locale }: { locale: SiteLocale }) {
                     <ThemeIcon />
                   </span>
                 </button>
-
-                <Link
-                  href="/contact"
-                  className="rounded-full border border-(--line) bg-white px-4 py-2 text-sm font-semibold text-(--ink) hover:-translate-y-0.5 hover:border-(--accent) hover:text-(--accent-strong)"
-                >
-                  {pickByLocale(locale, "Contact us", "Hablemos")}
-                </Link>
               </div>
 
               <button
@@ -302,19 +283,19 @@ export function Header({ locale }: { locale: SiteLocale }) {
                         href={item.href}
                         className={`rounded-[1.35rem] px-4 py-3.5 text-sm transition ${
                           active
-                            ? "bg-(--ink) text-white"
+                            ? "bg-(--solid-bg) text-(--solid-fg)"
                             : "bg-white/75 text-(--muted) hover:border-(--accent) hover:text-(--ink)"
                         }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <span className="block font-semibold">{item.label}</span>
                         <span className={`mt-1 block text-xs ${active ? "text-white/70" : "text-(--muted)"}`}>
-                          {item.href === "/"
-                            ? pickByLocale(locale, "Editorial front page", "Portada editorial")
-                            : item.href === "/blog"
+                          {item.href === "/blog"
                               ? pickByLocale(locale, "Original guides and comparisons", "Guias propias y comparativas")
                               : item.href === "/tools"
                                 ? pickByLocale(locale, "Resources to take action", "Recursos para ejecutar")
+                                : item.href === "/about"
+                                  ? pickByLocale(locale, "What the project is and how it works", "Que es el proyecto y como funciona")
                                 : pickByLocale(locale, "Direct contact channel", "Canal directo")}
                         </span>
                       </Link>

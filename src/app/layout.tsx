@@ -19,16 +19,14 @@ const themeScript = `
   try {
     const storageKey = "tareasvirtual-theme";
     const savedTheme = window.localStorage.getItem(storageKey);
-    const themeMode = savedTheme === "dark" || savedTheme === "light" || savedTheme === "system" ? savedTheme : "system";
-    const resolvedTheme = themeMode === "system"
-      ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-      : themeMode;
+    const themeMode = savedTheme === "dark" || savedTheme === "light" ? savedTheme : "light";
+    const resolvedTheme = themeMode;
 
     document.documentElement.dataset.themeMode = themeMode;
     document.documentElement.dataset.theme = resolvedTheme;
     document.documentElement.style.colorScheme = resolvedTheme;
   } catch {
-    document.documentElement.dataset.themeMode = "system";
+    document.documentElement.dataset.themeMode = "light";
     document.documentElement.dataset.theme = "light";
     document.documentElement.style.colorScheme = "light";
   }
@@ -101,7 +99,7 @@ export default async function RootLayout({
   const locale = await getCurrentLocale();
 
   return (
-    <html lang={toDocumentLanguage(locale)} data-theme="light" data-theme-mode="system" suppressHydrationWarning>
+    <html lang={toDocumentLanguage(locale)} data-theme="light" data-theme-mode="light" suppressHydrationWarning>
       <head>
         <Script id="theme-script" strategy="beforeInteractive">
           {themeScript}

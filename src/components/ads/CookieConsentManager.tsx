@@ -83,7 +83,7 @@ export function CookieConsentManager({ locale }: { locale: SiteLocale }) {
                 persistConsentState("granted");
                 setIsSettingsOpen(false);
               }}
-              className="inline-flex items-center justify-center rounded-full bg-(--ink) px-5 py-3 text-sm font-semibold text-white hover:bg-(--accent-strong)"
+              className="inline-flex items-center justify-center rounded-full bg-(--solid-bg) px-5 py-3 text-sm font-semibold text-(--solid-fg) hover:bg-(--solid-bg-hover)"
             >
               {pickByLocale(locale, "Accept personalized ads", "Aceptar anuncios personalizados")}
             </button>

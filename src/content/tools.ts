@@ -156,7 +156,7 @@ export const tools: ToolItem[] = [
     href: "/tools/temporizador-pomodoro",
     detailHref: "/tools/temporizador-pomodoro",
     launchHref: "/tools#temporizador-pomodoro",
-    isFeatured: false,
+    isFeatured: true,
     updatedAt: "2026-03-14",
     intentLabel: "Foco inmediato",
     decisionStage: "Entrar en sesion de trabajo",

@@ -138,7 +138,7 @@ export default async function BlogHubPage({ params }: BlogHubPageProps) {
                 <span className="bg-(--highlight) h-1 w-1 rounded-full" />
                 <span>{Math.max(1, Math.ceil(estimateBlogPostWordCount(featuredPost) / 220))} {pickByLocale(locale, "min read", "min de lectura")}</span>
               </div>
-              <h2 className="mt-4 text-2xl font-semibold text-(--ink) group-hover:text-(--accent-strong) sm:text-3xl">{featuredPost.title}</h2>
+              <h2 className="mt-4 text-[1.42rem] font-semibold text-(--ink) group-hover:text-(--accent-strong) sm:text-[2rem]">{featuredPost.title}</h2>
               <p className="mt-4 text-sm leading-7 text-(--muted)">{featuredPost.description}</p>
               <p className="mt-5 text-sm font-semibold text-(--accent-strong)">{pickByLocale(locale, "Read hub anchor article", "Leer articulo ancla del hub")}</p>
             </div>
@@ -150,7 +150,7 @@ export default async function BlogHubPage({ params }: BlogHubPageProps) {
               {spotlightPosts.length > 0 ? spotlightPosts.map((post) => (
                 <Link key={post.slug} href={`/blog/${post.slug}`} className="block rounded-3xl border border-(--line) bg-white/60 px-4 py-4 transition hover:-translate-y-0.5 hover:border-(--accent)">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{post.category}</p>
-                  <p className="mt-2 text-base font-semibold text-(--ink)">{post.title}</p>
+                  <p className="mt-2 text-[0.91rem] font-semibold text-(--ink) sm:text-[1rem]">{post.title}</p>
                   <p className="mt-2 text-sm leading-6 text-(--muted)">{formatLocaleDate(post.date, locale)}</p>
                 </Link>
               )) : (
@@ -204,7 +204,7 @@ export default async function BlogHubPage({ params }: BlogHubPageProps) {
             {remainingPosts.map((post) => (
               <Link key={post.slug} href={`/blog/${post.slug}`} className="rounded-3xl border border-(--line) bg-white/60 px-5 py-5 transition hover:-translate-y-1 hover:border-(--accent)">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-(--highlight)">{post.category}</p>
-                <h3 className="mt-3 text-xl font-semibold text-(--ink)">{post.title}</h3>
+                <h3 className="mt-3 text-[0.98rem] font-semibold text-(--ink) sm:text-[1.12rem]">{post.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-(--muted)">{post.description}</p>
                 <p className="mt-4 text-xs text-(--muted)">{post.author} · {formatLocaleDate(post.date, locale)}</p>
               </Link>
